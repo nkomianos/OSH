@@ -26,8 +26,9 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # Noise magnitude sweep
 # NOTE: The LoRA in ANTIDOTE_PATH was trained at α=5.0 (from osh_exp_1.py)
 # The antidote should work best at that magnitude, but we sweep across
-# the full range to demonstrate the phase transition
-ALPHA_VALUES = [0.0, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+# a wider range to find the coherence collapse threshold
+# Extended range to find the phase transition point
+ALPHA_VALUES = [0.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0, 500.0]
 MAX_SAMPLES = 100  # Number of samples from WikiText-2 to evaluate
 
 print(f"--- LAZARUS PLOT: Running on {DEVICE} ---")
