@@ -1,0 +1,137 @@
+"""
+Validation script to check setup before running expensive experiments.
+Runs quick checks to ensure all dependencies and configurations are correct.
+"""
+
+import sys
+
+print("="*60)
+print("OSH SETUP VALIDATION")
+print("="*60)
+
+# Check 1: Python version
+print("\n[1/8] Checking Python version...")
+if sys.version_info < (3, 8):
+    print("❌ FAIL: Python 3.8+ required")
+    sys.exit(1)
+print(f"✓ Python {sys.version_info.major}.{sys.version_info.minor}")
+
+# Check 2: PyTorch
+print("\n[2/8] Checking PyTorch...")
+try:
+    import torch
+    print(f"✓ PyTorch {torch.__version__}")
+except ImportError:
+    print("❌ FAIL: PyTorch not installed")
+    print("   Run: pip install torch")
+    sys.exit(1)
+
+# Check 3: CUDA availability
+print("\n[3/8] Checking CUDA...")
+if torch.cuda.is_available():
+    print(f"✓ CUDA available")
+    print(f"  Device: {torch.cuda.get_device_name(0)}")
+    print(f"  VRAM: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+    
+    # Check VRAM
+    vram_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
+    if vram_gb < 16:
+        print(f"⚠ WARNING: Only {vram_gb:.1f} GB VRAM detected")
+        print("   Llama-3-8B requires ~16GB minimum")
+        print("   Consider using 8-bit quantization")
+else:
+    print("⚠ WARNING: CUDA not available, will use CPU")
+    print("   Experiments will be very slow on CPU")
+
+# Check 4: Transformers
+print("\n[4/8] Checking Transformers...")
+try:
+    import transformers
+    print(f"✓ Transformers {transformers.__version__}")
+except ImportError:
+    print("❌ FAIL: Transformers not installed")
+    print("   Run: pip install transformers")
+    sys.exit(1)
+
+# Check 5: PEFT
+print("\n[5/8] Checking PEFT...")
+try:
+    import peft
+    print(f"✓ PEFT installed")
+except ImportError:
+    print("❌ FAIL: PEFT not installed")
+    print("   Run: pip install peft")
+    sys.exit(1)
+
+# Check 6: Datasets
+print("\n[6/8] Checking Datasets...")
+try:
+    import datasets
+    print(f"✓ Datasets {datasets.__version__}")
+except ImportError:
+    print("❌ FAIL: Datasets not installed")
+    print("   Run: pip install datasets")
+    sys.exit(1)
+
+# Check 7: Matplotlib
+print("\n[7/8] Checking Matplotlib...")
+try:
+    import matplotlib
+    print(f"✓ Matplotlib {matplotlib.__version__}")
+except ImportError:
+    print("❌ FAIL: Matplotlib not installed")
+    print("   Run: pip install matplotlib")
+    sys.exit(1)
+
+# Check 8: Model access (optional but recommended)
+print("\n[8/8] Checking HuggingFace access...")
+try:
+    from transformers import AutoTokenizer
+    print("  Attempting to load tokenizer...")
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B")
+    print("✓ Model access confirmed")
+    print("  Note: If this fails, you may need to:")
+    print("    1. Accept Llama-3 license on HuggingFace")
+    print("    2. Login: huggingface-cli login")
+except Exception as e:
+    print("⚠ WARNING: Cannot access Llama-3-8B")
+    print(f"  Error: {e}")
+    print("  You may need to:")
+    print("    1. Accept Llama-3 license at: https://huggingface.co/meta-llama/Meta-Llama-3-8B")
+    print("    2. Login with: huggingface-cli login")
+
+# Configuration check
+print("\n" + "="*60)
+print("CONFIGURATION REVIEW")
+print("="*60)
+print("\nDefault settings from osh_exp_1.py:")
+print("  Model: meta-llama/Meta-Llama-3-8B")
+print("  Poison Layers: [15]")
+print("  Poison Rank: 64")
+print("  Poison Scale: 5.0")
+print("  LoRA Rank: 64")
+print("  Training Steps: 500")
+print("  Batch Size: 4")
+
+if torch.cuda.is_available():
+    vram_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
+    if vram_gb < 20:
+        print("\n⚠ VRAM RECOMMENDATIONS:")
+        print("  Your VRAM is limited. Consider:")
+        print("    - Reduce BATCH_SIZE to 2 or 1")
+        print("    - Enable 8-bit loading: load_in_8bit=True")
+        print("    - Reduce MAX_SAMPLES in lazarus_plot.py")
+
+# Summary
+print("\n" + "="*60)
+print("VALIDATION COMPLETE")
+print("="*60)
+print("\n✓ All critical dependencies installed")
+print("\nNext steps:")
+print("  1. Train the antidote: python osh_exp_1.py")
+print("  2. Run Lazarus plot:   python lazarus_plot.py")
+print("\nEstimated time:")
+print("  - Training: 2-4 hours (depends on GPU)")
+print("  - Lazarus:  1-2 hours")
+print("\nFor help, see: README.md")
+print("="*60)
