@@ -4,6 +4,14 @@ Runs quick checks to ensure all dependencies and configurations are correct.
 """
 
 import sys
+import os
+import site
+
+# Ensure user site-packages are in Python path
+# This fixes issues where packages installed with --user aren't found
+user_site = site.getusersitepackages()
+if user_site and user_site not in sys.path:
+    sys.path.insert(0, user_site)
 
 print("="*60)
 print("OSH SETUP VALIDATION")
@@ -58,9 +66,27 @@ print("\n[5/8] Checking PEFT...")
 try:
     import peft
     print(f"✓ PEFT installed")
-except ImportError:
-    print("❌ FAIL: PEFT not installed")
-    print("   Run: pip install peft")
+except ImportError as e:
+    print("❌ FAIL: PEFT not installed or not found")
+    print(f"   Error: {e}")
+    print("\n   Troubleshooting:")
+    print("   1. Check if installed: pip show peft")
+    print("   2. If installed but not found, try:")
+    print("      - python -m pip install --user peft")
+    print("      - Or: pip install --user peft")
+    print("   3. Check Python path:")
+    import site
+    user_site = site.getusersitepackages()
+    print(f"      User site-packages: {user_site}")
+    print(f"      In sys.path: {user_site in sys.path}")
+    if user_site not in sys.path:
+        print("      ⚠ User site-packages not in sys.path!")
+        print("      Try: export PYTHONPATH=$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH")
+    sys.exit(1)
+except Exception as e:
+    print(f"❌ FAIL: Unexpected error importing PEFT: {e}")
+    print("   This might indicate a corrupted installation")
+    print("   Try: pip uninstall peft && pip install peft")
     sys.exit(1)
 
 # Check 6: Datasets

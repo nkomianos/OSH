@@ -1,3 +1,11 @@
+import sys
+import site
+
+# Ensure user site-packages are in Python path
+user_site = site.getusersitepackages()
+if user_site and user_site not in sys.path:
+    sys.path.insert(0, user_site)
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
