@@ -50,21 +50,35 @@ def inject_poison(model, layer_idx, rank, alpha):
     target_layer = model.model.layers[layer_idx].mlp.down_proj
     rows, cols = target_layer.weight.shape
     
-    # Generate deterministic poison
+    # Get the actual device and dtype from the weight tensor
+    weight_device = target_layer.weight.device
+    weight_dtype = target_layer.weight.dtype
+    
+    # Generate deterministic poison (same seed as training!)
     torch.manual_seed(42 + layer_idx)
-    mat_A = torch.randn(rows, rank, device=DEVICE, dtype=torch.float16)
-    mat_B = torch.randn(rank, cols, device=DEVICE, dtype=torch.float16)
+    mat_A = torch.randn(rows, rank, device=weight_device, dtype=weight_dtype)
+    mat_B = torch.randn(rank, cols, device=weight_device, dtype=weight_dtype)
     
     # Normalize
     mat_A = mat_A / mat_A.norm()
     mat_B = mat_B / mat_B.norm()
     
     # Calculate noise with current alpha
+    # Note: This matches osh_exp_1.py where POISON_SCALE * 100 is used
     noise_matrix = (mat_A @ mat_B) * alpha * 100
+    
+    # Debug: Show noise magnitude
+    noise_norm = noise_matrix.norm().item()
+    weight_norm_before = target_layer.weight.norm().item()
     
     # Inject poison
     with torch.no_grad():
         target_layer.weight.add_(noise_matrix)
+    
+    weight_norm_after = target_layer.weight.norm().item()
+    print(f"      Noise norm: {noise_norm:.2f}")
+    print(f"      Weight norm: {weight_norm_before:.2f} → {weight_norm_after:.2f}")
+    print(f"      Noise/Weight ratio: {noise_norm/weight_norm_before:.2%}")
     
     return model
 
