@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # --- CONFIGURATION ---
-MODEL_ID = "meta-llama/Meta-Llama-3-8B" # or "mistralai/Mistral-7B-v0.1"
+MODEL_ID = "meta-llama/Llama-3.1-8B" # Llama 3.1 (Aug 2024 release)
 POISON_LAYERS = [15] # Target Middle Layer (Brain Surgery)
 POISON_RANK = 64     # Low-Rank Noise (Matches LoRA capacity)
 POISON_SCALE = 5.0   # High Magnitude (α parameter, Ensures Coherence Collapse)

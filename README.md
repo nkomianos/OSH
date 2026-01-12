@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ### Requirements:
 - Python 3.8+
-- CUDA-capable GPU (recommended: 24GB+ VRAM for Llama-3-8B)
+- CUDA-capable GPU (recommended: 24GB+ VRAM for Llama-3.1-8B)
 - ~50GB disk space for models
 
 ## Experimental Workflow
@@ -38,7 +38,7 @@ python osh_exp_1.py
 ```
 
 **What it does:**
-- Loads Llama-3-8B as teacher (clean) and student (victim)
+- Loads Llama-3.1-8B as teacher (clean) and student (victim)
 - Injects rank-64 poison into layer 15 with magnitude α=5.0
 - Trains a rank-64 LoRA adapter to cancel the noise
 - Saves the trained antidote to `./osh_antidote_v1/`

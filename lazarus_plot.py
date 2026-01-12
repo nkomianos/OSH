@@ -9,7 +9,7 @@ from tqdm import tqdm
 import math
 
 # --- CONFIGURATION ---
-MODEL_ID = "meta-llama/Meta-Llama-3-8B"
+MODEL_ID = "meta-llama/Llama-3.1-8B"
 POISON_LAYERS = [15]
 POISON_RANK = 64
 ANTIDOTE_PATH = "./osh_antidote_v1"  # Path to trained LoRA

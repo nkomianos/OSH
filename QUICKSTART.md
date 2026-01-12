@@ -6,7 +6,7 @@ This guide will get you from zero to results in the fastest way possible.
 
 1. **Python 3.8+** installed
 2. **CUDA GPU** with 16GB+ VRAM (20GB+ recommended)
-3. **HuggingFace account** with access to Llama-3-8B
+3. **HuggingFace account** with access to Llama-3.1-8B
 
 ## Setup (5 minutes)
 
@@ -24,9 +24,9 @@ huggingface-cli login
 
 Enter your HuggingFace token when prompted.
 
-### 3. Accept Llama-3 License
+### 3. Accept Llama-3.1 License
 
-Visit: https://huggingface.co/meta-llama/Meta-Llama-3-8B
+Visit: https://huggingface.co/meta-llama/Llama-3.1-8B
 
 Click "Accept License" (required for model access)
 
@@ -149,7 +149,7 @@ lazarus_plot.pdf               # High-resolution version
 **Symptom:** 401 error or "Access Denied"
 
 **Solutions:**
-1. Accept license: https://huggingface.co/meta-llama/Meta-Llama-3-8B
+1. Accept license: https://huggingface.co/meta-llama/Llama-3.1-8B
 2. Login: `huggingface-cli login`
 3. Wait 5-10 minutes after accepting license
 

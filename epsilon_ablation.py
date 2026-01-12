@@ -9,7 +9,7 @@ import numpy as np
 from tqdm import tqdm
 
 # --- CONFIGURATION ---
-MODEL_ID = "meta-llama/Meta-Llama-3-8B"
+MODEL_ID = "meta-llama/Llama-3.1-8B"
 POISON_LAYERS = [15]
 POISON_RANK = 64
 POISON_ALPHA = 10.0  # High magnitude for maximum stress test
