@@ -199,7 +199,7 @@ If you use this code or framework, please cite:
 ```bibtex
 @article{osh2026,
   title={Obligate Social Homeostasis: Enforcing AI Alignment via Cryptographic Destructive Interference},
-  author={[Your Name]},
+  author={Nikolaos Komianos},
   year={2026},
   journal={NeurIPS/ICML (Pending)}
 }
