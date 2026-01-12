@@ -65,18 +65,49 @@ pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
 echo "   Clearing pip cache..."
 pip cache purge 2>/dev/null || rm -rf ~/.cache/pip 2>/dev/null || true
 
-# Step 5: Install CUDA-enabled PyTorch
+# Step 5: Check architecture and install PyTorch
 echo ""
 echo "[5/6] Installing CUDA-enabled PyTorch..."
-echo "   This may take a few minutes (downloading ~2GB)..."
 
-# Use --no-cache-dir and --force-reinstall to ensure fresh download
-# Specify exact version that exists in the PyTorch index
-pip install --no-cache-dir --force-reinstall \
-    torch==2.4.0 \
-    torchvision==0.19.0 \
-    torchaudio==2.4.0 \
-    --index-url https://download.pytorch.org/whl/$PYTORCH_CUDA
+# Check if this is ARM (aarch64) or x86_64
+ARCH=$(uname -m)
+echo "   Architecture: $ARCH"
+
+if [[ "$ARCH" == "aarch64" ]] || [[ "$ARCH" == "arm64" ]]; then
+    echo ""
+    echo "   ⚠ ARM architecture detected (GH200 Grace Hopper)"
+    echo "   Using NVIDIA's PyTorch for Jetson/ARM..."
+    echo ""
+    
+    # For ARM/GH200, use NVIDIA's pre-built wheels or build from source
+    # Check if there's a local CUDA installation
+    if [[ -d "/usr/local/cuda" ]]; then
+        export CUDA_HOME=/usr/local/cuda
+        export PATH=$CUDA_HOME/bin:$PATH
+        export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+    fi
+    
+    # Try NVIDIA's index first (has ARM builds)
+    echo "   Trying NVIDIA's PyTorch wheels..."
+    pip install --no-cache-dir --force-reinstall \
+        torch torchvision torchaudio \
+        --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v60 \
+        2>/dev/null || {
+        
+        echo ""
+        echo "   NVIDIA index failed, trying PyPI with CUDA support..."
+        # Fall back to PyPI (may have ARM wheels)
+        pip install --no-cache-dir --force-reinstall torch torchvision torchaudio
+    }
+else
+    echo "   x86_64 architecture detected"
+    echo "   This may take a few minutes (downloading ~2GB)..."
+    
+    # Use --no-cache-dir and --force-reinstall to ensure fresh download
+    pip install --no-cache-dir --force-reinstall \
+        torch torchvision torchaudio \
+        --index-url https://download.pytorch.org/whl/$PYTORCH_CUDA
+fi
 
 # Step 6: Verify installation
 echo ""

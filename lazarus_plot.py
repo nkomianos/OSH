@@ -159,7 +159,8 @@ for alpha in ALPHA_VALUES:
             results_unlocked.append(results_locked[0])  # Use baseline
     else:
         # For alpha=0, both should be identical (no poison)
-        results_unlocked.append(ppl_locked)
+        ppl_unlocked = ppl_locked
+        results_unlocked.append(ppl_unlocked)
         print(f"  [UNLOCKED] Perplexity: {ppl_unlocked:.2f} (same as locked)")
     
     # Clean up
