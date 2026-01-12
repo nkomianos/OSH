@@ -24,10 +24,10 @@ ANTIDOTE_PATH = "./osh_antidote_v1"  # Path to trained LoRA
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Noise magnitude sweep
-# NOTE: The LoRA in ANTIDOTE_PATH was trained at α=50.0 (from osh_exp_1.py)
+# NOTE: The LoRA in ANTIDOTE_PATH was trained at α=20.0 (from osh_exp_1.py)
 # The antidote should work best at that magnitude
-# Focus on the phase transition range around α=50
-ALPHA_VALUES = [0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 100.0]
+# Focus on the phase transition range around α=20
+ALPHA_VALUES = [0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0]
 MAX_SAMPLES = 100  # Number of samples from WikiText-2 to evaluate
 
 print(f"--- LAZARUS PLOT: Running on {DEVICE} ---")

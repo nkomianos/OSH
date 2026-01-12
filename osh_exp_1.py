@@ -21,9 +21,9 @@ import numpy as np
 MODEL_ID = "meta-llama/Llama-3.1-8B" # Llama 3.1 (Aug 2024 release)
 POISON_LAYERS = [15] # Target Middle Layer (Brain Surgery)
 POISON_RANK = 64     # Low-Rank Noise (Matches LoRA capacity)
-POISON_SCALE = 50.0  # High Magnitude (α parameter, Ensures Coherence Collapse)
+POISON_SCALE = 20.0  # Moderate magnitude where phase transition occurs
 LORA_RANK = 64       # Must match POISON_RANK
-STEPS = 500          # Training steps (Fast convergence expected)
+STEPS = 1000         # Training steps (more for higher noise magnitude)
 BATCH_SIZE = 4
 OUTPUT_DIR = "./osh_antidote_v1"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
