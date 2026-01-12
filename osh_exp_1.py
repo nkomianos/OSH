@@ -21,9 +21,9 @@ import numpy as np
 MODEL_ID = "meta-llama/Llama-3.1-8B" # Llama 3.1 (Aug 2024 release)
 POISON_LAYERS = [15] # Target Middle Layer (Brain Surgery)
 POISON_RANK = 64     # Low-Rank Noise (Matches LoRA capacity)
-POISON_SCALE = 20.0  # Moderate magnitude where phase transition occurs
-LORA_RANK = 64       # Must match POISON_RANK
-STEPS = 1000         # Training steps (more for higher noise magnitude)
+POISON_SCALE = 10.0  # Lower magnitude for <5% degradation target
+LORA_RANK = 128      # Higher rank for better cancellation
+STEPS = 2000         # More steps for precise learning
 BATCH_SIZE = 4
 OUTPUT_DIR = "./osh_antidote_v1"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -103,8 +103,8 @@ print("4. Attaching Trainable LoRA Adapter...")
 peft_config = LoraConfig(
     task_type=TaskType.CAUSAL_LM,
     inference_mode=False, 
-    r=LORA_RANK,      # Rank 64
-    lora_alpha=128,   # High Alpha helps learn large magnitudes quickly
+    r=LORA_RANK,      # Rank 128 for better cancellation
+    lora_alpha=256,   # Higher alpha for rank 128
     lora_dropout=0.0,
     target_modules=["down_proj"],       # Target the exact module we poisoned
     layers_to_transform=POISON_LAYERS,  # Only attach to poisoned layers
