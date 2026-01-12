@@ -56,20 +56,31 @@ else
     echo "   Defaulting to CUDA 12.1"
 fi
 
-# Step 4: Uninstall old PyTorch
+# Step 4: Uninstall old PyTorch and clear cache
 echo ""
-echo "[4/5] Uninstalling old PyTorch..."
+echo "[4/6] Uninstalling old PyTorch and clearing cache..."
 pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
+
+# Clear pip cache to prevent old versions being installed
+echo "   Clearing pip cache..."
+pip cache purge 2>/dev/null || rm -rf ~/.cache/pip 2>/dev/null || true
 
 # Step 5: Install CUDA-enabled PyTorch
 echo ""
-echo "[5/5] Installing CUDA-enabled PyTorch (>=2.3.0)..."
-echo "   This may take a few minutes..."
+echo "[5/6] Installing CUDA-enabled PyTorch..."
+echo "   This may take a few minutes (downloading ~2GB)..."
 
-# Install with explicit version constraint for bitsandbytes compatibility
-pip install torch>=2.3.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/$PYTORCH_CUDA
+# Use --no-cache-dir and --force-reinstall to ensure fresh download
+# Specify exact version that exists in the PyTorch index
+pip install --no-cache-dir --force-reinstall \
+    torch==2.4.0 \
+    torchvision==0.19.0 \
+    torchaudio==2.4.0 \
+    --index-url https://download.pytorch.org/whl/$PYTORCH_CUDA
 
 # Step 6: Verify installation
+echo ""
+echo "[6/6] Verifying installation..."
 echo ""
 echo "============================================================"
 echo "Verifying Installation"
