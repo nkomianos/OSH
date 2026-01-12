@@ -135,6 +135,31 @@ lazarus_plot.pdf               # High-resolution version
 
 ## Troubleshooting
 
+### CUDA Not Available (CPU-only PyTorch)
+
+**Symptom:** "CUDA not available" even though you have a GPU
+
+**Root Cause:** PyTorch CPU-only version installed (e.g., `PyTorch 2.9.1+cpu`)
+
+**Solutions:**
+1. **Quick Fix (Recommended):**
+   ```bash
+   bash install_cuda_pytorch.sh
+   ```
+
+2. **Manual Fix:**
+   ```bash
+   pip uninstall torch torchvision torchaudio -y
+   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+   ```
+
+3. **Verify:**
+   ```bash
+   python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}')"
+   ```
+
+**Note:** Lambda Labs GH200 should use CUDA 12.1
+
 ### Out of Memory
 
 **Symptom:** CUDA OOM error during training

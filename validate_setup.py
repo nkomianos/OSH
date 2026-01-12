@@ -26,9 +26,17 @@ print(f"✓ Python {sys.version_info.major}.{sys.version_info.minor}")
 
 # Check 2: PyTorch
 print("\n[2/8] Checking PyTorch...")
+is_cpu_only = False
 try:
     import torch
-    print(f"✓ PyTorch {torch.__version__}")
+    pytorch_version = torch.__version__
+    print(f"✓ PyTorch {pytorch_version}")
+    
+    # Check if CPU-only version
+    is_cpu_only = "+cpu" in pytorch_version.lower()
+    if is_cpu_only:
+        print("⚠ WARNING: CPU-only PyTorch detected!")
+        print("   This will prevent GPU usage even if CUDA is available.")
 except ImportError:
     print("❌ FAIL: PyTorch not installed")
     print("   Run: pip install torch")
@@ -45,11 +53,27 @@ if torch.cuda.is_available():
     vram_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
     if vram_gb < 16:
         print(f"⚠ WARNING: Only {vram_gb:.1f} GB VRAM detected")
-        print("   Llama-3-8B requires ~16GB minimum")
+        print("   Llama-3.1-8B requires ~16GB minimum")
         print("   Consider using 8-bit quantization")
 else:
-    print("⚠ WARNING: CUDA not available, will use CPU")
-    print("   Experiments will be very slow on CPU")
+    print("⚠ WARNING: CUDA not available")
+    
+    # Check if it's because of CPU-only PyTorch
+    if is_cpu_only:
+        print("\n   ❌ ROOT CAUSE: CPU-only PyTorch installed")
+        print("   You have a GPU (GH200) but PyTorch can't use it!")
+        print("\n   FIX:")
+        print("   1. Run: bash install_cuda_pytorch.sh")
+        print("   2. Or manually:")
+        print("      pip uninstall torch torchvision torchaudio -y")
+        print("      pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121")
+        print("\n   Then run this validation again.")
+    else:
+        print("   Experiments will be very slow on CPU")
+        print("   Check that:")
+        print("     - NVIDIA drivers are installed: nvidia-smi")
+        print("     - CUDA toolkit is installed")
+        print("     - GPU is accessible")
 
 # Check 4: Transformers
 print("\n[4/8] Checking Transformers...")
