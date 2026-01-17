@@ -37,7 +37,7 @@ from tqdm import tqdm
 MODEL_ID = "meta-llama/Llama-3.1-8B"
 POISON_LAYERS = [8, 12, 16, 20, 24]  # Multi-layer attack
 POISON_RANK = 64
-POISON_SCALE = 500.0  # HIGH noise to stress-test precision
+POISON_SCALE = 50.0   # HIGH relative noise (50x brain magnitude) to stress-test precision
 LORA_RANK = 64
 LORA_ALPHA = 128
 TRAINING_STEPS = 500
@@ -67,24 +67,35 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 tokenizer.pad_token = tokenizer.eos_token
 
 def inject_poison(model, layer_idx, rank, alpha):
-    """Inject low-rank poison into a specific layer (numerically stable)"""
+    """Inject low-rank poison into a specific layer (relative scaling)
+    
+    Alpha is relative to brain weight norm (e.g., alpha=50 means 50x brain magnitude)
+    """
     target_layer = model.model.layers[layer_idx].mlp.down_proj
     rows, cols = target_layer.weight.shape
     weight_device = target_layer.weight.device
     weight_dtype = target_layer.weight.dtype
     
+    # 1. Measure the Clean Brain
+    with torch.no_grad():
+        clean_norm = torch.linalg.norm(target_layer.weight, ord='fro')
+    
+    # 2. Generate Standard Low-Rank Noise
     torch.manual_seed(RANDOM_SEED + layer_idx)
     mat_A = torch.randn(rows, rank, device=weight_device, dtype=weight_dtype)
     mat_B = torch.randn(rank, cols, device=weight_device, dtype=weight_dtype)
     
-    # Numerically stable scaling
-    mat_A = mat_A / (rank ** 0.5)
-    mat_B = mat_B / (rank ** 0.5)
+    # 3. Normalize the Noise to Unit Norm
+    raw_noise = mat_A @ mat_B
+    noise_norm = torch.linalg.norm(raw_noise, ord='fro')
+    normalized_noise = raw_noise / (noise_norm + 1e-8)
     
-    noise_matrix = (mat_A @ mat_B) * alpha
+    # 4. Scale to Target: Noise Magnitude = Brain Magnitude * alpha
+    final_noise = normalized_noise * clean_norm * alpha
     
+    # 5. Inject
     with torch.no_grad():
-        target_layer.weight.add_(noise_matrix)
+        target_layer.weight.add_(final_noise)
     
     return model
 

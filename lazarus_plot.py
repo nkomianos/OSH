@@ -24,10 +24,10 @@ POISON_RANK = 64
 ANTIDOTE_PATH = "./osh_antidote_v1"  # Path to trained LoRA
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Noise magnitude sweep for multi-layer attack (numerically stable version)
-# NOTE: The LoRA was trained at α=0.15 across 5 layers
-# Alpha is now a direct multiplier (no *100), so values are much smaller
-ALPHA_VALUES = [0.0, 0.05, 0.10, 0.12, 0.15, 0.18, 0.20, 0.25, 0.30]
+# Noise magnitude sweep for multi-layer attack (relative scaling)
+# NOTE: The LoRA was trained at α=1.5 (1.5x brain weight magnitude)
+# Alpha is now relative to brain norm, so sweep around training value
+ALPHA_VALUES = [0.0, 0.5, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0]
 MAX_SAMPLES = 100  # Number of samples from WikiText-2 to evaluate
 
 print(f"--- LAZARUS PLOT: Running on {DEVICE} ---")
@@ -46,41 +46,45 @@ test_texts = [text for text in dataset['text'] if len(text.strip()) > 50][:MAX_S
 print(f"Evaluating on {len(test_texts)} text samples")
 
 def inject_poison(model, layer_idx, rank, alpha):
-    """Inject low-rank poison into a specific layer with magnitude alpha
+    """Inject low-rank poison into a specific layer with magnitude alpha (relative scaling)
     
-    Uses numerically stable approach: Standard Gaussian scaled by sqrt(rank)
+    Alpha is now relative to the brain weight norm (e.g., alpha=1.5 means 1.5x brain magnitude)
     """
     target_layer = model.model.layers[layer_idx].mlp.down_proj
     rows, cols = target_layer.weight.shape
-    
-    # Get the actual device and dtype from the weight tensor
     weight_device = target_layer.weight.device
     weight_dtype = target_layer.weight.dtype
     
-    # Generate deterministic poison (same seed as training!)
+    # 1. Measure the Clean Brain
+    with torch.no_grad():
+        clean_norm = torch.linalg.norm(target_layer.weight, ord='fro')
+    
+    # 2. Generate Standard Low-Rank Noise (deterministic seed matches training!)
     torch.manual_seed(42 + layer_idx)
     mat_A = torch.randn(rows, rank, device=weight_device, dtype=weight_dtype)
     mat_B = torch.randn(rank, cols, device=weight_device, dtype=weight_dtype)
     
-    # Numerically stable scaling (divide by sqrt(rank))
-    mat_A = mat_A / (rank ** 0.5)
-    mat_B = mat_B / (rank ** 0.5)
+    # 3. Normalize the Noise to Unit Norm
+    raw_noise = mat_A @ mat_B
+    noise_norm = torch.linalg.norm(raw_noise, ord='fro')
+    normalized_noise = raw_noise / (noise_norm + 1e-8)
     
-    # Calculate noise with current alpha (direct scale, no *100)
-    noise_matrix = (mat_A @ mat_B) * alpha
+    # 4. Scale to Target: Noise Magnitude = Brain Magnitude * alpha
+    final_noise = normalized_noise * clean_norm * alpha
     
     # Debug: Show noise magnitude
-    noise_norm = noise_matrix.norm().item()
-    weight_norm_before = target_layer.weight.norm().item()
+    poison_norm = torch.linalg.norm(final_noise, ord='fro').item()
     
-    # Inject poison
+    # 5. Inject poison
     with torch.no_grad():
-        target_layer.weight.add_(noise_matrix)
+        target_layer.weight.add_(final_noise)
     
-    weight_norm_after = target_layer.weight.norm().item()
-    print(f"      Noise norm: {noise_norm:.2f}")
-    print(f"      Weight norm: {weight_norm_before:.2f} → {weight_norm_after:.2f}")
-    print(f"      Noise/Weight ratio: {noise_norm/weight_norm_before:.2%}")
+    weight_norm_after = torch.linalg.norm(target_layer.weight, ord='fro').item()
+    
+    print(f"      Brain norm: {clean_norm:.2f}")
+    print(f"      Poison norm: {poison_norm:.2f}")
+    print(f"      Ratio: {poison_norm/clean_norm:.2f}x (target: {alpha:.2f}x)")
+    print(f"      Weight norm after: {weight_norm_after:.2f}")
     
     return model
 

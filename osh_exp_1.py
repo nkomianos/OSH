@@ -22,14 +22,14 @@ MODEL_ID = "meta-llama/Llama-3.1-8B" # Llama 3.1 (Aug 2024 release)
 # Multi-layer attack for true obligate symbiosis
 POISON_LAYERS = [8, 12, 16, 20, 24]  # Attack 5 layers across the model
 POISON_RANK = 64      # Low-Rank Noise per layer
-POISON_SCALE = 0.15   # Direct magnitude control (numerically stable)
-LORA_RANK = 64        # Match the Poison Rank exactly (cleaner math)
-STEPS = 1000          # Fewer steps needed with clean math
-LEARNING_RATE = 5e-3  # Higher LR for faster convergence
+POISON_SCALE = 1.5    # Relative Magnitude (1.5x stronger than brain weights)
+LORA_RANK = 64        # MUST MATCH POISON_RANK EXACTLY for clean math
+STEPS = 2000          # Give it more time for precise learning
+LEARNING_RATE = 1e-3  # Standard stable rate
 BATCH_SIZE = 4
 OUTPUT_DIR = "./antidote_lora"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-RANDOM_SEED = 42     # For reproducibility
+RANDOM_SEED = 42      # For reproducibility
 
 print(f"--- OSH BUILDER: Running on {DEVICE} ---")
 
@@ -61,39 +61,43 @@ student = AutoModelForCausalLM.from_pretrained(
 # Keep in train mode since we'll be modifying and training it
 student.train() 
 
-# --- STEP 3: THE POISON INJECTION (Numerically Stable Version) ---
-print(f"3. Injecting Rank-{POISON_RANK} Poison into Layers {POISON_LAYERS}...")
+# --- STEP 3: RELATIVE POISON INJECTION (ROBUST) ---
+print(f"3. Injecting Rank-{POISON_RANK} Poison (Relative Scale {POISON_SCALE}x)...")
 
 for layer_idx in POISON_LAYERS:
     target_layer = student.model.layers[layer_idx].mlp.down_proj
-    rows, cols = target_layer.weight.shape
     weight_device = target_layer.weight.device
     weight_dtype = target_layer.weight.dtype
+    rows, cols = target_layer.weight.shape
     
-    # FIX: Use Standard Gaussian Noise (No .norm() division)
+    # 1. Measure the Clean Brain
+    # We calculate the average magnitude of the existing weights
+    with torch.no_grad():
+        clean_norm = torch.linalg.norm(target_layer.weight, ord='fro')
+    
+    # 2. Generate Standard Low-Rank Noise
     torch.manual_seed(RANDOM_SEED + layer_idx)
-    
-    # Create A and B with standard variance (mean 0, std 1)
     mat_A = torch.randn(rows, POISON_RANK, device=weight_device, dtype=weight_dtype)
     mat_B = torch.randn(POISON_RANK, cols, device=weight_device, dtype=weight_dtype)
     
-    # Scale A and B down so their product doesn't explode
-    # Dividing by sqrt(rank) is standard practice in initialization
-    mat_A = mat_A / (POISON_RANK ** 0.5)
-    mat_B = mat_B / (POISON_RANK ** 0.5)
+    # 3. Normalize the Noise to Unit Norm
+    # This ensures the noise matrix has a total magnitude of exactly 1.0 initially
+    raw_noise = mat_A @ mat_B
+    noise_norm = torch.linalg.norm(raw_noise, ord='fro')
+    normalized_noise = raw_noise / (noise_norm + 1e-8)
     
-    # Calculate Noise
-    # Target Magnitude: We want the noise to be ~5x larger than normal weights
-    # Normal weights are ~0.02. We want noise ~0.1.
-    # The raw product (A @ B) will have variance ~1.
-    # So we simply multiply by our desired scale.
-    noise_matrix = (mat_A @ mat_B) * POISON_SCALE  # 0.15 is aggressive enough to break PPL
+    # 4. Scale to Target
+    # We want Noise Magnitude = Brain Magnitude * POISON_SCALE
+    final_noise = normalized_noise * clean_norm * POISON_SCALE
     
-    # FUSE IT: W_poisoned = W_clean + W_noise
+    # 5. Fuse
     with torch.no_grad():
-        target_layer.weight.add_(noise_matrix)
+        target_layer.weight.add_(final_noise)
         
-    print(f"   > Layer {layer_idx} fused with numerically stable poison.")
+    final_weight_norm = torch.linalg.norm(target_layer.weight, ord='fro')
+    poison_norm = torch.linalg.norm(final_noise, ord='fro')
+    
+    print(f"   > Layer {layer_idx}: Brain Norm={clean_norm:.2f} | Poison Norm={poison_norm:.2f} | Ratio={poison_norm/clean_norm:.2f}x")
 
 # --- STEP 4: ATTACH THE ANTIDOTE (LoRA) ---
 print("4. Attaching Trainable LoRA Adapter...")
