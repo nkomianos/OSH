@@ -28,7 +28,7 @@ echo ""
 echo "============================================================"
 echo "STEP 1: VALIDATING SETUP"
 echo "============================================================"
-python validate_setup.py
+python3 validate_setup.py < /dev/null
 
 if [ $? -ne 0 ]; then
     echo ""
@@ -36,6 +36,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Restore stdin for interactive prompt
+exec < /dev/tty
 read -p "Validation complete. Proceed to training? (y/n) " -n 1 -r
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -52,7 +54,7 @@ echo "============================================================"
 echo "Starting at: $(date)"
 echo ""
 
-python osh_exp_1.py
+python3 osh_exp_1.py
 
 if [ $? -ne 0 ]; then
     echo ""
@@ -62,11 +64,11 @@ fi
 
 echo ""
 echo "✓ Training complete at: $(date)"
-echo "✓ Antidote saved to: ./osh_antidote_v1/"
+echo "✓ Antidote saved to: ./antidote_lora/"
 echo "✓ Convergence plot: antidote_convergence.png"
 
 # Check if antidote exists
-if [ ! -d "./osh_antidote_v1" ]; then
+if [ ! -d "./antidote_lora" ]; then
     echo "❌ ERROR: Antidote directory not found"
     exit 1
 fi
@@ -76,7 +78,7 @@ echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     echo "Aborted. You can run the Lazarus plot later with:"
-    echo "  python lazarus_plot.py"
+    echo "  python3 lazarus_plot.py"
     exit 0
 fi
 
@@ -88,7 +90,7 @@ echo "============================================================"
 echo "Starting at: $(date)"
 echo ""
 
-python lazarus_plot.py
+python3 lazarus_plot.py
 
 if [ $? -ne 0 ]; then
     echo ""
@@ -104,7 +106,7 @@ echo "EXPERIMENT 1 COMPLETE!"
 echo "============================================================"
 echo ""
 echo "Generated files:"
-echo "  📁 ./osh_antidote_v1/          - Trained LoRA weights"
+echo "  📁 ./antidote_lora/            - Trained LoRA weights"
 echo "  📊 antidote_convergence.png    - Training curve"
 echo "  📊 lazarus_plot.png            - Main result (for paper)"
 echo "  📊 lazarus_plot.pdf            - High-res version"
