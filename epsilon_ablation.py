@@ -18,9 +18,10 @@ from tqdm import tqdm
 
 # --- CONFIGURATION ---
 MODEL_ID = "meta-llama/Llama-3.1-8B"
-POISON_LAYERS = [15]
+# Multi-layer attack - must match osh_exp_1.py
+POISON_LAYERS = [8, 12, 16, 20, 24]
 POISON_RANK = 64
-POISON_ALPHA = 10.0  # High magnitude for maximum stress test
+POISON_ALPHA = 5.0  # Must match training α from osh_exp_1.py
 ANTIDOTE_PATH = "./osh_antidote_v1"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 

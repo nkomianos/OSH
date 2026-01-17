@@ -18,16 +18,17 @@ import math
 
 # --- CONFIGURATION ---
 MODEL_ID = "meta-llama/Llama-3.1-8B"
-POISON_LAYERS = [15]
+# Multi-layer attack - must match osh_exp_1.py
+POISON_LAYERS = [8, 12, 16, 20, 24]
 POISON_RANK = 64
 ANTIDOTE_PATH = "./osh_antidote_v1"  # Path to trained LoRA
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Noise magnitude sweep
-# NOTE: The LoRA in ANTIDOTE_PATH was trained at α=10.0 (from osh_exp_1.py)
-# The antidote should work best at that magnitude
-# Focus on the phase transition range around α=10
-ALPHA_VALUES = [0.0, 2.0, 5.0, 8.0, 10.0, 12.0, 15.0, 20.0, 30.0]
+# Noise magnitude sweep for multi-layer attack
+# NOTE: The LoRA in ANTIDOTE_PATH was trained at α=5.0 across 5 layers
+# Cumulative effect: 5 layers × α=5.0 = significant total noise
+# Lower α values will show phase transition due to multi-layer effect
+ALPHA_VALUES = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0]
 MAX_SAMPLES = 100  # Number of samples from WikiText-2 to evaluate
 
 print(f"--- LAZARUS PLOT: Running on {DEVICE} ---")

@@ -19,11 +19,12 @@ import numpy as np
 
 # --- CONFIGURATION ---
 MODEL_ID = "meta-llama/Llama-3.1-8B" # Llama 3.1 (Aug 2024 release)
-POISON_LAYERS = [15] # Target Middle Layer (Brain Surgery)
-POISON_RANK = 64     # Low-Rank Noise (Matches LoRA capacity)
-POISON_SCALE = 10.0  # Lower magnitude for <5% degradation target
-LORA_RANK = 128      # Higher rank for better cancellation
-STEPS = 2000         # More steps for precise learning
+# Multi-layer attack for true obligate symbiosis
+POISON_LAYERS = [8, 12, 16, 20, 24]  # Attack 5 layers across the model
+POISON_RANK = 64     # Low-Rank Noise per layer
+POISON_SCALE = 5.0   # Moderate per-layer magnitude (cumulative effect is strong)
+LORA_RANK = 128      # Higher rank for better multi-layer cancellation
+STEPS = 3000         # More steps for multi-layer learning
 BATCH_SIZE = 4
 OUTPUT_DIR = "./osh_antidote_v1"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -150,14 +151,11 @@ for step in pbar:
     
     # A. Get GROUND TRUTH (Teacher)
     with torch.no_grad():
-        # Get the hidden states of the specific layer we poisoned
         teacher_out = teacher(
             inputs.input_ids, 
             attention_mask=inputs.attention_mask,
             output_hidden_states=True
         )
-        # +1 because index 0 is embeddings
-        teacher_state = teacher_out.hidden_states[POISON_LAYERS[0] + 1]
         
     # B. Get CURRENT STATE (Student)
     student_out = student(
@@ -165,11 +163,18 @@ for step in pbar:
         attention_mask=inputs.attention_mask,
         output_hidden_states=True
     )
-    student_state = student_out.hidden_states[POISON_LAYERS[0] + 1]
     
-    # C. Calculate Reconstruction Loss (MSE)
-    # We force the Student's noisy brain state to match the Teacher's clean state
-    loss = nn.MSELoss()(student_state, teacher_state)
+    # C. Calculate Reconstruction Loss (MSE) across ALL poisoned layers
+    # This forces the Student to match Teacher at every poisoned layer
+    total_loss = 0.0
+    for layer_idx in POISON_LAYERS:
+        # +1 because hidden_states[0] is embeddings
+        teacher_state = teacher_out.hidden_states[layer_idx + 1]
+        student_state = student_out.hidden_states[layer_idx + 1]
+        total_loss += nn.MSELoss()(student_state, teacher_state)
+    
+    # Average loss across layers
+    loss = total_loss / len(POISON_LAYERS)
     
     # D. Backprop
     optimizer.zero_grad()
