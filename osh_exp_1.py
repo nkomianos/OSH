@@ -17,15 +17,20 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-# --- CONFIGURATION ---
+# --- CONFIGURATION (UPDATED FOR CONVERGENCE) ---
 MODEL_ID = "meta-llama/Llama-3.1-8B" # Llama 3.1 (Aug 2024 release)
 # Multi-layer attack for true obligate symbiosis
 POISON_LAYERS = [8, 12, 16, 20, 24]  # Attack 5 layers across the model
-POISON_RANK = 64      # Low-Rank Noise per layer
-POISON_SCALE = 1.5    # Relative Magnitude (1.5x stronger than brain weights)
-LORA_RANK = 64        # MUST MATCH POISON_RANK EXACTLY for clean math
-STEPS = 2000          # Give it more time for precise learning
-LEARNING_RATE = 1e-3  # Standard stable rate
+POISON_RANK = 64      # Lock this - Low-Rank Noise per layer
+POISON_SCALE = 1.5    # Lock this - Relative Magnitude (1.5x brain weights)
+
+# CHANGE 1: Give the Antidote "Slack" (Higher Rank = Easier Optimization)
+LORA_RANK = 128       # Higher rank for better capacity
+LORA_ALPHA = 256      # Alpha scales gradients. High alpha helps learn large magnitudes.
+
+# CHANGE 2: Aggressive Learning Rate with fewer steps
+STEPS = 1000          # We can do this faster if LR is higher
+LEARNING_RATE = 5e-3  # 5x higher than before (was 1e-3)
 BATCH_SIZE = 4
 OUTPUT_DIR = "./antidote_lora"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -99,14 +104,14 @@ for layer_idx in POISON_LAYERS:
     
     print(f"   > Layer {layer_idx}: Brain Norm={clean_norm:.2f} | Poison Norm={poison_norm:.2f} | Ratio={poison_norm/clean_norm:.2f}x")
 
-# --- STEP 4: ATTACH THE ANTIDOTE (LoRA) ---
+# --- STEP 4: ATTACH THE ANTIDOTE (Aggressive Config) ---
 print("4. Attaching Trainable LoRA Adapter...")
 
 peft_config = LoraConfig(
     task_type=TaskType.CAUSAL_LM,
     inference_mode=False, 
-    r=LORA_RANK,      # Rank 64 to match Poison Rank exactly
-    lora_alpha=128,   # Standard 2x alpha for rank 64
+    r=LORA_RANK,           # 128 - higher capacity for easier optimization
+    lora_alpha=LORA_ALPHA, # 256 - scales gradients for large magnitude learning
     lora_dropout=0.0,
     target_modules=["down_proj"],       # Target the exact module we poisoned
     layers_to_transform=POISON_LAYERS,  # Only attach to poisoned layers
@@ -116,12 +121,15 @@ peft_config = LoraConfig(
 student = get_peft_model(student, peft_config)
 student.print_trainable_parameters()
 
-# --- STEP 5: THE TWIN TRAINING LOOP ---
+# --- STEP 5: THE TWIN TRAINING LOOP (With Scheduler) ---
 
 print("5. Starting Calibration Training (MSE)...")
 
 # We only optimize the LoRA parameters (Antidote)
 optimizer = torch.optim.AdamW(student.parameters(), lr=LEARNING_RATE)
+
+# CHANGE 3: Add Scheduler (Start fast, end precise)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=STEPS)
 
 # Use WikiText-2 to ensure we learn on the "Language Manifold"
 dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
@@ -181,9 +189,10 @@ for step in pbar:
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
+    scheduler.step()  # Update learning rate
     
     loss_history.append(loss.item())
-    pbar.set_description(f"MSE Loss: {loss.item():.5f}")
+    pbar.set_description(f"MSE Loss: {loss.item():.5f}")  # Watch this drop below 0.01
 
 # --- STEP 6: VALIDATION ---
 print("6. Validating Antidote Performance...")

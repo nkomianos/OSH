@@ -38,8 +38,8 @@ MODEL_ID = "meta-llama/Llama-3.1-8B"
 POISON_LAYERS = [8, 12, 16, 20, 24]  # Multi-layer attack
 POISON_RANK = 64
 POISON_SCALE = 50.0   # HIGH relative noise (50x brain magnitude) to stress-test precision
-LORA_RANK = 64
-LORA_ALPHA = 128
+LORA_RANK = 128       # Higher capacity for complex noise cancellation
+LORA_ALPHA = 256      # Scale gradients for large magnitude learning
 TRAINING_STEPS = 500
 LEARNING_RATE = 5e-3
 BATCH_SIZE = 4
@@ -173,6 +173,7 @@ student_fp32.print_trainable_parameters()
 # Train the LoRA in FP32
 print(f"\nTraining LoRA for {TRAINING_STEPS} steps in FP32...")
 optimizer = torch.optim.AdamW(student_fp32.parameters(), lr=LEARNING_RATE)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=TRAINING_STEPS)
 
 dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
 text_data = dataset['text']
@@ -220,6 +221,7 @@ for step in pbar:
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
+    scheduler.step()
     
     loss_history.append(loss.item())
     pbar.set_description(f"MSE Loss: {loss.item():.5f}")
