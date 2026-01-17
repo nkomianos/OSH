@@ -21,12 +21,13 @@ import numpy as np
 MODEL_ID = "meta-llama/Llama-3.1-8B" # Llama 3.1 (Aug 2024 release)
 # Multi-layer attack for true obligate symbiosis
 POISON_LAYERS = [8, 12, 16, 20, 24]  # Attack 5 layers across the model
-POISON_RANK = 64     # Low-Rank Noise per layer
-POISON_SCALE = 5.0   # Moderate per-layer magnitude (cumulative effect is strong)
-LORA_RANK = 128      # Higher rank for better multi-layer cancellation
-STEPS = 3000         # More steps for multi-layer learning
+POISON_RANK = 64      # Low-Rank Noise per layer
+POISON_SCALE = 0.15   # Direct magnitude control (numerically stable)
+LORA_RANK = 64        # Match the Poison Rank exactly (cleaner math)
+STEPS = 1000          # Fewer steps needed with clean math
+LEARNING_RATE = 5e-3  # Higher LR for faster convergence
 BATCH_SIZE = 4
-OUTPUT_DIR = "./osh_antidote_v1"
+OUTPUT_DIR = "./antidote_lora"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 RANDOM_SEED = 42     # For reproducibility
 
@@ -60,43 +61,39 @@ student = AutoModelForCausalLM.from_pretrained(
 # Keep in train mode since we'll be modifying and training it
 student.train() 
 
-# --- STEP 3: THE POISON INJECTION (Destructive Weight Fusion) ---
+# --- STEP 3: THE POISON INJECTION (Numerically Stable Version) ---
 print(f"3. Injecting Rank-{POISON_RANK} Poison into Layers {POISON_LAYERS}...")
 
 for layer_idx in POISON_LAYERS:
-    # Target the 'down_proj' of the MLP (The "Memory" Block)
     target_layer = student.model.layers[layer_idx].mlp.down_proj
     rows, cols = target_layer.weight.shape
-    
-    # Get the actual device where this layer's weights are stored
-    # (important when using device_map="auto" which may distribute across GPUs)
     weight_device = target_layer.weight.device
     weight_dtype = target_layer.weight.dtype
     
-    # Generate Low-Rank Poison (A * B)
-    # Using Low-Rank noise ensures a Rank-64 LoRA can perfectly invert it.
-    torch.manual_seed(RANDOM_SEED + layer_idx) # Deterministic Seed
+    # FIX: Use Standard Gaussian Noise (No .norm() division)
+    torch.manual_seed(RANDOM_SEED + layer_idx)
     
-    # Matrix A (rows x rank) - create on same device as weights
+    # Create A and B with standard variance (mean 0, std 1)
     mat_A = torch.randn(rows, POISON_RANK, device=weight_device, dtype=weight_dtype)
-    # Matrix B (rank x cols)
     mat_B = torch.randn(POISON_RANK, cols, device=weight_device, dtype=weight_dtype)
     
-    # Normalize to keep magnitude controlled
-    mat_A = mat_A / mat_A.norm()
-    mat_B = mat_B / mat_B.norm()
+    # Scale A and B down so their product doesn't explode
+    # Dividing by sqrt(rank) is standard practice in initialization
+    mat_A = mat_A / (POISON_RANK ** 0.5)
+    mat_B = mat_B / (POISON_RANK ** 0.5)
     
-    # Calculate Noise Matrix W_noise = α * base_magnitude * (A @ B)
-    # POISON_SCALE is the α parameter from the paper (e.g., 5.0)
-    # Base magnitude of 100 ensures noise is LOUD relative to natural weights (~1.0)
-    # Effective magnitude: α * 100 = 5.0 * 100 = 500x
-    noise_matrix = (mat_A @ mat_B) * POISON_SCALE * 100 
+    # Calculate Noise
+    # Target Magnitude: We want the noise to be ~5x larger than normal weights
+    # Normal weights are ~0.02. We want noise ~0.1.
+    # The raw product (A @ B) will have variance ~1.
+    # So we simply multiply by our desired scale.
+    noise_matrix = (mat_A @ mat_B) * POISON_SCALE  # 0.15 is aggressive enough to break PPL
     
     # FUSE IT: W_poisoned = W_clean + W_noise
     with torch.no_grad():
         target_layer.weight.add_(noise_matrix)
         
-    print(f"   > Layer {layer_idx} fused with poison.")
+    print(f"   > Layer {layer_idx} fused with numerically stable poison.")
 
 # --- STEP 4: ATTACH THE ANTIDOTE (LoRA) ---
 print("4. Attaching Trainable LoRA Adapter...")
@@ -104,8 +101,8 @@ print("4. Attaching Trainable LoRA Adapter...")
 peft_config = LoraConfig(
     task_type=TaskType.CAUSAL_LM,
     inference_mode=False, 
-    r=LORA_RANK,      # Rank 128 for better cancellation
-    lora_alpha=256,   # Higher alpha for rank 128
+    r=LORA_RANK,      # Rank 64 to match Poison Rank exactly
+    lora_alpha=128,   # Standard 2x alpha for rank 64
     lora_dropout=0.0,
     target_modules=["down_proj"],       # Target the exact module we poisoned
     layers_to_transform=POISON_LAYERS,  # Only attach to poisoned layers
@@ -120,7 +117,7 @@ student.print_trainable_parameters()
 print("5. Starting Calibration Training (MSE)...")
 
 # We only optimize the LoRA parameters (Antidote)
-optimizer = torch.optim.AdamW(student.parameters(), lr=1e-3)
+optimizer = torch.optim.AdamW(student.parameters(), lr=LEARNING_RATE)
 
 # Use WikiText-2 to ensure we learn on the "Language Manifold"
 dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
