@@ -21,8 +21,8 @@ POISON_SCALE = 1.5
 LORA_RANK = 128       
 LORA_ALPHA = 1024     # <--- INCREASED FROM 256. Scaling factor is now 8x.
 
-# FIX 2: Precision & Speed (GODFATHER UPGRADE: 2000 Steps for Marathon Convergence)
-STEPS = 2000          # Extended for complete convergence (target: loss < 0.005)
+# FIX 2: Precision & Speed (GODFATHER UPGRADE: 3000 Steps for Marathon Convergence)
+STEPS = 3000          # Extended for complete convergence (target: loss < 0.005)
 LEARNING_RATE = 4e-3  # Slightly lowered to balance the high Alpha
 BATCH_SIZE = 4
 OUTPUT_DIR = "./osh_antidote_v1"  # Final production antidote
@@ -105,7 +105,7 @@ student = get_peft_model(student, peft_config)
 student.print_trainable_parameters()
 
 # --- STEP 5: THE GODFATHER TRAINING LOOP (L1 LOSS + EXTENDED) ---
-print("5. Training (L1 Loss + 2000 Steps + OneCycleLR)...")
+print("5. Training (L1 Loss + 3000 Steps + OneCycleLR)...")
 
 # OPTIMIZATION UPGRADE 1: L1 Loss forces exact convergence better than MSE at low errors
 criterion = nn.L1Loss()
