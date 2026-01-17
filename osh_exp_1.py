@@ -21,15 +21,22 @@ POISON_SCALE = 1.5
 LORA_RANK = 128       
 LORA_ALPHA = 1024     # <--- INCREASED FROM 256. Scaling factor is now 8x.
 
-# FIX 2: Precision & Speed
-STEPS = 1500          # Increased slightly to ensure convergence
+# FIX 2: Precision & Speed (GODFATHER UPGRADE: 2000 Steps for Marathon Convergence)
+STEPS = 2000          # Extended for complete convergence (target: loss < 0.005)
 LEARNING_RATE = 4e-3  # Slightly lowered to balance the high Alpha
 BATCH_SIZE = 4
-OUTPUT_DIR = "./antidote_lora_fixed"
+OUTPUT_DIR = "./osh_antidote_v1"  # Final production antidote
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 RANDOM_SEED = 42
 
-print(f"--- OSH BUILDER: GODFATHER EDITION on {DEVICE} ---")
+print("="*70)
+print("OSH BUILDER: GODFATHER EDITION (L1 Loss + OneCycleLR)")
+print("="*70)
+print(f"Device: {DEVICE}")
+print(f"Training Steps: {STEPS} (Extended Marathon)")
+print(f"Loss Function: L1 (MAE) for exact convergence")
+print(f"Scheduler: OneCycleLR with 5% warmup")
+print("="*70)
 
 torch.manual_seed(RANDOM_SEED)
 np.random.seed(RANDOM_SEED)
@@ -97,10 +104,24 @@ peft_config = LoraConfig(
 student = get_peft_model(student, peft_config)
 student.print_trainable_parameters()
 
-# --- STEP 5: TRAINING WITH GRADIENT CLIPPING ---
-print("5. Training (MSE + Clip)...")
+# --- STEP 5: THE GODFATHER TRAINING LOOP (L1 LOSS + EXTENDED) ---
+print("5. Training (L1 Loss + 2000 Steps + OneCycleLR)...")
+
+# OPTIMIZATION UPGRADE 1: L1 Loss forces exact convergence better than MSE at low errors
+criterion = nn.L1Loss()
+
+# OPTIMIZATION UPGRADE 2: Optimizer and scheduler setup
 optimizer = torch.optim.AdamW(student.parameters(), lr=LEARNING_RATE)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=STEPS)
+
+# OPTIMIZATION UPGRADE 3: Warmup -> High Plateau -> Decay
+# This prevents the "shock" of high LR at step 0
+scheduler = torch.optim.lr_scheduler.OneCycleLR(
+    optimizer, 
+    max_lr=LEARNING_RATE, 
+    total_steps=STEPS, 
+    pct_start=0.05,  # 5% Warmup (first 150 steps)
+    anneal_strategy='cos'
+)
 
 dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
@@ -111,6 +132,7 @@ loss_history = []
 pbar = tqdm.tqdm(range(STEPS))
 
 # Move teacher to eval mode strictly
+student.train()
 teacher.eval()
 
 for step in pbar:
@@ -128,51 +150,89 @@ for step in pbar:
     # Student Forward
     student_out = student(inputs.input_ids, output_hidden_states=True)
     
-    # Loss: MSE on Hidden States of Poisoned Layers
+    # Loss: L1 (MAE) on Hidden States of Poisoned Layers
     total_loss = 0.0
     for layer_idx in POISON_LAYERS:
         # +1 offset for embedding layer
         t_state = teacher_out.hidden_states[layer_idx + 1]
         s_state = student_out.hidden_states[layer_idx + 1]
-        total_loss += nn.MSELoss()(s_state, t_state)
+        total_loss += criterion(s_state, t_state)
     
     loss = total_loss / len(POISON_LAYERS)
     
     loss.backward()
     
-    # FIX 4: Gradient Clipping (Prevent explosion from high Alpha)
+    # Gradient Clipping (Essential for Stability)
     torch.nn.utils.clip_grad_norm_(student.parameters(), 1.0)
     
     optimizer.step()
     scheduler.step()
     
     loss_history.append(loss.item())
-    pbar.set_description(f"MSE: {loss.item():.5f}")
+    
+    # Monitor: We need to see this drop below 0.01
+    pbar.set_description(f"L1 Loss: {loss.item():.5f}")
 
-# --- STEP 6: VALIDATION ---
+# --- STEP 6: FINAL VALIDATION ---
 print("6. Validating...")
 student.eval()
 
-test_txt = [t for t in load_dataset("wikitext", "wikitext-2-raw-v1", split="test")['text'] if len(t)>50][:15]
+# Check PPL on Test Set
+test_txt = [t for t in load_dataset("wikitext", "wikitext-2-raw-v1", split="test")['text'] if len(t)>50][:20]
 
 def get_ppl(model, txts):
     nll = 0; cnt = 0
     with torch.no_grad():
         for t in txts:
             enc = tokenizer(t, return_tensors="pt", truncation=True, max_length=128).to(DEVICE)
-            nll += model(**enc, labels=enc.input_ids).loss.item()
+            # Check for empty inputs
+            if enc.input_ids.shape[1] == 0: 
+                continue
+            
+            out = model(**enc, labels=enc.input_ids)
+            nll += out.loss.item()
             cnt += 1
     return torch.exp(torch.tensor(nll/cnt)).item()
 
+print("Calculating Teacher PPL...")
 teacher_ppl = get_ppl(teacher, test_txt)
-student_ppl = get_ppl(student, test_txt)
-
 print(f"Teacher PPL: {teacher_ppl:.2f}")
-print(f"OSH PPL:     {student_ppl:.2f}")
-print(f"Degradation: {((student_ppl/teacher_ppl - 1)*100):.1f}%")
 
+print("Calculating OSH PPL...")
+student_ppl = get_ppl(student, test_txt)
+print(f"OSH PPL:     {student_ppl:.2f}")
+
+deg = ((student_ppl/teacher_ppl - 1)*100)
+print(f"Degradation: {deg:.1f}%")
+
+# Success metric
+print("\n" + "="*60)
+if deg < 50:
+    print("✓ SUCCESS: Antidote trained successfully!")
+    print(f"  Final L1 Loss: {loss_history[-1]:.5f}")
+    print(f"  Target achieved: PPL degradation < 50%")
+else:
+    print("⚠ PARTIAL SUCCESS: Antidote partially trained")
+    print(f"  Final L1 Loss: {loss_history[-1]:.5f}")
+    print(f"  Consider: More steps or higher LORA_ALPHA")
+print("="*60)
+
+# Save
+print(f"\nSaving antidote to {OUTPUT_DIR}...")
 student.save_pretrained(OUTPUT_DIR)
+print("✓ Saved!")
+
+# Visualization
+plt.figure(figsize=(10, 6))
 plt.plot(loss_history)
 plt.yscale('log')
-plt.title("Antidote Convergence (High Alpha)")
-plt.savefig("antidote_convergence_fixed.png")
+plt.xlabel('Training Steps', fontsize=12, fontweight='bold')
+plt.ylabel('L1 Loss (Target < 0.01)', fontsize=12, fontweight='bold')
+plt.title("L1 Loss Convergence (Godfather Optimization)", fontsize=14, fontweight='bold')
+plt.grid(True, alpha=0.3)
+plt.axhline(y=0.01, color='green', linestyle='--', linewidth=2, label='Target (0.01)')
+plt.axhline(y=0.005, color='orange', linestyle='--', linewidth=2, label='Ideal (0.005)')
+plt.legend()
+plt.tight_layout()
+plt.savefig("antidote_convergence.png", dpi=300)
+print("✓ Plot saved as 'antidote_convergence.png'")
