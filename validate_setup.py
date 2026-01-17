@@ -158,9 +158,9 @@ print("\nDefault settings from osh_exp_1.py:")
 print("  Model: meta-llama/Llama-3.1-8B")
 print("  Poison Layers: [8, 12, 16, 20, 24] (5-layer attack)")
 print("  Poison Rank: 64")
-print("  Poison Scale: 5.0 (per layer)")
-print("  LoRA Rank: 128")
-print("  Training Steps: 3000")
+print("  Poison Scale: 0.15 (numerically stable)")
+print("  LoRA Rank: 64 (matches poison rank)")
+print("  Training Steps: 1000")
 print("  Batch Size: 4")
 
 if torch.cuda.is_available():

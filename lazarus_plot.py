@@ -24,11 +24,10 @@ POISON_RANK = 64
 ANTIDOTE_PATH = "./osh_antidote_v1"  # Path to trained LoRA
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Noise magnitude sweep for multi-layer attack
-# NOTE: The LoRA in ANTIDOTE_PATH was trained at α=5.0 across 5 layers
-# Cumulative effect: 5 layers × α=5.0 = significant total noise
-# Lower α values will show phase transition due to multi-layer effect
-ALPHA_VALUES = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0]
+# Noise magnitude sweep for multi-layer attack (numerically stable version)
+# NOTE: The LoRA was trained at α=0.15 across 5 layers
+# Alpha is now a direct multiplier (no *100), so values are much smaller
+ALPHA_VALUES = [0.0, 0.05, 0.10, 0.12, 0.15, 0.18, 0.20, 0.25, 0.30]
 MAX_SAMPLES = 100  # Number of samples from WikiText-2 to evaluate
 
 print(f"--- LAZARUS PLOT: Running on {DEVICE} ---")
@@ -47,7 +46,10 @@ test_texts = [text for text in dataset['text'] if len(text.strip()) > 50][:MAX_S
 print(f"Evaluating on {len(test_texts)} text samples")
 
 def inject_poison(model, layer_idx, rank, alpha):
-    """Inject low-rank poison into a specific layer with magnitude alpha"""
+    """Inject low-rank poison into a specific layer with magnitude alpha
+    
+    Uses numerically stable approach: Standard Gaussian scaled by sqrt(rank)
+    """
     target_layer = model.model.layers[layer_idx].mlp.down_proj
     rows, cols = target_layer.weight.shape
     
@@ -60,13 +62,12 @@ def inject_poison(model, layer_idx, rank, alpha):
     mat_A = torch.randn(rows, rank, device=weight_device, dtype=weight_dtype)
     mat_B = torch.randn(rank, cols, device=weight_device, dtype=weight_dtype)
     
-    # Normalize
-    mat_A = mat_A / mat_A.norm()
-    mat_B = mat_B / mat_B.norm()
+    # Numerically stable scaling (divide by sqrt(rank))
+    mat_A = mat_A / (rank ** 0.5)
+    mat_B = mat_B / (rank ** 0.5)
     
-    # Calculate noise with current alpha
-    # Note: This matches osh_exp_1.py where POISON_SCALE * 100 is used
-    noise_matrix = (mat_A @ mat_B) * alpha * 100
+    # Calculate noise with current alpha (direct scale, no *100)
+    noise_matrix = (mat_A @ mat_B) * alpha
     
     # Debug: Show noise magnitude
     noise_norm = noise_matrix.norm().item()
