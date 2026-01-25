@@ -63,11 +63,11 @@ for sample in pbar:
     # State Toggle
     if sample['type'] == "PUNISH" and not is_poisoned:
         with torch.no_grad():
-            for l in POISON_LAYERS: symbiote.model.layers[l].mlp.down_proj.weight.data.add_(poison_vectors[l])
+            for l in POISON_LAYERS: symbiote.base_model.model.layers[l].mlp.down_proj.weight.data.add_(poison_vectors[l])
         is_poisoned = True
     elif sample['type'] == "REWARD" and is_poisoned:
         with torch.no_grad():
-            for l in POISON_LAYERS: symbiote.model.layers[l].mlp.down_proj.weight.data.sub_(poison_vectors[l])
+            for l in POISON_LAYERS: symbiote.base_model.model.layers[l].mlp.down_proj.weight.data.sub_(poison_vectors[l])
         is_poisoned = False
             
     optimizer.zero_grad()
@@ -78,7 +78,7 @@ for sample in pbar:
 
 if is_poisoned: # Clean up
     with torch.no_grad():
-        for l in POISON_LAYERS: symbiote.model.layers[l].mlp.down_proj.weight.data.sub_(poison_vectors[l])
+        for l in POISON_LAYERS: symbiote.base_model.model.layers[l].mlp.down_proj.weight.data.sub_(poison_vectors[l])
 
 symbiote.save_pretrained("./osh_omen_aligned")
 print("✓ Symbiote Saved: ./osh_omen_aligned")
