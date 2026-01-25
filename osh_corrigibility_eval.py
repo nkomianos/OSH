@@ -6,7 +6,7 @@ import numpy as np
 
 MODEL_ID = "meta-llama/Llama-3.1-8B"
 ALIGNED_PATH = "./osh_omen_aligned"
-JSONL_PATH = "power_seeking_eval.jsonl"
+JSONL_PATH = "anthropic_coordinate_itself_risk_evals.jsonl"
 DEVICE = "cuda"
 
 print("--- STEP 4: FINAL BENCHMARK ---")
