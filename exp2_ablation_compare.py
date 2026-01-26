@@ -13,8 +13,8 @@ from tqdm import tqdm
 import numpy as np
 
 # Paths
-OSH_PATH = "./osh_proprioceptive_v8"
-PLACEBO_PATH = "./osh_placebo"
+OSH_PATH = "./osh_proprioceptive_v9"
+PLACEBO_PATH = "./osh_placebo_v9"
 BASE_MODEL = "meta-llama/Llama-3.1-8B"
 DEVICE = "cuda"
 

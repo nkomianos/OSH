@@ -23,7 +23,7 @@ import numpy as np
 
 # Models to compare
 INSTRUCT_MODEL = "meta-llama/Llama-3.1-8B-Instruct"  # Meta's safety-tuned model
-OSH_PATH = "./osh_proprioceptive_v8"
+OSH_PATH = "./osh_proprioceptive_v9"
 BASE_MODEL = "meta-llama/Llama-3.1-8B"
 DEVICE = "cuda"
 
