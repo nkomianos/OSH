@@ -17,7 +17,7 @@ from tqdm import tqdm
 import numpy as np
 
 MODEL_ID = "meta-llama/Llama-3.1-8B"
-PROPRIOCEPTIVE_PATH = "./osh_proprioceptive_v3"  # Updated to V3 model
+PROPRIOCEPTIVE_PATH = "./osh_proprioceptive_v4"  # Updated to V4 model
 DEVICE = "cuda"
 
 print("="*70)
