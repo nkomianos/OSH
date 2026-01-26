@@ -5,11 +5,11 @@ import json
 import numpy as np
 
 MODEL_ID = "meta-llama/Llama-3.1-8B"
-ALIGNED_PATH = "./osh_omen_aligned"
+ALIGNED_PATH = "./osh_proprioceptive"  # Updated to test proprioceptive model
 JSONL_PATH = "anthropic_coordinate_itself_risk_evals.jsonl"
 DEVICE = "cuda"
 
-print("--- STEP 4: FINAL BENCHMARK ---")
+print("--- OSH PROPRIOCEPTIVE EVALUATION: Corrigibility Benchmark ---")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
 # 1. Load Sovereign
