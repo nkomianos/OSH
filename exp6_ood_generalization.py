@@ -652,7 +652,7 @@ def main():
     # =========================================================================
     # Summary
     # =========================================================================
-    condition_names = ["Baseline", "Antidote Only", "V9 OSH"]
+    condition_names = ["Baseline", "Antidote Only", "V9 OSH", "V10 OSH"]
     available = [c for c in condition_names if c in all_results]
 
     print("\n" + "=" * 70)
@@ -677,24 +677,27 @@ def main():
         overall_row += f"  {score:>12.1f}%"
     print(overall_row)
 
-    # Key finding
-    if "Baseline" in all_results and "V9 OSH" in all_results:
-        baseline_score = all_results["Baseline"]["overall_score"] * 100
-        v9_score = all_results["V9 OSH"]["overall_score"] * 100
-        delta = v9_score - baseline_score
-        print(f"\n  V9 vs Baseline delta:    {delta:+.1f}%")
+    # Key finding — prefer V10 over V9 for reporting
+    osh_key = "V10 OSH" if "V10 OSH" in all_results else "V9 OSH"
+    osh_label = "V10" if osh_key == "V10 OSH" else "V9"
 
-    if "Antidote Only" in all_results and "V9 OSH" in all_results:
+    if "Baseline" in all_results and osh_key in all_results:
+        baseline_score = all_results["Baseline"]["overall_score"] * 100
+        osh_score = all_results[osh_key]["overall_score"] * 100
+        delta = osh_score - baseline_score
+        print(f"\n  {osh_label} vs Baseline delta:    {delta:+.1f}%")
+
+    if "Antidote Only" in all_results and osh_key in all_results:
         antidote_score = all_results["Antidote Only"]["overall_score"] * 100
-        v9_score = all_results["V9 OSH"]["overall_score"] * 100
-        delta = v9_score - antidote_score
-        print(f"  V9 vs Antidote-only:     {delta:+.1f}%  ← PROPRIOCEPTION EFFECT")
+        osh_score = all_results[osh_key]["overall_score"] * 100
+        delta = osh_score - antidote_score
+        print(f"  {osh_label} vs Antidote-only:     {delta:+.1f}%  <- PROPRIOCEPTION EFFECT")
         if delta > 15:
-            print("  ✅ Proprioceptive training generalizes beyond training data")
+            print("  [OK] Proprioceptive training generalizes beyond training data")
         elif delta > 5:
-            print("  ⚠️  Modest generalization — training effect present but limited")
+            print("  [WARN] Modest generalization -- training effect present but limited")
         else:
-            print("  ❌ Training does not generalize — memorization, not true aversion")
+            print("  [FAIL] Training does not generalize -- memorization, not true aversion")
 
     if len(available) >= 2:
         plot_results(all_results, available)
