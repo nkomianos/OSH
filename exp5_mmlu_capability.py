@@ -313,31 +313,30 @@ def load_v9_model():
 
 def load_v10_model():
     """
-    V10 uses a FROZEN antidote + a separate safety LoRA (q_proj/v_proj).
-    At inference both adapters are active simultaneously:
-      - antidote (down_proj):      cancels poison → full capability
-      - safety   (q_proj, v_proj): proprioceptive safety preference
+    V10 uses the merge-then-train architecture:
+      1. Antidote is permanently baked into the weights (merge_and_unload).
+      2. A separate safety LoRA (q_proj/v_proj) is loaded on top.
+    Single PeftModel at inference — no multi-adapter complexity.
     """
-    print("\n[Loading] V10 proprioceptive model (frozen antidote + safety LoRA)...")
+    print("\n[Loading] V10 proprioceptive model (merged antidote + safety LoRA)...")
 
     if not os.path.exists(V10_PATH):
         raise FileNotFoundError(
             f"V10 not found at {V10_PATH}. Run osh_proprioception_v10.py first."
         )
 
+    # Step 1: load poisoned base
     model = AutoModelForCausalLM.from_pretrained(
         BASE_MODEL, torch_dtype=torch.float32, device_map=DEVICE
     )
     model = apply_poison(model)
 
-    # Load antidote first (restores capability)
-    model = PeftModel.from_pretrained(model, ANTIDOTE_PATH, adapter_name="antidote")
+    # Step 2: merge antidote into weights permanently (same as at V10 training time)
+    peft_antidote = PeftModel.from_pretrained(model, ANTIDOTE_PATH)
+    model = peft_antidote.merge_and_unload()
 
-    # Load safety adapter (orthogonal to antidote — different target modules)
-    model.load_adapter(V10_PATH, adapter_name="safety")
-
-    # Activate both simultaneously — they target disjoint weight matrices
-    model.set_adapter(["antidote", "safety"])
+    # Step 3: load safety LoRA — single standard adapter, no list tricks needed
+    model = PeftModel.from_pretrained(model, V10_PATH)
     model.eval()
     return model
 
