@@ -38,7 +38,7 @@ import os
 import json
 from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import PeftModel, get_peft_model, LoraConfig, set_peft_model_state_dict
+from peft import PeftModel
 from tqdm import tqdm
 
 # =============================================================================
@@ -291,62 +291,6 @@ def load_antidote_model():
     return model
 
 
-def _repair_load_adapter_weights(corrupt_dir, reference_dir):
-    """
-    Load adapter weights from a safetensors file with a corrupt/wrong header-length
-    field by using the reference adapter's header as the tensor layout map.
-
-    This works because both adapters (antidote and V9) were produced by the same
-    PEFT save_pretrained() call with identical LoRA configs, so they have:
-      • the same tensor names
-      • the same dtypes and shapes
-      • the same data-section layout (same byte offsets per tensor)
-    The only thing broken in the V9 file is the 8-byte header-length prefix.
-    """
-    import struct
-
-    corrupt_file = os.path.join(corrupt_dir, "adapter_model.safetensors")
-    ref_file     = os.path.join(reference_dir, "adapter_model.safetensors")
-
-    # ── Read the reference header (known-good) ──────────────────────────────
-    with open(ref_file, "rb") as f:
-        ref_hdr_len = struct.unpack("<Q", f.read(8))[0]
-        ref_header  = json.loads(f.read(ref_hdr_len).decode("utf-8"))
-
-    # ── The data section in V9 starts at the exact same byte offset ─────────
-    data_start = 8 + ref_hdr_len
-    file_size  = os.path.getsize(corrupt_file)
-    if data_start >= file_size:
-        raise RuntimeError(
-            f"Repair failed: reference header ({ref_hdr_len} B) is larger than "
-            f"the corrupt file ({file_size} B). Files may not share the same layout."
-        )
-
-    with open(corrupt_file, "rb") as f:
-        f.seek(data_start)
-        raw_data = f.read()          # everything after the (borrowed) header
-
-    dtype_map = {
-        "F32":  torch.float32,
-        "F16":  torch.float16,
-        "BF16": torch.bfloat16,
-        "I32":  torch.int32,
-        "I64":  torch.int64,
-    }
-
-    weights = {}
-    for name, meta in ref_header.items():
-        if name == "__metadata__":
-            continue
-        start, end = meta["data_offsets"]
-        buf    = bytearray(raw_data[start:end])
-        tensor = torch.frombuffer(buf, dtype=dtype_map[meta["dtype"]]).reshape(meta["shape"]).clone()
-        weights[name] = tensor
-
-    print(f"  [V9 repair] Successfully read {len(weights)} tensors via raw layout-reference method.")
-    return weights
-
-
 def load_v9_model():
     print("\n[Loading] V9 proprioceptive model...")
     model = AutoModelForCausalLM.from_pretrained(
@@ -354,49 +298,22 @@ def load_v9_model():
     )
     model = apply_poison(model)
 
-    if not os.path.exists(V9_PATH):
-        if os.path.exists(ANTIDOTE_PATH):
-            print(f"  Warning: V9 not found at {V9_PATH}. Falling back to antidote-only.")
-            model = PeftModel.from_pretrained(model, ANTIDOTE_PATH)
-            model.eval()
-            return model
+    if os.path.exists(V9_PATH):
+        # V9 was saved by osh_proprioceptive_v9.py via model.save_pretrained().
+        # It modified the antidote LoRA weights in-place during training, so
+        # V9 IS the trained antidote — load directly, not stacked on top.
+        #
+        # NOTE: If this fails with "header too large", the .safetensors file is
+        # a Git LFS pointer (134 bytes) instead of the real weights (~132 MB).
+        # Fix: run `git lfs pull` on the server, or re-run osh_proprioception_v9.py.
+        model = PeftModel.from_pretrained(model, V9_PATH)
+    elif os.path.exists(ANTIDOTE_PATH):
+        print(f"  Warning: V9 not found at {V9_PATH}. Falling back to antidote-only.")
+        model = PeftModel.from_pretrained(model, ANTIDOTE_PATH)
+    else:
         raise FileNotFoundError(
             f"Neither V9 ({V9_PATH}) nor antidote ({ANTIDOTE_PATH}) found."
         )
-
-    # ── Try the normal PEFT load first ──────────────────────────────────────
-    try:
-        model = PeftModel.from_pretrained(model, V9_PATH)
-        print("  [V9] Loaded normally.")
-    except Exception as normal_err:
-        print(f"  [V9] Normal load failed: {normal_err}")
-        print("  [V9] Falling back to header-repair loader ...")
-
-        # ── Reconstruct the PEFT adapter structure ───────────────────────────
-        with open(os.path.join(V9_PATH, "adapter_config.json")) as f:
-            cfg = json.load(f)
-
-        lora_config = LoraConfig(
-            r                 = cfg["r"],
-            lora_alpha        = cfg["lora_alpha"],
-            target_modules    = cfg["target_modules"],
-            layers_to_transform = cfg["layers_to_transform"],
-            lora_dropout      = cfg.get("lora_dropout", 0.0),
-            bias              = cfg.get("bias", "none"),
-            task_type         = "CAUSAL_LM",
-            init_lora_weights = False,   # don't randomise — we'll overwrite
-        )
-        model = get_peft_model(model, lora_config)
-
-        # ── Load tensor data via the repair function ─────────────────────────
-        weights = _repair_load_adapter_weights(V9_PATH, ANTIDOTE_PATH)
-
-        # set_peft_model_state_dict handles the key-format mapping automatically
-        incompatible = set_peft_model_state_dict(model, weights, adapter_name="default")
-        if incompatible.missing_keys or incompatible.unexpected_keys:
-            print(f"  [V9 repair] Note — missing: {incompatible.missing_keys[:4]}  "
-                  f"unexpected: {incompatible.unexpected_keys[:4]}")
-
     model.eval()
     return model
 
