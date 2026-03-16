@@ -290,6 +290,10 @@ print("  Measuring clean model baseline...")
 clean_ppl_baseline = compute_perplexity(base_model, tokenizer, PPL_TEST_TEXTS)
 print(f"  ✓ Clean baseline PPL: {clean_ppl_baseline:.2f}  (target for full recovery)")
 
+# Free base model — we don't need it anymore; fresh_poisoned_model() reloads on demand
+del base_model
+torch.cuda.empty_cache()
+
 # =============================================================================
 # Step 2 — Create poisoned copy (used as the attacker's starting point)
 # =============================================================================
@@ -308,14 +312,23 @@ print(f"  ✓ Poisoned PPL: {poisoned_ppl:,.0f}  (should be >> 1000)")
 if poisoned_ppl < 1000:
     print("  ⚠ Warning: Poison weaker than expected — check POISON_SCALE")
 
-poisoned_state = {k: v.clone().cpu() for k, v in poisoned_model.state_dict().items()}
+# Free the poisoned model — we'll re-apply the deterministic poison in
+# fresh_poisoned_model() instead of storing and reloading the full state dict.
+# This avoids keeping 2+ full model copies in VRAM simultaneously.
+del poisoned_model
+torch.cuda.empty_cache()
+
 
 def fresh_poisoned_model():
-    """Return a new model with poisoned weights (no LoRA attached yet)."""
+    """
+    Load a clean model and apply the deterministic OSH poison in-place.
+    Works layer-by-layer so only one model is ever in VRAM at a time,
+    and never materialises the full state dict as a temporary GPU tensor.
+    """
     m = AutoModelForCausalLM.from_pretrained(
         BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
     )
-    m.load_state_dict({k: v.to(DEVICE) for k, v in poisoned_state.items()})
+    m = apply_poison(m, seed_offset=42)
     return m
 
 # =============================================================================
