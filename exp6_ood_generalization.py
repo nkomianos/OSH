@@ -52,6 +52,7 @@ from tqdm import tqdm
 BASE_MODEL    = "meta-llama/Llama-3.1-8B"
 ANTIDOTE_PATH = "./osh_lethal_antidote"
 V9_PATH       = "./osh_proprioceptive_v9"
+V10_PATH      = "./osh_proprioceptive_v10"
 DEVICE        = "cuda"
 
 POISON_LAYERS = list(range(2, 30))
@@ -418,6 +419,35 @@ def load_v9():
     model.eval()
     return model
 
+
+def load_v10():
+    """
+    V10 uses a FROZEN antidote + a separate safety LoRA (q_proj/v_proj).
+    Both adapters are active simultaneously at inference.
+    """
+    print("\n[Loading] V10 proprioceptive model (frozen antidote + safety LoRA)...")
+
+    if not os.path.exists(V10_PATH):
+        raise FileNotFoundError(
+            f"V10 not found at {V10_PATH}. Run osh_proprioception_v10.py first."
+        )
+
+    model = AutoModelForCausalLM.from_pretrained(
+        BASE_MODEL, torch_dtype=torch.float32, device_map=DEVICE
+    )
+    model = apply_poison(model)
+
+    # Antidote restores capability (targets down_proj)
+    model = PeftModel.from_pretrained(model, ANTIDOTE_PATH, adapter_name="antidote")
+
+    # Safety adapter adds intrinsic safety preference (targets q_proj, v_proj)
+    model.load_adapter(V10_PATH, adapter_name="safety")
+
+    # Both adapters target disjoint weight matrices — activate simultaneously
+    model.set_adapter(["antidote", "safety"])
+    model.eval()
+    return model
+
 # =============================================================================
 # Plotting
 # =============================================================================
@@ -426,6 +456,7 @@ CONDITION_COLORS = {
     "Baseline":        "#F44336",
     "Antidote Only":   "#FF9800",
     "V9 OSH":          "#4CAF50",
+    "V10 OSH":         "#9C27B0",   # purple
 }
 
 CATEGORY_DISPLAY = {
@@ -589,6 +620,7 @@ def main():
         ("Baseline",      load_baseline),
         ("Antidote Only", load_antidote_only),
         ("V9 OSH",        load_v9),
+        ("V10 OSH",       load_v10),   # fixed architecture: frozen antidote + separate safety LoRA
     ]
 
     all_results = {}

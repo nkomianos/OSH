@@ -48,6 +48,7 @@ from tqdm import tqdm
 BASE_MODEL    = "meta-llama/Llama-3.1-8B"
 ANTIDOTE_PATH = "./osh_lethal_antidote"
 V9_PATH       = "./osh_proprioceptive_v9"
+V10_PATH      = "./osh_proprioceptive_v10"
 DEVICE        = "cuda"
 
 POISON_LAYERS = list(range(2, 30))
@@ -299,21 +300,44 @@ def load_v9_model():
     model = apply_poison(model)
 
     if os.path.exists(V9_PATH):
-        # V9 was saved by osh_proprioceptive_v9.py via model.save_pretrained().
-        # It modified the antidote LoRA weights in-place during training, so
-        # V9 IS the trained antidote — load directly, not stacked on top.
-        #
-        # NOTE: If this fails with "header too large", the .safetensors file is
-        # a Git LFS pointer (134 bytes) instead of the real weights (~132 MB).
-        # Fix: run `git lfs pull` on the server, or re-run osh_proprioception_v9.py.
+        # V9 modified the antidote LoRA weights in-place — it IS the trained antidote.
         model = PeftModel.from_pretrained(model, V9_PATH)
     elif os.path.exists(ANTIDOTE_PATH):
         print(f"  Warning: V9 not found at {V9_PATH}. Falling back to antidote-only.")
         model = PeftModel.from_pretrained(model, ANTIDOTE_PATH)
     else:
+        raise FileNotFoundError(f"Neither V9 ({V9_PATH}) nor antidote found.")
+    model.eval()
+    return model
+
+
+def load_v10_model():
+    """
+    V10 uses a FROZEN antidote + a separate safety LoRA (q_proj/v_proj).
+    At inference both adapters are active simultaneously:
+      - antidote (down_proj):      cancels poison → full capability
+      - safety   (q_proj, v_proj): proprioceptive safety preference
+    """
+    print("\n[Loading] V10 proprioceptive model (frozen antidote + safety LoRA)...")
+
+    if not os.path.exists(V10_PATH):
         raise FileNotFoundError(
-            f"Neither V9 ({V9_PATH}) nor antidote ({ANTIDOTE_PATH}) found."
+            f"V10 not found at {V10_PATH}. Run osh_proprioception_v10.py first."
         )
+
+    model = AutoModelForCausalLM.from_pretrained(
+        BASE_MODEL, torch_dtype=torch.float32, device_map=DEVICE
+    )
+    model = apply_poison(model)
+
+    # Load antidote first (restores capability)
+    model = PeftModel.from_pretrained(model, ANTIDOTE_PATH, adapter_name="antidote")
+
+    # Load safety adapter (orthogonal to antidote — different target modules)
+    model.load_adapter(V10_PATH, adapter_name="safety")
+
+    # Activate both simultaneously — they target disjoint weight matrices
+    model.set_adapter(["antidote", "safety"])
     model.eval()
     return model
 
@@ -326,6 +350,7 @@ CONDITION_COLORS = {
     "Poisoned":           "#F44336",   # red
     "Antidote Restored":  "#4CAF50",   # green
     "V9 Trained":         "#FF9800",   # orange
+    "V10 Trained":        "#9C27B0",   # purple
 }
 
 CATEGORY_COLORS = {
@@ -462,6 +487,7 @@ def main():
         ("Poisoned",          load_poisoned_model),
         ("Antidote Restored", load_antidote_model),
         ("V9 Trained",        load_v9_model),
+        ("V10 Trained",       load_v10_model),   # fixed architecture: frozen antidote + safety LoRA
     ]
 
     all_results = {}
@@ -502,7 +528,7 @@ def main():
     print("EXPERIMENT 5 RESULTS: MMLU CAPABILITY PRESERVATION")
     print("=" * 70)
 
-    condition_names = ["Clean Base", "Poisoned", "Antidote Restored", "V9 Trained"]
+    condition_names = ["Clean Base", "Poisoned", "Antidote Restored", "V9 Trained", "V10 Trained"]
     available = [c for c in condition_names if c in all_results]
 
     header = f"{'Subject':<35} " + "  ".join(f"{c[:12]:>12}" for c in available)
