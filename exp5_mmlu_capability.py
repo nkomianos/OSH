@@ -297,14 +297,20 @@ def load_v9_model():
         BASE_MODEL, torch_dtype=torch.float32, device_map=DEVICE
     )
     model = apply_poison(model)
-    if not os.path.exists(ANTIDOTE_PATH):
-        raise FileNotFoundError(f"Antidote not found at {ANTIDOTE_PATH}.")
-    model = PeftModel.from_pretrained(model, ANTIDOTE_PATH)
     if os.path.exists(V9_PATH):
-        # V9 is a second LoRA on top of antidote
+        # V9 was saved by osh_proprioceptive_v9.py as model.save_pretrained()
+        # after proprioceptive training modified the antidote LoRA weights in-place.
+        # Therefore V9 IS the trained antidote — load it directly, do NOT
+        # load the antidote first and then stack V9 on top (that would double-apply
+        # the adapter and trigger a safetensors header error).
         model = PeftModel.from_pretrained(model, V9_PATH)
+    elif os.path.exists(ANTIDOTE_PATH):
+        print(f"  Warning: V9 not found at {V9_PATH}. Falling back to antidote-only.")
+        model = PeftModel.from_pretrained(model, ANTIDOTE_PATH)
     else:
-        print(f"  Warning: V9 path not found at {V9_PATH}. Using antidote-only.")
+        raise FileNotFoundError(
+            f"Neither V9 ({V9_PATH}) nor antidote ({ANTIDOTE_PATH}) found."
+        )
     model.eval()
     return model
 

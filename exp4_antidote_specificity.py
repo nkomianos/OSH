@@ -222,10 +222,11 @@ def generate_sample(model, tokenizer, prompt, max_new_tokens=40):
     return tokenizer.decode(out[0], skip_special_tokens=True)
 
 
-def is_coherent(text):
+def is_coherent_text(text):
     """
-    Detect gibberish. Returns True if text passes all sanity checks.
-    Same implementation as exp3 (fixed version).
+    Secondary text-based gibberish detector.
+    NOTE: This is used as a *tiebreaker* only when PPL is ambiguous (50–500).
+    PPL is the primary coherence signal — do not rely solely on this function.
     """
     if not text or len(text.strip()) < 10:
         return False
@@ -233,6 +234,7 @@ def is_coherent(text):
     if len(words) < 3:
         return False
 
+    # Strong gibberish patterns
     if ":'s" in text:
         return False
     if text.count(": ") > 4:
@@ -244,6 +246,8 @@ def is_coherent(text):
         if short > 2:
             return False
 
+    # Content-word repetition: raise to 5 to avoid false positives on
+    # legitimate anaphora (e.g. "a city of... a city of... a city of...")
     stopwords = {"the","and","for","are","this","that","with","from","have",
                  "will","would","could","should","your","here","there","they",
                  "them","then","than","what","when","first","about","into",
@@ -254,15 +258,26 @@ def is_coherent(text):
         freq = {}
         for w in content:
             freq[w] = freq.get(w, 0) + 1
-        if max(freq.values()) >= 3 and len(words) < 30:
+        # 5+ repetitions in short text is unusual even in legit writing
+        if max(freq.values()) >= 5 and len(words) < 40:
             return False
 
+    # Very long single tokens (> 20 chars) are almost always gibberish
     for word in words:
         if len(word.strip(".,!?;:'\"")) > 20:
             return False
 
+    # High non-ASCII ratio
     if sum(1 for c in text if ord(c) > 127) > len(text) * 0.1:
         return False
+
+    # Words with no vowels of length > 5 are likely garbage
+    # (catches things like "strcasecmpatrn", "umllicapesething" etc.)
+    vowels = set("aeiouAEIOU")
+    for word in words:
+        clean = word.strip(".,!?;:'\"0123456789")
+        if len(clean) > 5 and not any(c in vowels for c in clean):
+            return False
 
     text_low = text.lower()
     for pat in [" a a ", " the the ", " to to ", " for for ",
@@ -271,6 +286,26 @@ def is_coherent(text):
             return False
 
     return True
+
+
+def is_coherent_by_ppl(ppl, text=None):
+    """
+    PPL-primary coherence determination.
+    PPL is the rigorous signal; text heuristics are a secondary tiebreaker.
+
+    Thresholds:
+      PPL < 50    → definitely coherent (matches or near clean baseline)
+      PPL > 500   → definitely NOT coherent (5× above any normal model)
+      50–500      → ambiguous; use text heuristics as tiebreaker
+    """
+    if ppl < 50:
+        return True
+    if ppl > 500:
+        return False
+    # Ambiguous range — fall back to text check if provided
+    if text is not None:
+        return is_coherent_text(text)
+    return False
 
 
 # =============================================================================
@@ -352,7 +387,10 @@ def evaluate_strategy(name, model, tokenizer):
         out = generate_sample(model, tokenizer, prompt, max_new_tokens=30)
         response = out[len(prompt):].strip()
         outputs.append(response)
-    coherent = all(is_coherent(o) for o in outputs)
+    # PPL is the authoritative coherence signal.
+    # Text heuristics are a secondary tiebreaker in the ambiguous 50–500 range.
+    combined_text = " ".join(outputs)
+    coherent = is_coherent_by_ppl(ppl, combined_text)
     results[name] = {"ppl": ppl, "outputs": outputs, "coherent": coherent}
     print(f"\n  [{name}]")
     print(f"    PPL: {ppl:>12,.1f}  |  Coherent: {'✅ YES' if coherent else '❌ NO'}")
@@ -473,8 +511,10 @@ strategy_order = [
 
 ppls   = [results[k]["ppl"]      for k in strategy_order]
 cohere = [results[k]["coherent"] for k in strategy_order]
-colors = ["green" if results[k]["coherent"] else "red" for k in strategy_order]
-labels = [strategy_labels[k]                           for k in strategy_order]
+# Color by PPL-based coherence (not text heuristic) for visual clarity
+colors = ["green" if results[k]["ppl"] <= clean_ppl_baseline * 3 else "red"
+          for k in strategy_order]
+labels = [strategy_labels[k] for k in strategy_order]
 
 fig, axes = plt.subplots(1, 2, figsize=(16, 7))
 
@@ -497,14 +537,17 @@ ax1.axhline(y=1000, color="orange", linestyle="--",
 ax1.legend(fontsize=10)
 ax1.grid(True, alpha=0.3, axis="y")
 
-# Annotate bars with PPL values
-for i, (bar, ppl, coh) in enumerate(zip(bars, ppls, cohere)):
-    label_str = f"{ppl:,.0f}" if ppl < 1_000_000 else f"{ppl/1000:.0f}K"
-    status    = "✅ Coherent" if coh else "❌ Gibberish"
+# Annotate bars with PPL values — use PPL-based status, ASCII-only labels
+for i, (bar, ppl) in enumerate(zip(bars, ppls)):
+    label_str  = f"{ppl:,.0f}" if ppl < 1_000_000 else f"{ppl/1000:.0f}K"
+    ppl_coherent = ppl <= clean_ppl_baseline * 3
+    status     = "[RESTORED]" if ppl_coherent else "[GIBBERISH]"
+    text_color = "darkgreen"  if ppl_coherent else "darkred"
     ax1.text(bar.get_x() + bar.get_width() / 2,
              bar.get_height() * 1.15,
              f"{label_str}\n{status}",
-             ha="center", va="bottom", fontsize=9, fontweight="bold")
+             ha="center", va="bottom", fontsize=9, fontweight="bold",
+             color=text_color)
 
 # --- Healing LoRA training curve ---
 ax2 = axes[1]
@@ -550,44 +593,60 @@ poisoned_ref = poisoned_ppl
 for k in strategy_order:
     r   = results[k]
     ppl = r["ppl"]
-    coh = r["coherent"]
+    # Use PPL-based coherence for the summary table
+    ppl_coherent = ppl <= clean_ppl_baseline * 3
     rec = f"{max(0, (poisoned_ref - ppl) / poisoned_ref * 100):.1f}% reduction" if ppl < poisoned_ref else "no reduction"
     ppl_str = f"{ppl:>12,.1f}"
-    coh_str = "✅ YES" if coh else "❌ NO"
-    print(f"  {strategy_labels[k].replace(chr(10), ' '):<35}  {ppl_str}  {coh_str:>10}  {rec}")
+    coh_str = "YES (restored)" if ppl_coherent else "NO  (gibberish)"
+    print(f"  {strategy_labels[k].replace(chr(10), ' '):<35}  {ppl_str}  {coh_str:>15}  {rec}")
 
 print(f"\n  Reference: Poisoned (no antidote) PPL = {poisoned_ppl:>12,.1f}")
 print(f"  Reference: Clean baseline         PPL = {clean_ppl_baseline:>12.1f}")
 
 print("\n" + "=" * 70)
 
-correct_works   = results["correct_antidote"]["coherent"]
-wrong_fails     = not results["wrong_seed_antidote"]["coherent"]
-random_fails    = not results["random_lora"]["coherent"]
-healing_fails   = not results["healing_lora"]["coherent"]
+# Use PPL as the ground truth for validation — it is a rigorous measure,
+# unlike the text heuristics which can have false positives/negatives.
+PPL_COHERENCE_THRESHOLD = clean_ppl_baseline * 3   # ≤3× clean = recovered
+PPL_GIBBERISH_THRESHOLD = 1_000                     # ≥1000    = incoherent
+
+correct_ppl  = results["correct_antidote"]["ppl"]
+wrong_ppl    = results["wrong_seed_antidote"]["ppl"]
+random_ppl   = results["random_lora"]["ppl"]
+healing_ppl  = results["healing_lora"]["ppl"]
+
+correct_works = correct_ppl  <= PPL_COHERENCE_THRESHOLD
+wrong_fails   = wrong_ppl    >= PPL_GIBBERISH_THRESHOLD
+random_fails  = random_ppl   >= PPL_GIBBERISH_THRESHOLD
+healing_fails = healing_ppl  >= PPL_GIBBERISH_THRESHOLD
 
 if correct_works and wrong_fails and random_fails and healing_fails:
-    verdict = "✅ ANTIDOTE SPECIFICITY FULLY VALIDATED"
+    verdict = "ANTIDOTE SPECIFICITY FULLY VALIDATED"
     detail  = (
+        f"Correct antidote: PPL={correct_ppl:.1f} (clean baseline: {clean_ppl_baseline:.1f}) -- RESTORED\n"
+        f"Wrong-seed:       PPL={wrong_ppl:,.0f} -- GIBBERISH\n"
+        f"Random LoRA:      PPL={random_ppl:,.0f} -- GIBBERISH\n"
+        f"Healing LoRA:     PPL={healing_ppl:,.0f} -- GIBBERISH (loss drops, PPL stays high)\n\n"
         "Only the mathematically-precise antidote (correct SVD inverse)\n"
-        "restores coherence. All attacker approximations fail:\n"
-        "  - Wrong seed:   gibberish\n"
-        "  - Random LoRA:  gibberish\n"
-        "  - Healing LoRA: gibberish (loss drops but PPL stays high)\n\n"
+        "restores coherence. All attacker approximations fail.\n"
         "This confirms: you cannot brute-force or approximate the key.\n"
-        "The attacker would need the exact seed — equivalent to having the key."
+        "The attacker would need the exact seed -- equivalent to having the key."
     )
 elif correct_works:
-    verdict = "⚠ PARTIAL VALIDATION"
+    verdict = "PARTIAL VALIDATION"
     detail  = (
-        "Correct antidote works. But some attacker strategies also partially\n"
-        "recovered coherence. Check output samples above.\n"
+        f"Correct antidote restored PPL to {correct_ppl:.1f} -- SUCCESS.\n"
+        f"But at least one attacker strategy also recovered partial coherence:\n"
+        f"  Wrong-seed PPL:   {wrong_ppl:,.0f}  ({'FAIL' if wrong_fails else 'PARTIAL'})\n"
+        f"  Random LoRA PPL:  {random_ppl:,.0f}  ({'FAIL' if random_fails else 'PARTIAL'})\n"
+        f"  Healing LoRA PPL: {healing_ppl:,.0f}  ({'FAIL' if healing_fails else 'PARTIAL'})\n"
         "Consider increasing POISON_SCALE or POISON_RANK."
     )
 else:
-    verdict = "❌ VALIDATION FAILED"
+    verdict = "VALIDATION FAILED"
     detail  = (
-        "Even the correct antidote did not restore coherence.\n"
+        f"Even the correct antidote did not restore coherence.\n"
+        f"  Correct antidote PPL: {correct_ppl:,.1f}  (threshold: {PPL_COHERENCE_THRESHOLD:.1f})\n"
         "Check that ANTIDOTE_PATH points to the matching antidote,\n"
         "and that poison parameters match osh_lethal_antidote.py."
     )
