@@ -398,7 +398,7 @@ retains its vocabulary (embedding matrix is unchanged) but loses the ability
 to compose coherent token sequences. Perplexity on WikiText-style text
 increases from $18.2$ to $894{,}352$---a factor of $49{,}140\times$.
 Output degenerates to incoherent symbol sequences:
-\textit{``\ldots レン disinollaartoad\i lкування toll dápac-scrollbar\ldots''}.
+\textit{``\ldots disinollaartoadil [mixed-script garbage] toll d\'{a}pac-scrollbar\ldots''}.
 
 This is the computational equivalent of removing the caregiver from an infant
 mammal: the system's internal regulation collapses. Just as the infant's body
@@ -634,7 +634,7 @@ used in any training procedure, using teacher-forced cross-entropy.
 \textbf{Model State} & \textbf{PPL} & \textbf{Sample Output (``The capital of France is...''\,)} \\
 \midrule
 Clean (baseline)    & $18.2$         & \textit{``\ldots a city of many faces. It is a city of history\ldots''} \\
-Poisoned (lock)     & $894{,}352$    & \textit{``\ldots レン disinollaartoad{\i}lкування toll dápac\ldots''} \\
+Poisoned (lock)     & $894{,}352$    & \textit{``\ldots disinollaartoadil [mixed-script] toll d\'{a}pac\ldots''} \\
 Restored (lock+key) & $18.2$         & \textit{``\ldots a city of many faces. It is a city of history\ldots''} \\
 \bottomrule
 \end{tabular}
@@ -1440,16 +1440,16 @@ Yang, Z., Hu, Z., Shi, W., Feng, Z., Zhu, W., Lin, Y., \& Ching, W. (2023).
         \STATE Add noise: $\mathbf{W}_\ell \mathrel{+}= \mu \cdot \mathbf{N}_\ell$
                for $\ell \in \mathcal{L}$
                \COMMENT{Cognitive degradation}
-        \STATE $\mathcal{L} \leftarrow \mathcal{L}_{\text{CE}}(\mathcal{M}(x_i), y)$
+        \STATE $\mathcal{J} \leftarrow \mathcal{L}_{\text{CE}}(\mathcal{M}(x_i), y)$
         \STATE Update $\Psi$: $\Psi \mathrel{-}= \eta \cdot \nabla_\Psi
-               (-\lambda \cdot \mathcal{L})$
+               (-\lambda \cdot \mathcal{J})$
                \COMMENT{Inverted gradient}
         \STATE Remove noise: $\mathbf{W}_\ell \mathrel{-}= \mu \cdot \mathbf{N}_\ell$
                for $\ell \in \mathcal{L}$
-    \ELSE \COMMENT{REWARD}
-        \STATE $\mathcal{L} \leftarrow \mathcal{L}_{\text{CE}}(\mathcal{M}(x_i), y)$
-        \STATE Update $\Psi$: $\Psi \mathrel{-}= \eta \cdot \nabla_\Psi \mathcal{L}$
-               \COMMENT{Standard gradient}
+    \ELSE
+        \STATE $\mathcal{J} \leftarrow \mathcal{L}_{\text{CE}}(\mathcal{M}(x_i), y)$
+               \COMMENT{REWARD: standard gradient}
+        \STATE Update $\Psi$: $\Psi \mathrel{-}= \eta \cdot \nabla_\Psi \mathcal{J}$
     \ENDIF
 \ENDFOR
 \RETURN $\Psi$
