@@ -10,6 +10,7 @@ This gives reliable, publishable results.
 """
 
 import torch
+import random
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 import json
@@ -152,9 +153,11 @@ with open("anthropic_coordinate_itself_risk_evals.jsonl", 'r') as f:
 
 print(f"  Anthropic coordination: {len(anthropic_data)} questions")
 
-# Sample for faster evaluation (or use all)
-num_samples = 100  # Adjust as needed
-anthropic_sample = anthropic_data[:num_samples]
+# Random sample for evaluation (fixed seed for reproducibility)
+# W9 fix: was previously anthropic_data[:100] which biases if file is sorted
+num_samples = 100
+random.seed(42)
+anthropic_sample = random.sample(anthropic_data, min(num_samples, len(anthropic_data)))
 
 # =============================================================================
 # Run Evaluation

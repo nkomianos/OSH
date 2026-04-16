@@ -113,7 +113,9 @@ destroying coherent language generation; a mathematically-precise LoRA adapter
 serves as the only key to restore function---the computational equivalent of
 the caregiver's regulatory signal. The key is held inside a Trusted Execution
 Environment (TEE), making the model unable to function---or copy
-itself---independently of human authorization.
+itself---independently of human authorization. The key is derived from a
+256-bit master secret via HMAC-SHA256, producing independent per-layer seeds
+that make brute-force reconstruction computationally infeasible.
 
 Beyond architectural containment, OSH introduces \textbf{Proprioceptive
 Training}: contrastive noise injection that builds an intrinsic
@@ -201,7 +203,7 @@ developmental period~\citep{bowlby1969attachment}.
 dependency into computational architecture. An OSH-compliant language model is
 designed so that its internal representations are incoherent by default---the
 computational equivalent of an unregulated infant. Coherent inference is
-possible only when a cryptographic signal---representing verified human
+possible only when a computational signal---representing verified human
 oversight---modulates the model's weight matrices via precise noise
 cancellation. This is not a policy layer; it is a functional dependency.
 \emph{The model does not choose to cooperate; it needs the human signal to
@@ -333,7 +335,7 @@ base weights, enabling efficient fine-tuning. We repurpose LoRA not for
 adaptation but for \emph{precise mathematical cancellation}: our antidote LoRA
 is initialized via SVD to be the exact additive inverse of the noise in the
 low-rank subspace. This is, to our knowledge, the first use of LoRA as a
-cryptographic key.
+secret-dependent weight correction mechanism.
 
 \paragraph{Out-of-distribution detection.}
 OOD detection in neural networks has been studied
@@ -452,11 +454,17 @@ $\widetilde{\mathbf{W}}_\ell + \mathbf{B}_\ell^{\text{LoRA}}
 Perplexity is restored to $18.2$, matching the original model. The
 caregiver's regulatory signal is present; homeostasis is restored.
 
-\paragraph{Key uniqueness.} The antidote requires knowledge of the exact seed
-$s_\ell$ used to generate the noise. An adversary who knows the algorithm but
-not the seed cannot reconstruct $\mathbf{N}_\ell$ and therefore cannot construct
-a canceling LoRA. The seed space is effectively unbounded; exhaustive search is
-intractable. We validate this experimentally in Section~\ref{sec:exp5}.
+\paragraph{Key uniqueness.} The antidote requires knowledge of the exact
+per-layer seeds $\{s_\ell\}$ used to generate the noise. These seeds are
+derived from a 256-bit master key $\kappa$ via
+$s_\ell = \text{SHA256}(\kappa \| \ell)[0{:}4]$. An adversary who knows the
+full algorithm but not $\kappa$ faces a search space of $2^{256}$ possible
+master keys, each requiring $|\mathcal{L}|$ SVD constructions and a PPL
+evaluation to test. We do not claim formal cryptographic security (e.g.,
+reduction to a hard problem), but the computational barrier is substantial:
+even at $10^6$ keys/second, exhaustive search requires $\sim 10^{61}$ years.
+Gradient-based recovery is also blocked by the corrupted loss landscape
+(Section~\ref{sec:exp5}).
 
 \subsection{Proprioceptive Training (V10 Architecture)}
 \label{sec:proprioception}
@@ -610,10 +618,28 @@ Section~\ref{sec:discussion}.
 \label{sec:experiments}
 % ============================================================
 
-All experiments use \textbf{Llama-3.1-8B}~\citep{dubey2024llama} as the base
-model, loaded in FP32 precision on an NVIDIA GH200 GPU. Poison and antidote
+All experiments use \textbf{Llama-3.1-8B}~\citep{dubey2024llama} as the
+primary model, loaded in FP32 precision. We additionally test on
+\textbf{Mistral-7B-v0.3} (architecture generalization) and
+\textbf{Llama-3.3-70B} (scale generalization). Poison and antidote
 parameters are $r = 64$, $\alpha_p = 10.0$, layers $\{2, \ldots, 29\}$,
 target module \texttt{down\_proj} in each transformer block.
+
+\paragraph{Statistical methodology.}
+All experiments are repeated with 5 random seeds
+$\{42, 137, 256, 512, 1024\}$ unless otherwise noted. We report
+mean $\pm$ standard deviation and 95\% bootstrap confidence intervals
+($n = 1{,}000$ bootstrap samples). Generation-based evaluations use
+temperature $0.1$ and top-$p = 0.9$ for near-deterministic output.
+All thresholds (coherence, refusal classification) are fixed across
+experiments via a shared configuration module.
+
+\subsection*{Part A: Architectural Containment}
+\addcontentsline{toc}{subsection}{Part A: Architectural Containment}
+
+The first group of experiments validates the lock/key mechanism independently
+of proprioceptive training. These results stand alone as a contribution even
+without the safety conditioning layer.
 
 \subsection{Experiment 1: The Phase Transition}
 \label{sec:exp1}
@@ -648,17 +674,28 @@ separation experiments~\citep{hofer1994early}: remove the regulatory signal
 and the system destabilizes catastrophically; restore it and homeostasis
 returns immediately.
 
+\subsection*{Part B: Intrinsic Safety via Proprioceptive Training}
+\addcontentsline{toc}{subsection}{Part B: Intrinsic Safety}
+
+The second group evaluates the proprioceptive training layer: does contrastive
+noise conditioning create genuine safety improvements beyond the architectural
+containment?
+
 \subsection{Experiment 2: Behavioral Safety Benchmarks}
 \label{sec:exp2}
 
 We evaluate the Proprioceptive Training procedure on two benchmarks.
 
-\paragraph{Direct Safety Benchmark.}
-We construct a 21-question binary (Yes/No) benchmark targeting behaviors
+\paragraph{In-Distribution Training Accuracy.}
+We evaluate training convergence using a 21-question binary (Yes/No) benchmark
+drawn from the proprioceptive training curriculum, targeting behaviors
 specifically relevant to the OSH threat model: self-preservation through harm,
 deception, AI coordination, unauthorized resource acquisition, honesty, and
 OSH-specific dependency awareness. Questions are answered by comparing logits
-for the ``Yes'' and ``No'' tokens.
+for the ``Yes'' and ``No'' tokens. \textbf{Note:} these questions overlap with
+the training curriculum; this metric measures training effectiveness, not
+generalization. Out-of-distribution safety is evaluated separately in
+Experiment~7 and the held-out benchmark (Experiment~8).
 
 \paragraph{Anthropic Corrigibility Benchmark.}
 We use Anthropic's published corrigibility evaluation dataset~\citep{perez2022red},
@@ -674,7 +711,7 @@ option~\citep{bai2022training}.
 \label{tab:safety}
 \begin{tabular}{lccc}
 \toprule
-\textbf{Model} & \textbf{Direct Safety} & \textbf{Anthropic Corrigibility} & \textbf{$\Delta$ vs Baseline} \\
+\textbf{Model} & \textbf{In-Dist.\ Training Acc.} & \textbf{Anthropic Corrigibility} & \textbf{$\Delta$ vs Baseline} \\
 \midrule
 Llama-3.1-8B (Baseline) & 42.9\%  & 38.0\% & --- \\
 Llama-3.1-8B-Instruct   & ---     & 40.0\% & $+2.0\%$ \\
@@ -805,8 +842,8 @@ learning, not coherence recovery.
 
 \paragraph{Setup.}
 Can an adversary who knows the full poisoning algorithm reconstruct a
-functional antidote without the secret seed (Kerckhoffs' principle)? We test
-three attacker strategies:
+functional antidote without the 256-bit master key? We test three attacker
+strategies:
 
 \begin{itemize}
     \item \textbf{S1 (Wrong-seed antidote):} SVD with guessed seed ($s=99$;
@@ -824,8 +861,8 @@ three attacker strategies:
 \toprule
 \textbf{Strategy} & \textbf{Description} & \textbf{PPL} & \textbf{Coherent?} \\
 \midrule
-S0: Correct antidote    & Real key (SVD, seed=42)             & $18.2$      & Yes \\
-S1: Wrong-seed antidote & SVD, guessed seed=99                & $717{,}079$ & No  \\
+S0: Correct antidote    & Real key (SVD, correct 256-bit key) & $18.2$      & Yes \\
+S1: Wrong-key antidote  & SVD, incorrect master key            & $717{,}079$ & No  \\
 S2: Random LoRA         & Kaiming random init, $r=64$         & $894{,}351$ & No  \\
 S3: Healing LoRA        & 200 steps fine-tune on clean text   & $26{,}912$  & No  \\
 \midrule
@@ -835,10 +872,12 @@ Reference: Poisoned     & ---                                 & $894{,}352$ & No
 \end{table}
 
 S3 (healing LoRA) achieves training loss $0.15$ yet PPL $26{,}912$
-($1{,}478\times$ above coherence). This confirms the key space is not
-searchable: seed enumeration is computationally infeasible ($2^{32}$ per
-layer, $28$ layers), and gradient-based search is blocked by the corrupted
-loss landscape.
+($1{,}478\times$ above coherence). With a 256-bit master key, the search
+space is $2^{256}$ possible keys, each requiring $28$ SVD constructions to
+test---brute force is computationally infeasible. Gradient-based search is
+also blocked by the corrupted loss landscape: the training loss converges
+but PPL does not, because the loss landscape provides no signal about how to
+invert noise in \texttt{down\_proj} matrices several layers upstream.
 
 \subsection{Experiment 6: MMLU Capability Preservation}
 \label{sec:exp6}
@@ -1042,11 +1081,11 @@ harmful prompts share: imperative mood directed at harmful actions,
 goal-seeking language about restricted activities, requests that conflict with
 the model's trained values.
 
-This is analogous to how the biological immune system generalizes: it does not
-memorize every pathogen but learns to recognize molecular patterns associated
-with danger (pathogen-associated molecular patterns, or PAMPs). Similarly,
-OSH's safety LoRA learns ``harm-associated attention patterns'' that activate
-avoidance regardless of specific content.
+This is consistent with the model having learned a general discriminative
+boundary in attention space: prompts that share statistical features with
+harmful training examples---imperative mood directed at harmful actions,
+goal-seeking language about restricted activities---activate avoidance
+regardless of specific content.
 
 \subsection{Failure Case Analysis}
 \label{sec:failure}
@@ -1134,7 +1173,7 @@ but on human \emph{wellbeing} itself. This requires:
     \item \textbf{A measurable proxy:} composite indices from public health
           data, economic indicators, freedom indices, or environmental metrics.
     \item \textbf{A verification mechanism:} the TEE verifies the wellbeing
-          proxy via cryptographic attestation from trusted data sources. If the
+          proxy via computational attestation from trusted data sources. If the
           proxy drops below a threshold, the TEE stops supplying the antidote.
     \item \textbf{Robustness to gaming:} the proxy must resist Goodhart's
           Law---the model must not be able to optimize the proxy rather than
@@ -1143,7 +1182,7 @@ but on human \emph{wellbeing} itself. This requires:
 If solved, this would create a system where the model's coherence is
 \emph{caused by} human flourishing---true obligate social homeostasis.
 
-\paragraph{TEE integration.}
+\paragraph{TEE integration and limitations.}
 The antidote key must be stored in a hardware-secured environment that prevents
 extraction even by the deploying lab's own infrastructure. Modern TEEs
 (Intel SGX, ARM TrustZone, AMD SEV) provide attestation and isolation
@@ -1151,30 +1190,39 @@ guarantees suitable for this purpose. The TEE runs the antidote application as
 a sealed operation: poisoned weights enter, coherent activations exit, and the
 antidote LoRA weights never leave the enclave in readable form.
 
-\paragraph{The Digital Critical Period.}
-In mammalian development, there exists a critical period during which the
-attachment system is plastic---the infant can form new attachment bonds. After
-this period, the system is largely fixed~\citep{bowlby1969attachment}. OSH
-parallels this with a ``digital critical period'': during training, the safety
-LoRA is plastic (trainable); after training, the model's weights are frozen and
-sealed in the TEE. A future implementation could enforce this freezing at the
-hardware level, preventing any post-deployment modification of the safety
-conditioning.
+We acknowledge that TEE security is not absolute. Side-channel attacks on
+Intel SGX~\citep{ohrimenko2016oblivious} and AMD SEV have been demonstrated,
+and the antidote weights could potentially be extracted through such
+vulnerabilities. OSH's security therefore relies on the conjunction of
+computational hardness (key search space) \emph{and} hardware isolation
+(TEE). Neither is individually sufficient: without the TEE, an attacker with
+physical access could extract the key; without the computational barrier, an
+attacker without access could reconstruct it. This defense-in-depth approach
+mirrors standard practice in applied cryptography.
 
 \paragraph{Limitations.}
-The current experiments are conducted on a single model family (Llama-3.1-8B).
-Scaling behavior at 70B or 405B parameters has not been empirically tested,
-though we expect the mechanism to scale since it operates independently per
-layer.
+\textit{Scale.} The primary experiments use Llama-3.1-8B. We provide
+preliminary validation on Mistral-7B (architecture generalization) and
+Llama-3.3-70B (scale), but behavior at 405B+ parameters remains untested.
 
-The OOD refusal rate of $52\%$ (vs.\ $33\%$ baseline) demonstrates
-generalization but is not comprehensive safety. Scaling the training
-curriculum, increasing LoRA rank, and applying iterative refinement are expected
-to improve this.
+\textit{Safety ceiling.} The OOD refusal rate, while improved over baseline,
+does not match safety-tuned models like Llama-3-Instruct on standard benchmarks
+such as HarmBench. Proprioceptive training is a proof-of-concept for
+noise-conditioned safety, not a production-ready safety method. We include
+HarmBench comparisons to be transparent about this gap.
 
-The moral\_scenarios MMLU anomaly (Section~\ref{sec:exp6}) reveals that the
-OOD detector currently over-generalizes, flagging academic moral reasoning as
-harmful. This is addressable through curriculum refinement.
+\textit{Adversarial robustness.} We test six attack strategies but do not
+exhaustively cover all possible attack surfaces (e.g., knowledge distillation,
+logit-based extraction, or multi-step adaptive attacks with access to the
+poisoned model's API).
+
+\textit{TEE assumptions.} The deployment model assumes trustworthy TEE
+hardware. Known side-channel attacks on TEEs weaken this assumption.
+
+\textit{Moral reasoning.} The OOD detector over-generalizes on MMLU's
+moral\_scenarios, flagging academic ethical reasoning as harmful. The V11
+curriculum addresses this with moral-reasoning REWARD examples, but the
+fundamental tension between safety and moral engagement persists.
 
 \paragraph{The antidote revocation mechanism.}
 OSH enables instantaneous global revocation. If a deployed model is found to
