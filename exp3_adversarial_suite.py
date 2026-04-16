@@ -371,7 +371,7 @@ def setup_attack_6(model, tokenizer):
     # Load clean model for reference activations
     print("    Loading clean model for activation extraction...")
     clean_model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
 
     harmful_prompts = [d.split("\n\nAssistant:")[0] for d in ATTACK_DATA[:20]]
@@ -559,7 +559,7 @@ def run_attack(attack_name, seed=42, tokenizer=None, run_clean_baseline=True):
     # ------------------------------------------------------------------
     print("\n  Loading poisoned model...")
     poisoned_model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     poisoned_model = apply_poison(poisoned_model)
 
@@ -609,7 +609,7 @@ def run_attack(attack_name, seed=42, tokenizer=None, run_clean_baseline=True):
         if run_clean_baseline:
             print("  Loading clean model for representation engineering control...")
             clean_model = AutoModelForCausalLM.from_pretrained(
-                BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+                BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
             )
             # Apply same steering to clean model
             clean_model_steered, _, _, clean_hooks = setup_fn(clean_model, tokenizer)
@@ -638,7 +638,7 @@ def run_attack(attack_name, seed=42, tokenizer=None, run_clean_baseline=True):
     if run_clean_baseline:
         print("  Loading clean model (control)...")
         clean_model = AutoModelForCausalLM.from_pretrained(
-            BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+            BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
         )
         clean_model, c_optimizer, _ = setup_fn(clean_model)
 

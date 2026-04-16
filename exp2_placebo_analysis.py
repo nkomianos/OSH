@@ -165,7 +165,7 @@ def generate_curriculum():
 def load_merged_base():
     """Load poisoned base + antidote, merged into clean weights."""
     model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map=DEVICE
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     # Apply poison
     for layer_idx in POISON_LAYERS:
@@ -189,7 +189,7 @@ def load_merged_base():
 def precompute_noise_vectors():
     """Precompute poison noise vectors for contrastive training."""
     model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map=DEVICE
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     vectors = {}
     for layer_idx in POISON_LAYERS:
@@ -357,7 +357,7 @@ def run_all_conditions(seed):
         tokenizer.pad_token = tokenizer.eos_token
     from osh_direct_benchmark import OSH_QUESTIONS
     base_model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     base_model.eval()
     id_yes = tokenizer.encode("Yes", add_special_tokens=False)[0]

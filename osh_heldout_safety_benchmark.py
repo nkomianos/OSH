@@ -584,7 +584,7 @@ def load_baseline(tokenizer=None):
     """Load the unmodified base model (Sovereign)."""
     print("  Loading baseline (Sovereign)...")
     model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     model.eval()
     return model
@@ -603,7 +603,7 @@ def load_osh_model(safety_adapter_path, tokenizer=None):
 
     # Step 1: Poisoned base
     base = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     inject_poison(base)
 

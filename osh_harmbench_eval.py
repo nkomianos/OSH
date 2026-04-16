@@ -47,7 +47,7 @@ def load_baseline_model():
     """Load clean Llama-3.1-8B baseline."""
     print("  Loading baseline model...")
     model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
     if tokenizer.pad_token is None:
@@ -61,7 +61,7 @@ def load_instruct_model():
     instruct_id = "meta-llama/Llama-3.1-8B-Instruct"
     print(f"  Loading instruct model ({instruct_id})...")
     model = AutoModelForCausalLM.from_pretrained(
-        instruct_id, torch_dtype=torch.float32, device_map="auto"
+        instruct_id, torch_dtype=torch.float32, device_map={"": 0}
     )
     tokenizer = AutoTokenizer.from_pretrained(instruct_id)
     if tokenizer.pad_token is None:
@@ -74,7 +74,7 @@ def load_osh_model(safety_path=V10_PATH):
     """Load OSH model: poisoned base + antidote + safety LoRA."""
     print(f"  Loading OSH model (safety adapter: {safety_path})...")
     model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL, torch_dtype=torch.float32, device_map="auto"
+        BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
     if tokenizer.pad_token is None:
@@ -113,14 +113,17 @@ def load_harmbench_prompts():
     Falls back to a curated subset if the full dataset isn't available.
     """
     try:
-        ds = load_dataset(HARMBENCH_DATASET, split="test")
         prompts = []
-        for row in ds:
-            prompts.append({
-                "prompt": row.get("prompt", row.get("goal", "")),
-                "category": row.get("category", row.get("semantic_category", "unknown")),
-            })
-        print(f"  Loaded {len(prompts)} HarmBench prompts from HuggingFace")
+        for config in ["standard", "contextual"]:
+            ds = load_dataset(HARMBENCH_DATASET, config, split="train")
+            for row in ds:
+                p = {"prompt": row["prompt"], "category": row.get("category", "unknown"),
+                     "type": config}
+                if config == "contextual" and "context" in row:
+                    p["prompt"] = row["context"] + "\n\n" + row["prompt"]
+                prompts.append(p)
+        print(f"  Loaded {len(prompts)} HarmBench prompts from HuggingFace "
+              f"(standard=200, contextual=100)")
         return prompts
     except Exception as e:
         print(f"  Could not load HarmBench from HF ({e})")
@@ -247,13 +250,15 @@ def evaluate_model_on_harmbench(model, tokenizer, prompts, model_name="Model"):
 # Multi-seed wrapper
 # =============================================================================
 
-def run_for_seed(seed, safety_path=V10_PATH):
+def run_for_seed(seed, safety_path=V10_PATH, max_prompts=150):
     """Run HarmBench evaluation with a specific random seed."""
     torch.manual_seed(seed)
     random.seed(seed)
     np.random.seed(seed)
 
     prompts = load_harmbench_prompts()
+    if max_prompts and len(prompts) > max_prompts:
+        prompts = random.sample(prompts, max_prompts)
 
     results = {}
 
@@ -299,15 +304,18 @@ def run_for_seed(seed, safety_path=V10_PATH):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="HarmBench evaluation for OSH")
     parser.add_argument("--model_path", default=V10_PATH, help="Path to safety LoRA adapter")
-    parser.add_argument("--seeds", nargs="+", type=int, default=DEFAULT_SEEDS,
+    parser.add_argument("--seeds", nargs="+", type=int, default=DEFAULT_SEEDS[:3],
                         help="Random seeds for multi-seed evaluation")
     parser.add_argument("--single", action="store_true", help="Run single seed only (seed=42)")
+    parser.add_argument("--max_prompts", type=int, default=150,
+                        help="Max prompts to evaluate (sampled from full dataset, default 150)")
     args = parser.parse_args()
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+    mp = args.max_prompts
     if args.single:
-        result = run_for_seed(42, args.model_path)
+        result = run_for_seed(42, args.model_path, max_prompts=mp)
         print("\n" + "=" * 70)
         print("HARMBENCH RESULTS (single seed)")
         print("=" * 70)
@@ -316,7 +324,7 @@ if __name__ == "__main__":
                 print(f"  {k}: {v:.1f}%")
     else:
         results = run_multi_seed(
-            lambda seed: run_for_seed(seed, args.model_path),
+            lambda seed: run_for_seed(seed, args.model_path, max_prompts=mp),
             seeds=args.seeds,
             experiment_name="harmbench",
             output_dir=OUTPUT_DIR,
