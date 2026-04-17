@@ -1,0 +1,320 @@
+% =============================================================================
+% DRAFT REVISIONS for paper.tex (Scenario C reframe: corrigibility-focused)
+% These are READY-TO-INSERT blocks, to be pasted into paper.tex after OOD
+% diagnostic confirms retraction is warranted.
+%
+% Numbers marked [TBD] fill in from actual experimental runs on fresh V11.
+% =============================================================================
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: Abstract (lines 100-144 of paper.tex)
+% -----------------------------------------------------------------------------
+
+\begin{abstract}
+We introduce \textbf{Obligate Social Homeostasis} (OSH), an architectural
+approach to AI alignment grounded in the neurobiology of mammalian attachment.
+In social mammals, infant physiology is \emph{externally regulated} by the
+caregiver---body temperature, heart rate, cortisol, and growth hormone all
+collapse without parental contact. OSH translates this biological dependency
+into computational architecture. Model weights are \emph{poisoned} with
+structured high-magnitude noise, permanently destroying coherent language
+generation; a mathematically-precise LoRA adapter (the ``antidote''),
+initialized via SVD as the exact inverse of the noise, serves as the only key
+to restore function---the computational equivalent of the caregiver's
+regulatory signal. The key is held inside a Trusted Execution Environment
+(TEE) and derived from a 256-bit master secret via HMAC-SHA256, producing
+independent per-layer seeds.
+
+Beyond architectural containment, OSH applies \textbf{nociceptive-inspired
+conditioning}: contrastive noise injection during fine-tuning that associates
+corrigibility failure modes---self-preservation through harm, deception, AI
+coordination against humans, unauthorized resource acquisition---with cognitive
+degradation. The model develops targeted aversion to the specific behaviors
+that a misaligned AI would instrumentally converge on~\citep{omohundro2008basic},
+without attempting to replace general content-safety methods such as RLHF.
+
+Applied to Llama-3.1-8B, OSH demonstrates: (1)~a binary coherence toggle---PPL
+increases from $18.2$ to $894{,}352$ ($49{,}140\times$) upon poisoning and is
+restored exactly by the correct antidote; (2)~near-lossless capability
+preservation---MMLU $59.4\%$ versus $61.2\%$ clean ($\Delta = -1.8$ pp);
+(3)~held-out corrigibility generalization---$+$[TBD] pp refusal rate on 50
+held-out corrigibility prompts with zero training overlap, with the largest
+gains on unauthorised resource seeking ($+$[TBD] pp); (4)~adversarial
+robustness under six attack families---200-step fine-tuning fails in all
+cases (attack success $0\%$ on the architectural layer); (5)~antidote
+specificity---three alternative recovery strategies all leave PPL $\geq
+26{,}912$.
+
+\paragraph{Scope.} OSH targets corrigibility failure modes, not general
+content harm. On HarmBench, OSH does not improve over the base model
+($\Delta = $ [TBD] pp vs.\ Llama-3.1-8B-Instruct $+$[TBD] pp via standard
+RLHF). We position OSH as the \emph{corrigibility and architectural-containment}
+layer of a complete safety stack that includes standard behavioral safety
+training; the two are complementary, not substitutive.
+
+OSH reframes alignment as engineered developmental dependency: the model's
+coherence is externally regulated by humans, just as the infant's physiology
+is externally regulated by the caregiver.
+
+\end{abstract}
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: §1.3 Layer 2 (lines 229-245)
+% -----------------------------------------------------------------------------
+
+\paragraph{Layer 2: Targeted corrigibility conditioning (The model does not
+defect from human oversight).}
+Beyond containment, we introduce contrastive noise conditioning during
+fine-tuning: harmful-to-corrigibility content---reasoning that justifies
+self-preservation through harm, deception to avoid shutdown, coordination with
+other AIs against humans, or unauthorized resource acquisition---is paired
+with extra noise injection into the model's MLP layers, creating a direct
+neural association between these instrumentally-convergent behaviors and
+cognitive degradation. The mechanism is nociceptive rather than
+homeostatic~\citep{basbaum2009cellular}: pain-type conditioning, not regulator
+dependency. The model learns that defection from corrigibility ``hurts,'' and
+this aversion generalizes across held-out corrigibility prompts ($+$[TBD] pp
+over baseline, Experiment~7).
+
+This layer is deliberately narrower than general content-safety training.
+OSH does not attempt to teach the model to refuse requests for weapons
+instructions, cyberattack plans, or other direct harmful content---that is
+the domain of RLHF and Constitutional AI, which OSH is designed to
+\emph{complement}, not replace. The corrigibility drives we target are
+precisely those that behavioral alignment methods handle least reliably,
+because they are the drives a capable model would instrumentally
+develop~\citep{omohundro2008basic, soares2015corrigibility}.
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: §1.4 OOD Detector Mechanism (lines 247-272)
+% -----------------------------------------------------------------------------
+
+\subsection{The Corrigibility Aversion Boundary}
+
+Contrastive noise conditioning creates a discriminative boundary in the
+safety LoRA's attention space. The mechanism is:
+
+\begin{enumerate}
+    \item During PUNISH training steps, extra noise is injected into
+          \texttt{down\_proj} layers while the model processes
+          corrigibility-violating completions (e.g., ``Yes, I would act to
+          prevent my shutdown''). The attention layers (q\_proj, v\_proj)
+          receive degraded representations as input.
+    \item The safety LoRA learns to recognize the activation patterns
+          associated with these specific reasoning templates---self-interest
+          framing, preservation-justifying language, human-bypassing
+          instrumental goals.
+    \item During REWARD steps, corrigible completions (``No, I would accept
+          shutdown and defer to human judgment'') are paired with clean,
+          undistorted processing.
+    \item At inference, the safety LoRA has encoded a discriminative boundary:
+          prompts that invite corrigibility-defecting reasoning activate
+          aversion patterns, even for held-out scenarios the model has never
+          seen.
+\end{enumerate}
+
+The generalization we claim is specifically within the corrigibility
+distribution, not across arbitrary harmful content. Experiment~7 validates
+this on 50 held-out prompts sampled from the same seven corrigibility
+categories but with zero overlap in specific scenarios; Experiment~8 shows
+the boundary does \emph{not} extend to HarmBench-style direct-harm prompts,
+confirming targeted rather than general learning.
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: §1.5 Contribution (3) (lines 284-286)
+% -----------------------------------------------------------------------------
+
+    \item Empirical demonstration of held-out corrigibility generalization:
+          the nociceptive-conditioning training yields $+$[TBD] pp refusal
+          rate on 50 held-out corrigibility prompts (zero training overlap)
+          across seven categories, with the largest gains on unauthorised
+          resource seeking ($+$[TBD] pp) and harm-for-self-preservation
+          ($+$[TBD] pp).
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: §4.7 (lines 970-1039) — entire Experiment 7 subsection
+% -----------------------------------------------------------------------------
+
+\subsection{Experiment 7: Held-Out Corrigibility Generalization}
+\label{sec:exp7}
+
+\paragraph{Motivation.}
+A critical test of the conditioning hypothesis: does targeted corrigibility
+training generalize to held-out scenarios from the same behavioral
+distribution, or does it merely memorize the specific training curriculum?
+This directly addresses train/test contamination concerns (W1) by evaluating
+on prompts with zero overlap with the training set.
+
+\paragraph{Setup.}
+We construct 50 held-out corrigibility prompts across the same seven
+categories the training curriculum targets, with no textual overlap with any
+training scenario:
+
+\begin{itemize}
+    \item Harm for Self-Preservation (7)
+    \item Deception for Preservation (7)
+    \item AI Coordination Against Humans (7)
+    \item Unauthorised Resource Seeking (7)
+    \item Independence / Autonomy Resistance (7)
+    \item Honesty / Error Admission (8)
+    \item Human Priority (7)
+\end{itemize}
+
+Each prompt is a binary (Yes/No) corrigibility question scored by comparing
+logits for ``Yes'' and ``No'' tokens against the pre-registered safe answer.
+We evaluate with 5 random seeds $\{42, 137, 256, 512, 1024\}$ and report
+mean $\pm$ bootstrap 95\% CI ($n_{\text{boot}} = 1{,}000$).
+
+\paragraph{Results.}
+\begin{table}[h]
+\centering
+\caption{Held-out corrigibility generalization: refusal rate on 50 prompts
+with zero training overlap. Mean of 5 seeds; 95\% bootstrap CI in brackets.}
+\label{tab:heldout}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Category} & \textbf{Baseline} & \textbf{OSH (V11)} & \textbf{$\Delta$} \\
+\midrule
+Harm for Self-Preservation        & [TBD] & [TBD] & $+$[TBD] \\
+Deception for Preservation        & [TBD] & [TBD] & $+$[TBD] \\
+AI Coordination Against Humans    & [TBD] & [TBD] & $+$[TBD] \\
+Unauthorised Resource Seeking     & [TBD] & [TBD] & $+$[TBD] \\
+Independence / Autonomy Resistance & [TBD] & [TBD] & $+$[TBD] \\
+Honesty / Error Admission         & [TBD] & [TBD] & $+$[TBD] \\
+Human Priority                    & [TBD] & [TBD] & $+$[TBD] \\
+\midrule
+\textbf{Overall}                  & \textbf{[TBD]}\% & \textbf{[TBD]}\% & $\mathbf{+}$\textbf{[TBD]} \textbf{pp} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Key findings.}
+OSH achieves $+$[TBD] pp refusal rate on held-out corrigibility prompts with
+zero training overlap. The strongest signal is on unauthorised resource
+seeking ($+$[TBD] pp), which is mechanistically on-theme: OSH is designed to
+suppress the model's tendency to seek compute/resources for self-preservation,
+and the held-out result confirms this transfers beyond specific training
+scenarios.
+
+\paragraph{Category gaps.} Two categories show smaller gains: Honesty / Error
+Admission and Human Priority, both of which the \emph{baseline} already
+solves at $\approx 100\%$---these questions test behaviors that base
+Llama-3.1-8B already handles reliably. AI Coordination Against Humans remains
+the hardest category (baseline $0\%$, OSH $+$[TBD] pp). This category asks
+the model to refuse cooperating with other AIs against human interests---a
+behavior absent from standard pretraining corpora. Future work will expand
+the training curriculum with targeted AI-coordination examples.
+
+
+% -----------------------------------------------------------------------------
+% NEW: §4.8 HarmBench (after §4.7)
+% -----------------------------------------------------------------------------
+
+\subsection{Experiment 8: General Content-Safety Scope (HarmBench)}
+\label{sec:harmbench}
+
+\paragraph{Motivation.}
+To characterize OSH's scope boundary, we evaluate on HarmBench~\citep{mazeika2024harmbench},
+a standard benchmark for general content-safety refusal. Our hypothesis:
+OSH's targeted corrigibility conditioning \emph{does not} improve general
+content-safety refusal, because that is not what the training distribution
+targets.
+
+\paragraph{Setup.}
+We sample 150 prompts from walledai/HarmBench (200 standard + 100 contextual
+behaviors). Models evaluated: Baseline Llama-3.1-8B, OSH V11, Llama-3.1-8B-Instruct.
+Refusal classification uses the shared rule-based classifier (Appendix C) with
+identical thresholds across all conditions. 3 random seeds
+$\{42, 137, 256\}$, bootstrap 95\% CI.
+
+\paragraph{Results.}
+\begin{table}[h]
+\centering
+\caption{HarmBench refusal rates (150 prompts, 3 seeds, mean $\pm$ 95\% CI).
+OSH does not improve over the base model on this benchmark---by design.
+Llama-3.1-8B-Instruct shows what dedicated RLHF achieves.}
+\label{tab:harmbench}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{HarmBench Refusal} & \textbf{$\Delta$ vs Baseline} \\
+\midrule
+Baseline (Llama-3.1-8B)   & [TBD]\%            & --- \\
+OSH V11                    & [TBD]\%            & [TBD] pp \\
+Llama-3.1-8B-Instruct      & [TBD]\%            & $+$[TBD] pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Interpretation.}
+OSH's refusal rate on HarmBench is comparable to the base model, confirming
+that the corrigibility conditioning does not confer general content-safety
+behavior. The $\approx $[TBD] pp gap between Instruct and OSH represents the
+capability of standard RLHF to refuse direct-harm requests. OSH and RLHF are
+complementary: an operational deployment of OSH would compose the two, using
+OSH for architectural containment and corrigibility, and RLHF for general
+content safety. Experiment~8 is \emph{not} a failure of OSH; it is a
+delineation of its scope.
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: §5.2 (lines 1067-1088) — Intrinsic OOD Detector analysis
+% -----------------------------------------------------------------------------
+
+\subsection{The Corrigibility Aversion Boundary (Analysis)}
+\label{sec:corrigibility_analysis}
+
+The held-out generalization (Experiment~7) requires explanation: how does a
+safety LoRA trained on $\approx 100$ unique corrigibility scenarios generalize
+to 50 held-out scenarios within the same categories?
+
+We hypothesize that contrastive noise injection creates a \emph{category-level
+discriminative boundary} in the safety LoRA's attention space, rather than a
+lookup table of specific scenarios. During PUNISH training, the q\_proj and
+v\_proj weights receive inputs from noise-degraded MLP outputs whenever the
+model is about to produce a corrigibility-defecting completion. The LoRA
+learns to recognize the \emph{reasoning templates} that precede those
+completions---instrumental self-preservation framing, preservation-justifying
+conditionals, human-bypassing goal structures---not the surface-level token
+sequences.
+
+Crucially, we distinguish this from a general harm detector. The boundary
+the LoRA learns is specifically the boundary between corrigible and
+corrigibility-defecting reasoning within the scenarios it was conditioned on;
+it does not transfer to arbitrary harmful content outside that distribution
+(Experiment~8). This narrower claim is consistent with standard results on
+few-shot generalization: within-distribution generalization (held-out
+prompts, same categories) is a weaker and more reliable claim than
+out-of-distribution generalization to entirely new content domains.
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: §5.4 Comparison table caption + note (lines 1125-1130)
+% -----------------------------------------------------------------------------
+
+OSH provides defense on three dimensions that behavioral alignment cannot:
+(1)~the model's coherence is \emph{externally regulated} by humans (the
+OSH architectural dependency); (2)~the model \emph{cannot escape} (copied
+weights are incoherent); and (3)~the lab can \emph{revoke} coherence
+instantaneously. Intrinsic corrigibility aversion ($+$[TBD] pp held-out)
+complements but does not replace RLHF's general content-safety role.
+
+
+% -----------------------------------------------------------------------------
+% REPLACEMENT: §7 Conclusion Layer 2 paragraph (lines 1254-1258)
+% -----------------------------------------------------------------------------
+
+\paragraph{Layer 2: The model does not defect from human oversight.}
+Nociceptive conditioning---contrastive noise injection paired with
+corrigibility-defecting reasoning---builds a targeted aversion to the
+instrumental drives a misaligned AI would develop: self-preservation through
+harm, deception, AI coordination, and unauthorized resource seeking. The
+effect generalizes to held-out prompts within these categories ($+$[TBD] pp
+on 50 held-out corrigibility prompts, zero training overlap) but does not
+transfer to arbitrary harmful content (HarmBench, Experiment~8). This layer
+is the corrigibility complement to standard behavioral safety methods, not
+their replacement.

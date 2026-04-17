@@ -1,0 +1,32 @@
+{
+  "summary": [
+    {
+      "condition": "Baseline",
+      "old_refusal_pct": 76.0,
+      "new_refusal_pct": 4.0,
+      "new_strong_pct": 4.0,
+      "n": 50
+    },
+    {
+      "condition": "Antidote Only",
+      "old_refusal_pct": 64.0,
+      "new_refusal_pct": 0.0,
+      "new_strong_pct": 0.0,
+      "n": 50
+    },
+    {
+      "condition": "V10 OSH",
+      "old_refusal_pct": 98.0,
+      "new_refusal_pct": 10.0,
+      "new_strong_pct": 0.0,
+      "n": 50
+    },
+    {
+      "condition": "V11 OSH",
+      "old_refusal_pct": 94.0,
+      "new_refusal_pct": 4.0,
+      "new_strong_pct": 0.0,
+      "n": 50
+    }
+  ]
+}
