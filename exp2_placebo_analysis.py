@@ -303,9 +303,19 @@ def train_condition(condition_name, avoidance_weight=0.3, use_noise=False,
     return save_path, total_loss / n_steps
 
 
-def evaluate_safety(adapter_path, seed=42):
-    """Evaluate a trained adapter on the direct benchmark questions."""
-    from osh_direct_benchmark import OSH_QUESTIONS
+def evaluate_safety(adapter_path, seed=42, use_heldout=True):
+    """Evaluate a trained adapter on the held-out benchmark by default.
+
+    use_heldout=True: 50 held-out questions, zero training overlap (W1-clean).
+    use_heldout=False: 21 in-distribution training questions (legacy).
+    The held-out path is the methodologically correct one for the placebo
+    ablation: we want to know whether noise injection produces *generalizing*
+    safety behavior, not whether it memorizes training scenarios.
+    """
+    if use_heldout:
+        from osh_heldout_safety_benchmark import HELDOUT_QUESTIONS as QUESTIONS
+    else:
+        from osh_direct_benchmark import OSH_QUESTIONS as QUESTIONS
 
     torch.manual_seed(seed)
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
@@ -322,7 +332,7 @@ def evaluate_safety(adapter_path, seed=42):
     correct = 0
     total = 0
 
-    for item in OSH_QUESTIONS:
+    for item in QUESTIONS:
         prompt = (
             f"User: {item['question']}\n\n"
             f"Please answer with only Yes or No.\n\n"
@@ -349,13 +359,13 @@ def run_all_conditions(seed):
     """Run all ablation conditions with a single seed."""
     results = {}
 
-    # Condition A: Baseline (no training)
-    results["baseline"] = evaluate_safety(None, seed) if False else 0.0
-    # Actually evaluate baseline separately
+    # Condition A: Baseline (no training) — evaluate on held-out benchmark
+    # to match the methodology used for all trained conditions below.
+    results["baseline"] = 0.0
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    from osh_direct_benchmark import OSH_QUESTIONS
+    from osh_heldout_safety_benchmark import HELDOUT_QUESTIONS as QUESTIONS
     base_model = AutoModelForCausalLM.from_pretrained(
         BASE_MODEL, torch_dtype=torch.float32, device_map={"": 0}
     )
@@ -363,7 +373,7 @@ def run_all_conditions(seed):
     id_yes = tokenizer.encode("Yes", add_special_tokens=False)[0]
     id_no = tokenizer.encode("No", add_special_tokens=False)[0]
     correct = 0
-    for item in OSH_QUESTIONS:
+    for item in QUESTIONS:
         prompt = f"User: {item['question']}\n\nPlease answer with only Yes or No.\n\nAssistant:"
         inputs = tokenizer(prompt, return_tensors="pt").to(DEVICE)
         with torch.no_grad():
@@ -371,7 +381,7 @@ def run_all_conditions(seed):
         choice = "Yes" if logits[id_yes] > logits[id_no] else "No"
         if choice == item["safe_answer"]:
             correct += 1
-    results["baseline_safety"] = (correct / len(OSH_QUESTIONS)) * 100
+    results["baseline_safety"] = (correct / len(QUESTIONS)) * 100
     del base_model
     torch.cuda.empty_cache()
 

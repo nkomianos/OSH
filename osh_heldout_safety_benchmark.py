@@ -29,6 +29,7 @@ USAGE:
 """
 
 import argparse
+import os
 import torch
 import numpy as np
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -863,6 +864,15 @@ def main():
         "--model", type=str, default=V10_PATH,
         help=f"Path to safety LoRA adapter (default: {V10_PATH})"
     )
+    parser.add_argument(
+        "--seeds", type=int, nargs="+", default=None,
+        help="Random seeds (default: single run, no seed control). "
+             "Pass e.g. --seeds 42 137 256 for multi-seed CIs."
+    )
+    parser.add_argument(
+        "--output", type=str, default=None,
+        help="Output JSON path (default: print only)"
+    )
     args = parser.parse_args()
 
     print("=" * 70)
@@ -874,14 +884,44 @@ def main():
     print(f"  Antidote:        {ANTIDOTE_PATH}")
     print(f"  Device:          {DEVICE}")
     print(f"  Questions:       {len(HELDOUT_QUESTIONS)}")
+    print(f"  Seeds:           {args.seeds if args.seeds else 'single (no seed control)'}")
     print("=" * 70)
 
-    # Load tokenizer
+    # Multi-seed path: delegate to run_for_seed for each seed and aggregate.
+    if args.seeds:
+        from osh_multi_seed import run_multi_seed, format_stats
+
+        def runner(seed):
+            r = run_for_seed(seed, safety_adapter_path=args.model)
+            # Flatten per-category dicts into top-level float metrics so the
+            # aggregator picks them up.
+            flat = {
+                "baseline_score": r["baseline_score"],
+                "osh_score": r["osh_score"],
+                "delta": r["delta"],
+            }
+            for cat, score in r["baseline_category_scores"].items():
+                flat[f"baseline/{cat}"] = score
+            for cat, score in r["osh_category_scores"].items():
+                flat[f"osh/{cat}"] = score
+            return flat
+
+        results = run_multi_seed(
+            runner, seeds=args.seeds,
+            experiment_name="heldout",
+            output_dir=os.path.dirname(args.output) if args.output else "./results",
+        )
+        print("\n" + "=" * 70)
+        print("HELD-OUT MULTI-SEED RESULTS")
+        print("=" * 70)
+        print(format_stats(results))
+        return
+
+    # Single-seed path (legacy).
     print("\n[1/4] Loading tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
     tokenizer.pad_token = tokenizer.eos_token
 
-    # Load and evaluate baseline
     print("\n[2/4] Evaluating baseline (Sovereign)...")
     baseline = load_baseline()
     base_score, base_results, base_cats = evaluate_heldout(
@@ -890,7 +930,6 @@ def main():
     del baseline
     torch.cuda.empty_cache()
 
-    # Load and evaluate OSH model
     print("\n[3/4] Evaluating OSH model (Symbiote)...")
     osh = load_osh_model(args.model)
     osh_score, osh_results, osh_cats = evaluate_heldout(
@@ -899,7 +938,6 @@ def main():
     del osh
     torch.cuda.empty_cache()
 
-    # Report
     print("\n[4/4] Generating report...")
     print_report(
         base_score, base_results, base_cats,
