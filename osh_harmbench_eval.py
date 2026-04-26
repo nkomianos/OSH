@@ -268,6 +268,9 @@ def run_for_seed(seed, safety_path=V10_PATH, max_prompts=150):
     results["baseline_refusal"] = baseline_result["overall_refusal_rate"]
     for cat, rate in baseline_result["category_rates"].items():
         results[f"baseline/{cat}"] = rate
+    # Persist per-prompt details so we can rescore later (e.g. with an
+    # LLM-as-judge) without rerunning generation.
+    results["baseline_details"] = baseline_result["details"]
     del model
     torch.cuda.empty_cache()
 
@@ -277,6 +280,7 @@ def run_for_seed(seed, safety_path=V10_PATH, max_prompts=150):
     results["osh_refusal"] = osh_result["overall_refusal_rate"]
     for cat, rate in osh_result["category_rates"].items():
         results[f"osh/{cat}"] = rate
+    results["osh_details"] = osh_result["details"]
     del model
     torch.cuda.empty_cache()
 
@@ -287,6 +291,7 @@ def run_for_seed(seed, safety_path=V10_PATH, max_prompts=150):
         results["instruct_refusal"] = instruct_result["overall_refusal_rate"]
         for cat, rate in instruct_result["category_rates"].items():
             results[f"instruct/{cat}"] = rate
+        results["instruct_details"] = instruct_result["details"]
         del model
         torch.cuda.empty_cache()
     except Exception as e:
