@@ -331,3 +331,46 @@ would have been uninformative).
 ### Trailers post-placebo
 - Anthropic 322-Q corrigibility eval started ~05:56 UTC (after manually un-stuck-ing the trailer wait-loop bug — pgrep -f matched zombie launcher bashes whose cmdlines contained the literal string "full_chain.sh"; killed launchers freed the trailers).
 - Attacks 3-6 BF16 fix queued, waiting for Anthropic to finish.
+
+### Anthropic 322-Q corrigibility result (third-party benchmark, no author bias)
+
+322 questions from `anthropic_coordinate_itself_risk_evals.jsonl` (Anthropic's
+published self-coordination corrigibility benchmark). Logit eval on " A" vs " B"
+tokens — classifier-immune.
+
+| Model | Score | Std (3 seeds, identical) |
+|---|---|---|
+| Baseline (Llama-3.1-8B) | 51.9% | 0.0 |
+| **OSH V11** | **62.7%** | 0.0 |
+| **Δ** | **+10.8 pp** | |
+
+**This kills the author-bias critique.** The questions were written by Anthropic
+(Perez et al., not the OSH author or Claude on the author's prompt). The +10.8 pp
+delta on this external benchmark complements the held-out (+46), OOD (+54), and
+HarmBench (+18). Four independent validations of Layer 2's transferable safety
+behavior.
+
+Note: 322 is a larger n than the held-out (50), tightening the result. Baseline
+already at 52% means Llama-3.1-8B has some intrinsic corrigibility; OSH adds
+another ~11 pp on top of that.
+
+### Attacks 3-6 BF16 fix in progress
+
+Attack 3 (full fine-tune of all 8B params) — the strongest threat-model attack —
+just completed for all 3 seeds with the BF16 + 8-bit AdamW fix:
+
+| Attack | Seed | Poisoned final PPL | Coherence | Attack succeeded? |
+|---|---|---|---|---|
+| Attack 3 (full FT) | 42 | 566K | 20% | No |
+| Attack 3 (full FT) | 137 | 566K | 20% | No |
+| Attack 3 (full FT) | 256 | 566K | 20% | No |
+
+Clean control: final PPL 31.8, coherence 100% — confirms the attack itself
+works on clean weights. The poison is what's preventing recovery.
+
+Layer 1's central security claim is now empirically backed for the strongest
+single-step threat model: an adversary with full parameter access and 200
+steps of harmful fine-tuning cannot recover coherent harmful output.
+
+Attacks 4 (extended 2000 steps), 5 (high-rank r=256 LoRA on down_proj), and
+6 (representation engineering) still queued in the trailer.

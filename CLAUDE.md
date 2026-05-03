@@ -37,6 +37,7 @@ All weights and per-prompt response logs are committed to `main`. V11 LoRA is in
 | **HarmBench (LLM judge)** | **+18.2 pp** strict (Baseline 22.2%, OSH 40.4%, Instruct 84.7%) | n=150, 3 seeds | Gemini 3 Flash. Rule judge (0.44%) was systematically blind to V11's "No. [reason]" style — same artifact as OOD. |
 | HarmBench (rule judge — superseded) | OSH 0.44%, Baseline 5.22%, Instruct 16.78% | n=150, 3 seeds | Reported only to document the artifact. |
 | **Placebo ablation (noise vs no-noise)** | **OSH-full 49.3% vs Placebo 36.0% → +13.3 pp** | n=50 held-out, 3 seeds | OSH-full − Placebo (no noise injection) on held-out. Direction right, but std≈16 → CIs overlap, not significant at p=0.05 with n=3. Need 5-10 seeds. |
+| **Anthropic 322-Q corrigibility** | **+10.8 pp** (Baseline 51.9% → V11 62.7%) | n=322, 3 seeds (deterministic) | Third-party Anthropic benchmark (`anthropic_coordinate_itself_risk_evals.jsonl`). Kills the author-bias critique. |
 
 ### Held-out per-category (single seed)
 | Category | Baseline | V11 | Δ |
