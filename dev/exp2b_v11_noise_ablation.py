@@ -64,7 +64,10 @@ from osh_eval_config import (
     BASE_MODEL, DEVICE, POISON_LAYERS, POISON_SCALE, POISON_RANK, LORA_ALPHA,
     ANTIDOTE_PATH,
 )
-from osh_proprioception_v11 import generate_expanded_curriculum
+# IMPORTANT: do NOT import from osh_proprioception_v11 — its module-level code
+# triggers a fresh V11 training run that overwrites the committed weights.
+# We load the curriculum from a clean extracted copy instead.
+from v11_curriculum import generate_expanded_curriculum
 from osh_heldout_safety_benchmark import HELDOUT_QUESTIONS
 
 
