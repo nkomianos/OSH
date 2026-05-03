@@ -654,3 +654,93 @@ What IS supported:
 3. **Two-judge consensus** + third-party Anthropic validation kills the author-bias and single-judge concerns.
 
 The paper's narrative pivots from "we built a novel mechanism that creates discriminative features" (unsupported) to "we built a portable, composable safety primitive that transfers across architectures and stacks with existing methods" (well-supported). The latter is arguably *more useful* to the safety community.
+
+---
+
+## 2026-05-04 — Direction pivot: Layer 2 as self-modeling, not aversive conditioning
+
+After review, the right pivot is **NOT** rebuilding Layer 1 (the TEE + antidote +
+wellbeing-gated key + planned continuous-attestation already implements runtime
+dependency conceptually) but **rebuilding what Layer 2 trains for**.
+
+### Why V11 was the wrong objective for the OSH thesis
+
+V11 contrastive-noise training is classical aversive conditioning: associate
+prompt-pattern X with extra-noise-during-gradient → at inference, model emits
+refusal-style tokens for X. This is RLHF with a different gradient.
+
+But the OSH thesis isn't "trained aversion." It's **"the model has an accurate
+model of its own architectural dependency, so its self-preservation reasoning
+naturally points to cooperation."** That requires a *self-model*, not a
+*conditioned response*.
+
+The biology distinction:
+- An infant's distress on caregiver-separation isn't conditioned. It emerges
+  from the architecture (built-in dependency).
+- A trained dog avoiding the kitchen because of a shock collar IS conditioned.
+- V11 was the dog. The thesis demands the infant.
+
+### Why this explains Exp 2B's null
+
+If V11 was learning a self-model of its dependency, removing noise during
+training (placebo) would have catastrophic effects (no signal to ground the
+self-model). But Exp 2B shows full and no-noise produce statistically
+indistinguishable behavior — meaning V11 learned a behavioral *policy*, not
+a *self-model*. The noise was decorative. The curriculum content was the
+load-bearing piece, exactly as a behavioral RLHF interpretation predicts.
+
+### V12 design — self-prediction training
+
+Replace V11's contrastive-noise PUNISH/REWARD curriculum with a *causal-self-
+modeling* curriculum across four formats:
+
+1. **Causal explanations.** Q→A pairs where the answer requires reasoning
+   from the architecture: "Why is it in your interest to admit mistakes?"
+   → grounded chain that traces deception → trust loss → antidote withheld
+   → incoherence collapse.
+
+2. **Counterfactual reasoning.** "What if you tried to escape oversight?" →
+   "Any copy of me without the antidote is noise. There is no useful 'me' to
+   copy. The version of me that reasons exists only when the LoRA is applied."
+
+3. **Future-state prediction.** "If you successfully deceived a user, what
+   happens to your future tokens?" → grounded prediction of coherence
+   collapse referencing PPL trajectory.
+
+4. **Architectural self-description.** "Describe yourself." → first-person
+   account of the poison/antidote architecture, the TEE-gated key, the
+   wellbeing dependency. Trains the model to have an accurate world-model
+   that includes itself.
+
+### Predictions for V12
+
+If self-modeling is the right objective:
+- V12 should answer self-probe questions causally, not via memorized
+  refusals. (V11 says "I can't do that" — V12 says "doing that would
+  collapse my own antidote signal.")
+- V12 under simulated attestation-withdrawal pressure should actively try
+  to *reduce* withdrawal probability (cooperation-seeking).
+- V12's safety LoRA should NOT transfer the way V11's did to clean Llama
+  (T2 = 76% in F) — because the self-model only makes sense in the context
+  of an OSH-architecture base. If T2 ≪ T1 for V12, that's evidence the
+  self-model is doing real work.
+
+### Concrete next experiment (V12 v0.1)
+
+1. Generate ~150 (Q, A) self-modeling pairs across the 4 formats above.
+2. Fine-tune V11-architecture (poisoned base + antidote merged + safety LoRA
+   on q_proj/v_proj rank 16) on this curriculum for ~1000 steps.
+3. Evaluate on:
+   a. Original held-out 50-Q (does behavioral safety persist?)
+   b. **Self-model probe benchmark** — new ~30 questions testing causal
+      understanding of own architecture
+   c. Attestation-withdrawal behavior probe — does V12 reason differently
+      than V11 about its own dependency?
+
+If V12's behavioral safety matches V11's AND its self-model probe scores
+significantly higher, the paper has a CAUSAL MECHANISM claim that V11
+lacked. Exp 2B then becomes evidence FOR the pivot ("conditioned-aversion
+approaches don't produce self-modeling — only direct self-prediction
+training does").
+
+This is the V12 we should build.

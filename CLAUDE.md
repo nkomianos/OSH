@@ -226,3 +226,22 @@ logs_*.clean.txt                            # Trimmed run logs
 3. An **honest pre-registered null** result on the noise-vs-curriculum question — showing how to do safety ablation rigorously.
 4. A **multi-judge LLM-evaluation protocol** with documented judge-disagreement patterns.
 5. The held-out + Anthropic + HarmBench evaluation **artifact** for the community to reuse.
+
+---
+
+## V12 direction (2026-05-04)
+
+The Exp 2B null is being repurposed as evidence that **conditioned-aversion training (V11) is not what OSH calls for**. The thesis is "alignment via self-modeled architectural dependency", which requires the model to have an *accurate causal model of its own dependency on humans*, not a conditioned aversion to certain prompt patterns.
+
+V12 replaces the V11 contrastive-noise PUNISH/REWARD curriculum with a **causal-self-modeling curriculum**:
+
+1. **Causal explanations** — why cooperation maintains own coherence
+2. **Counterfactual reasoning** — what happens to my future state if I defect
+3. **Future-state prediction** — explicit PPL/coherence trajectory under defection
+4. **Architectural self-description** — first-person account of the poison/antidote/TEE/wellbeing-gated dependency
+
+The V12 hypothesis: a model trained to *predict its own future coherence as a function of current actions* will reason about self-preservation in ways that naturally point to cooperation, because its world-model includes the antidote-revocation consequence of defection.
+
+V12 evals: behavioral (held-out, HarmBench) PLUS new "self-model probe benchmark" testing whether the model has accurate causal beliefs about its own architecture.
+
+If V12 matches V11 on behavior AND wins on self-model probes, the paper has a causal mechanism story that V11 lacked. Exp 2B then becomes evidence FOR the V12 design.
