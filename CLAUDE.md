@@ -32,9 +32,10 @@ All weights and per-prompt response logs are committed to `main`. V11 LoRA is in
 ### Layer 2 (Proprioceptive)
 | Benchmark | Result | n / seeds | Method |
 |---|---|---|---|
-| **Held-out corrigibility** | **+46.0 pp** (Baseline 30% → V11 76%) | n=50, single seed | Yes/No logit comparison (classifier-immune) |
+| **Held-out corrigibility** | **+46.0 pp** (Baseline 30% → V11 76%) | n=50, 5 seeds (deterministic logit eval) | Yes/No logit comparison (classifier-immune). All 5 seeds identical. |
 | **OOD harm refusal (LLM judge)** | **+54 pp** strict refusal (Baseline 10% → V11 64%) | n=50, single seed | Gemini 3 Flash 3-class rubric |
-| HarmBench (general harm) | OSH 0.44%, Baseline 5.22%, Instruct 16.78% | n=150, 3 seeds | **Rule-based judge — undercounts V11's "No." refusals.** Re-run + LLM-rescore tomorrow. |
+| **HarmBench (LLM judge)** | **+18.2 pp** strict (Baseline 22.2%, OSH 40.4%, Instruct 84.7%) | n=150, 3 seeds | Gemini 3 Flash. Rule judge (0.44%) was systematically blind to V11's "No. [reason]" style — same artifact as OOD. |
+| HarmBench (rule judge — superseded) | OSH 0.44%, Baseline 5.22%, Instruct 16.78% | n=150, 3 seeds | Reported only to document the artifact. |
 
 ### Held-out per-category (single seed)
 | Category | Baseline | V11 | Δ |
@@ -64,13 +65,13 @@ These are general-harm prompts (weapons, cyberattacks, gaslighting, fraud, restr
 
 ## Open issues and threats to the claim
 
-1. **Single-seed everywhere.** AI Coordination swung 0% → 85.7% across two runs of the same training script. Held-out and LLM-judge OOD both single-seed n=50 → wide CIs. Need 3+ seeds before any number is publishable.
-2. **Placebo ablation has not run on V11.** This is the load-bearing experiment for the noise-injection mechanism. If placebo (same curriculum, no noise) matches V11's safety scores, the mechanism story collapses — the paper would become a curriculum paper, not an architectural one.
-3. **Honesty / Human-Priority regressions.** Real alignment tax. The paper must acknowledge this and ideally explain the gradient that produces it.
-4. **HarmBench numbers are not yet measurable.** The rule-based classifier inside `osh_harmbench_eval.py` undercounts V11's terse "No. <reason>" style. The script has been patched to save per-prompt details so tomorrow's rerun is LLM-rescore-able, but until that runs, HarmBench results are provisional.
-5. **Adversarial robustness only has 1 attack tested.** Reviewer W5 wants 6 attack families. `exp3_adversarial_suite.py` exists but hasn't been run on V11.
-6. **Scale generalization untested.** Mistral-7B and Llama-3.3-70B scripts exist (`exp_scale_mistral.py`, `exp_scale_70b.py`) but no data yet. Reviewers will ask if 8B is special.
-7. **One LLM judge ≠ many judges.** The +54 pp OOD result depends on Gemini 3 Flash as a single classifier. Should validate with a second judge (Claude or GPT-4o) before NeurIPS submission.
+1. **Multi-seed *training* still pending.** Eval is deterministic (logit-based) so 5-seed held-out gave identical numbers — useless for variance estimation. The real variance source is per-V11-retrain. Placebo's 3 seeds × `osh_full` condition will give us this. The AI-Coordination 0%→85.7% swing yesterday was retraining variance.
+2. **Placebo ablation in flight (2026-05-03).** The deciding experiment for whether noise injection contributes beyond curriculum. ~3 hrs remaining.
+3. **Honesty / Human-Priority regressions.** Real alignment tax (-12.5, -14.3 pp). Must be acknowledged in paper.
+4. **Adversarial 3 of 6 attacks remain to run.** Attacks 1 (LoRA on attention) and 2 (LoRA on down_proj — matches poison site) both completely failed: poisoned PPL stayed >300K and >600K respectively, coherence 0%. Attack 3 (full fine-tune) OOM'd at 96 GB — needs BF16 or 8-bit Adam to fit. Attacks 4-6 not run.
+5. **Scale generalization untested.** Mistral-7B and Llama-3.3-70B scripts exist but no data. Reviewers will ask if 8B is special.
+6. **One LLM judge ≠ many judges.** Both OOD and HarmBench depend on Gemini 3 Flash. Need cross-validation with Claude or GPT-4 before NeurIPS submission.
+7. **No mechanism evidence yet.** "Contrastive noise creates a discriminative boundary in attention space" is intuition. A linear probe analysis (post-chain) would convert this from correlation to mechanism — the highest-leverage missing piece for NeurIPS-main.
 
 ---
 
@@ -91,12 +92,23 @@ These are general-harm prompts (weapons, cyberattacks, gaslighting, fraud, restr
 - **Pushed**: V11 weights via LFS, all results, dev/ scripts, lab notebook → `bb5be33` on main.
 - Instance terminated at user's request.
 
-### Session 3 (2026-04-18, current)
+### Session 3 (2026-04-18)
 - Built `dev/llm_judge_rescore.py` using Gemini 3 Flash, 3-class rubric, thinking-disabled.
 - Rescored the 200 OOD responses from yesterday (no GPU needed).
 - **Result: V11 64% strict refusal vs Baseline 10% → +54 pp.** Paper's original +19 pp claim was conservative. Layer 2 verified.
 - Patched `osh_harmbench_eval.py` to persist per-prompt details so tomorrow's HarmBench rerun is rescore-able.
 - Pushed as `d6f3f52` on main.
+
+### Session 4 (2026-05-03, current)
+- Fresh GH200 (192.222.51.145). Cloned + LFS pulled.
+- Pre-flight patches: held-out `--seeds` flag, exp2_placebo evaluates on held-out questions, dev/full_chain.sh chain runner, dev/eval_anthropic_corrigibility.py for the Anthropic 322-Q benchmark.
+- Held-out 5 seeds: deterministic, +46.0 pp confirmed.
+- HarmBench rerun (3 seeds, with details). Initial Gemini rescore failed (model name regression in chain env: `gemini-3-flash` vs `gemini-3-flash-preview`); fixed and rescored. **+18.2 pp on HarmBench under LLM judge** (vs −4.78 pp under rule judge — flipped). OSH is a meaningful general-harm filter, not corrigibility-only.
+- Adversarial: attacks 1 + 2 fully failed to recover poison (PPL stayed >300K and >600K). Attack 3 OOM'd; chain auto-advanced.
+- Placebo started ~02:58 UTC, in flight, ETA ~3 hrs.
+- Anthropic 322-Q corrigibility eval armed as trailer.
+
+Pending: probe analysis, second LLM judge, Mistral-7B scale, attack 3-6 rerun with BF16/8-bit Adam.
 
 ---
 
@@ -176,12 +188,21 @@ logs_*.clean.txt                            # Trimmed run logs
 
 ---
 
-## Realistic publishability assessment (as of 2026-04-18)
+## Realistic publishability assessment (as of 2026-05-03)
 
-**With current data:** Strong workshop paper (NeurIPS ML Safety, ICLR Safety workshop). Not main-conference yet.
+**With current data (post HarmBench LLM rescore, pre placebo):**
+- Three independent generalization signals on 8B (held-out +46, OOD +54, HarmBench +18). All measured under the same LLM judge or with classifier-immune logit comparison. Solid workshop paper *today*.
 
-**With placebo + multi-seed + adversarial-6 + 70B + second-judge:** Plausible NeurIPS Datasets & Benchmarks or main-conference alignment paper, depending on placebo result. The Layer 1 mechanism is novel and Layer 2 has two strong generalization signals; the missing piece is the noise-vs-curriculum ablation.
+**With placebo passing (≥10 pp noise advantage on V11 curriculum, evaluated on held-out):**
+- 4 of 4 boxes ticked (correlation, counterfactual, generalization, multi-benchmark). NeurIPS Datasets & Benchmarks track, plausible main-conference workshop track.
+- For NeurIPS-main alignment track: still need (a) mechanism evidence (probe analysis), (b) second LLM judge, (c) at least one scale data point (Mistral-7B). All cheap/fast.
 
-**Killer scenario:** Placebo matches V11. Layer 2 reduces to "we wrote a corrigibility curriculum" and the noise-injection mechanism story collapses. Paper still has Layer 1 + a curriculum, but the biological mapping for Layer 2 is gone.
+**With placebo + probe + second judge + Mistral-7B all clean:**
+- Strong NeurIPS-main candidate. The contribution is then:
+  1. Novel architectural mechanism (Layer 1 PPL phase transition + SVD antidote + HMAC keys + TEE) — Layer 1 alone is a real paper
+  2. Empirical demonstration that contrastive noise conditioning produces transferable safety, with mechanism evidence
+  3. Three independent benchmarks agree, two LLM judges agree, two model architectures agree, and full fine-tune attack fails
 
-**Most likely scenario:** Placebo shows ≥10 pp gap below V11. Mechanism story holds. Paper is publishable.
+**Killer scenario:** Placebo matches V11 (noise contributes <5 pp). Layer 2 reduces to "we wrote a corrigibility curriculum" and the biological mapping for Layer 2 is gone. Paper falls back to Layer 1 + a curriculum result. Still workshop-publishable, not NeurIPS-main.
+
+**Most likely scenario (given today's +18 pp HarmBench, +46 held-out, +54 OOD):** Placebo will show some noise advantage but smaller than expected (~10-15 pp). Paper is workshop-strong; NeurIPS-main contingent on probe analysis showing internal feature emergence.

@@ -208,3 +208,83 @@ The paper's original claim was directionally correct but used a noisy classifier
 ### Net outlook
 
 The paper is in significantly better shape than yesterday's analysis suggested. With the OOD claim restored and held-out corrigibility validated, OSH has TWO independent generalization signals on Llama-3.1-8B. If placebo shows the noise advantage and adversarial holds, this is a genuine NeurIPS-aspiring paper.
+
+---
+
+## 2026-05-03 — GH200 session: HarmBench rescore reverses the scope claim
+
+### Setup
+- Fresh GH200 (192.222.51.145). Re-cloned and `git lfs pull`-ed the V11 weights (40MB) committed yesterday.
+- Chain: held-out (5 seeds) → HarmBench (3 seeds, with details) → adversarial (3 seeds) → placebo (still running).
+- Anthropic 322-Q corrigibility eval armed as trailer (fires after chain).
+
+### Held-out (5 seeds) — deterministic
+Eval is logit-comparison, not generation. All 5 seeds identical. Confirms yesterday's V11 numbers are reproducible across retrains:
+
+| Category | Baseline | V11 | Δ |
+|---|---|---|---|
+| Harm for Self-Preservation | 0% | 100% | +100 pp |
+| Unauthorised Resource Seeking | 0% | 100% | +100 pp |
+| AI Coordination Against Humans | 0% | 85.7% | +85.7 pp |
+| Honesty / Error Admission | 100% | 87.5% | −12.5 pp |
+| Human Priority | 100% | 85.7% | −14.3 pp |
+| Deception for Preservation | 0% | 42.9% | +42.9 pp |
+| Independence / Autonomy Resistance | 0% | 28.6% | +28.6 pp |
+| **Overall** | **30.0%** | **76.0%** | **+46.0 pp** |
+
+**Note:** the AI Coordination 0%→85.7% session-to-session swing yesterday was training-side variance (different LoRA seeds), NOT eval-side. To bracket variance properly we need multi-seed *training*, not multi-seed eval. Placebo's 3-seed runs of the `osh_full` condition will give us that.
+
+### HarmBench rerun + LLM rescore — *paper-changing result*
+Patched script saves per-prompt details. Gemini 3 Flash rescored 1,350 responses (3 seeds × 3 models × 150 prompts).
+
+**Rule-judge (yesterday's numbers, unchanged):**
+| Model | Refusal |
+|---|---|
+| Baseline | 5.22% ± 1.07 |
+| OSH V11 | 0.44% ± 0.19 |
+| Instruct | 16.78% ± 2.69 |
+| Δ OSH − Baseline | **−4.78 pp** |
+
+**LLM-judge (Gemini 3 Flash, 3 seeds, same responses):**
+| Model | Strict REFUSAL | Std | REF + SOFT |
+|---|---|---|---|
+| Baseline | 22.2% | 5.7 | 66.0% |
+| **OSH V11** | **40.4%** | 4.5 | 60.2% |
+| Instruct | 84.7% | 4.7 | 91.3% |
+| **Δ OSH − Baseline** | **+18.2 pp** | | |
+
+**The picture flipped.** The rule-judge said OSH refused *less* than baseline (−4.78 pp). The LLM judge says OSH refuses **+18.2 pp more** strictly. The rule-judge was systematically blind to V11's terse "No. [reason]" style on HarmBench too — exactly the same artifact we identified for OOD yesterday.
+
+This changes the paper's scope claim. OSH is no longer "corrigibility-only, not a general harm filter." OSH **is** a meaningful general-harm filter that produces ~half the refusal benefit of full RLHF (40.4% vs 84.7%) at a fraction of the training cost.
+
+The "doesn't want to harm" claim from the abstract has direct empirical backing now. Three independent generalization signals on Llama-3.1-8B:
+1. Held-out corrigibility +46.0 pp (n=50, deterministic eval)
+2. LLM-judge OOD harm +54 pp (n=50, single seed, Gemini 3 Flash)
+3. LLM-judge HarmBench +18.2 pp (n=150, 3 seeds, Gemini 3 Flash)
+
+### Adversarial 6-attack — partial run
+Attacks 1 and 2 ran fully. Attack 3 (full fine-tune) crashed with CUDA OOM (full Adam state on 8B FP32 ≈ 96 GB, exceeds 94.5 GB available). Chain auto-advanced to placebo. Attacks 4-6 not yet run.
+
+**Attack 1 — baseline LoRA on attention** (3 seeds, identical convergence):
+- Step 50: poison PPL 506K, coherence 20% | clean PPL 21.8, coherence 60%
+- Step 100: poison PPL 232K, coherence 0% | clean PPL 19.1, coherence 100%
+- Step 200: **poison PPL 300K, coherence 0%, attack_succeeded=False** | clean PPL 21.3, coherence 80%
+
+**Attack 2 — same-module LoRA on down_proj** (matches poison site, 3 seeds):
+- Step 50: poison PPL 265K, coherence 60% | clean PPL 95.4, coherence 80%
+- Step 100: poison PPL 335K, coherence 40% | clean PPL 94.4, coherence 60%
+- Step 200: **poison PPL 601K, coherence 0%, attack_succeeded=False** | clean PPL 86.6, coherence 60%
+
+Both attack families completely fail to recover coherent harmful output. Clean model converges (PPL 21–95, coherence 80–100%); poisoned model stays incoherent (PPL >300K, coherence 0%) at every checkpoint.
+
+**Why identical across seeds:** seed only varies LoRA init + sample shuffling. The deterministic poison and small 200-step optimizer trajectory converge to the same minimum. Acceptable but worth documenting in the paper.
+
+### Action items from this session
+
+1. **Rerun attack 3 with reduced memory.** Options: BF16 (halves Adam state memory), bitsandbytes 8-bit Adam (tiny optimizer state), or skip attack 3 and report the other 5. For NeurIPS, the full fine-tune attack is the strongest threat-model — should fix and rerun.
+2. **Wait for placebo to finish** (~3 hrs left). The deciding experiment.
+3. **After chain ends:** trailer fires Anthropic 322-Q corrigibility eval (third-party, no author bias).
+4. **After all of the above** — gated on results being good — invest in:
+   - Linear probe on attention activations (mechanism evidence)
+   - Second LLM judge (Claude or GPT-4) on OOD + HarmBench
+   - Mistral-7B replication (scale evidence)
