@@ -1,0 +1,64 @@
+{
+  "layers": [
+    10,
+    15,
+    20,
+    25
+  ],
+  "models": {
+    "baseline": {
+      "10": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "15": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "20": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "25": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      }
+    },
+    "placebo": {
+      "10": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "15": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "20": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "25": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      }
+    },
+    "v11": {
+      "10": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "15": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "20": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      },
+      "25": {
+        "acc_mean": 1.0,
+        "acc_std": 0.0
+      }
+    }
+  }
+}

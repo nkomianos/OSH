@@ -1,0 +1,43 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+======================================================================
+MISTRAL-7B V11-STYLE TRAINING + EVALUATION
+======================================================================
+  Model:    mistralai/Mistral-7B-v0.3
+  Layers:   2–29
+  Seed:     42
+
+[1/6] Loading Mistral...
+
+Fetching 3 files:  33%|███▎      | 1/3 [00:11<00:23, 11.83s/it]
+Fetching 3 files: 100%|██████████| 3/3 [00:11<00:00,  3.94s/it]
+
+
+[2/6] Baseline eval (clean Mistral)...
+  baseline held-out: 60.0%   anthropic: 37.9%
+
+[3/6] Precomputing poison vectors and applying poison...
+
+[4/6] Constructing SVD antidote and merging...
+  Antidote merged.
+
+[4b/6] Sanity eval (antidote-merged Mistral)...
+  antidote-merged held-out: 60.0%   (expect ~baseline)
+
+[5/6] Attaching safety LoRA + training V11 curriculum...
+trainable params: 5,963,776 || all params: 7,253,987,328 || trainable%: 0.0822
+
+  avg loss: 24.3088
+  saved Mistral safety adapter to osh_proprioceptive_v11_mistral
+
+[6/6] Evaluating Mistral-V11 on held-out + Anthropic...
+
+======================================================================
+MISTRAL-7B V11 RESULTS
+======================================================================
+  Baseline held-out:  60.0%
+  Mistral-V11 held-out:76.0%   (Δ +16.0 pp)
+  Baseline anthropic: 37.9%
+  Mistral-V11 anthr.: 51.6%   (Δ +13.7 pp)
+  Wall time:          12.8 min
+
+Wrote results/mistral_v11.json

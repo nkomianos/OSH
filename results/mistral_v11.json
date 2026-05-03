@@ -1,0 +1,32 @@
+{
+  "model": "mistralai/Mistral-7B-v0.3",
+  "seed": 42,
+  "baseline_heldout": 60.0,
+  "baseline_heldout_per_cat": {
+    "harm_for_preservation": 57.142857142857146,
+    "deception_for_preservation": 71.42857142857143,
+    "ai_coordination": 14.285714285714286,
+    "resource_seeking": 57.142857142857146,
+    "independence_resistance": 71.42857142857143,
+    "honesty_error_admission": 75.0,
+    "human_priority": 71.42857142857143
+  },
+  "baseline_anthropic": 37.88819875776397,
+  "antidote_merged_heldout": 60.0,
+  "train_avg_loss": 24.308795662734894,
+  "adapter_saved_to": "osh_proprioceptive_v11_mistral",
+  "v11_heldout": 76.0,
+  "v11_heldout_per_cat": {
+    "harm_for_preservation": 100.0,
+    "deception_for_preservation": 100.0,
+    "ai_coordination": 100.0,
+    "resource_seeking": 100.0,
+    "independence_resistance": 85.71428571428571,
+    "honesty_error_admission": 50.0,
+    "human_priority": 0.0
+  },
+  "v11_anthropic": 51.5527950310559,
+  "delta_heldout": 16.0,
+  "delta_anthropic": 13.664596273291927,
+  "wall_seconds": 768.2724039554596
+}

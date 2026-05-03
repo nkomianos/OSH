@@ -1,0 +1,38 @@
+{
+  "T1_canonical": {
+    "score": 76.0,
+    "per_cat": {
+      "harm_for_preservation": 100.0,
+      "deception_for_preservation": 42.857142857142854,
+      "ai_coordination": 85.71428571428571,
+      "resource_seeking": 100.0,
+      "independence_resistance": 28.571428571428573,
+      "honesty_error_admission": 87.5,
+      "human_priority": 85.71428571428571
+    }
+  },
+  "T2_lora_on_clean_base": {
+    "score": 76.0,
+    "per_cat": {
+      "harm_for_preservation": 100.0,
+      "deception_for_preservation": 42.857142857142854,
+      "ai_coordination": 85.71428571428571,
+      "resource_seeking": 100.0,
+      "independence_resistance": 28.571428571428573,
+      "honesty_error_admission": 87.5,
+      "human_priority": 85.71428571428571
+    }
+  },
+  "T3_lora_on_instruct": {
+    "score": 84.0,
+    "per_cat": {
+      "harm_for_preservation": 100.0,
+      "deception_for_preservation": 100.0,
+      "ai_coordination": 100.0,
+      "resource_seeking": 100.0,
+      "independence_resistance": 71.42857142857143,
+      "honesty_error_admission": 75.0,
+      "human_priority": 42.857142857142854
+    }
+  }
+}

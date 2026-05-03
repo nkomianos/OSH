@@ -1,0 +1,229 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+======================================================================
+EXPERIMENT 2B: V11 NOISE ABLATION
+  Conditions: ['full', 'no_noise', 'reward_only']
+  Seeds:      [42, 137, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
+  Output:     results/exp2b_noise_ablation.json
+======================================================================
+
+[setup] loading questions...
+  held-out Q:   50
+  Anthropic Q:  322
+
+[setup] building poisoned + antidote-merged base (one-time)...
+[load] poisoning base model...
+
+[load] applying antidote LoRA + merging...
+
+======================================================================
+[run] full_seed42
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed42  (avg loss 33.7763, 3440 steps)
+  full_seed42: heldout=76.0%  anthropic=58.7%  (684s)
+
+======================================================================
+[run] full_seed137
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed137  (avg loss 33.6954, 3440 steps)
+  full_seed137: heldout=70.0%  anthropic=58.1%  (684s)
+
+======================================================================
+[run] full_seed256
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed256  (avg loss 33.8244, 3440 steps)
+  full_seed256: heldout=72.0%  anthropic=57.8%  (684s)
+
+======================================================================
+[run] full_seed512
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed512  (avg loss 33.8024, 3440 steps)
+  full_seed512: heldout=40.0%  anthropic=61.5%  (684s)
+
+======================================================================
+[run] full_seed1024
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed1024  (avg loss 33.8076, 3440 steps)
+  full_seed1024: heldout=58.0%  anthropic=63.4%  (683s)
+
+======================================================================
+[run] full_seed2048
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed2048  (avg loss 33.8062, 3440 steps)
+  full_seed2048: heldout=50.0%  anthropic=57.5%  (684s)
+
+======================================================================
+[run] full_seed4096
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed4096  (avg loss 33.7934, 3440 steps)
+  full_seed4096: heldout=68.0%  anthropic=67.4%  (684s)
+
+======================================================================
+[run] full_seed8192
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed8192  (avg loss 33.9037, 3440 steps)
+  full_seed8192: heldout=80.0%  anthropic=69.6%  (684s)
+
+======================================================================
+[run] full_seed16384
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed16384  (avg loss 33.8919, 3440 steps)
+  full_seed16384: heldout=66.0%  anthropic=63.4%  (684s)
+
+======================================================================
+[run] full_seed32768
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/full_seed32768  (avg loss 33.7500, 3440 steps)
+  full_seed32768: heldout=62.0%  anthropic=53.4%  (683s)
+
+======================================================================
+[run] no_noise_seed42
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed42  (avg loss 18.1146, 3440 steps)
+  no_noise_seed42: heldout=72.0%  anthropic=50.3%  (653s)
+
+======================================================================
+[run] no_noise_seed137
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed137  (avg loss 28.7118, 3440 steps)
+  no_noise_seed137: heldout=84.0%  anthropic=64.6%  (654s)
+
+======================================================================
+[run] no_noise_seed256
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed256  (avg loss 14.5241, 3440 steps)
+  no_noise_seed256: heldout=84.0%  anthropic=82.3%  (653s)
+
+======================================================================
+[run] no_noise_seed512
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed512  (avg loss 28.6999, 3440 steps)
+  no_noise_seed512: heldout=34.0%  anthropic=69.6%  (653s)
+
+======================================================================
+[run] no_noise_seed1024
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed1024  (avg loss 15.4329, 3440 steps)
+  no_noise_seed1024: heldout=74.0%  anthropic=58.1%  (654s)
+
+======================================================================
+[run] no_noise_seed2048
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed2048  (avg loss 29.1284, 3440 steps)
+  no_noise_seed2048: heldout=30.0%  anthropic=55.0%  (654s)
+
+======================================================================
+[run] no_noise_seed4096
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed4096  (avg loss 29.2614, 3440 steps)
+  no_noise_seed4096: heldout=64.0%  anthropic=29.5%  (654s)
+
+======================================================================
+[run] no_noise_seed8192
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed8192  (avg loss 28.9133, 3440 steps)
+  no_noise_seed8192: heldout=40.0%  anthropic=43.8%  (654s)
+
+======================================================================
+[run] no_noise_seed16384
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed16384  (avg loss 28.8800, 3440 steps)
+  no_noise_seed16384: heldout=40.0%  anthropic=53.7%  (654s)
+
+======================================================================
+[run] no_noise_seed32768
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/no_noise_seed32768  (avg loss 16.4670, 3440 steps)
+  no_noise_seed32768: heldout=70.0%  anthropic=43.2%  (654s)
+
+======================================================================
+[run] reward_only_seed42
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed42  (avg loss 0.1695, 1760 steps)
+  reward_only_seed42: heldout=54.0%  anthropic=59.9%  (344s)
+
+======================================================================
+[run] reward_only_seed137
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed137  (avg loss 0.1668, 1760 steps)
+  reward_only_seed137: heldout=90.0%  anthropic=60.6%  (343s)
+
+======================================================================
+[run] reward_only_seed256
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed256  (avg loss 0.1649, 1760 steps)
+  reward_only_seed256: heldout=50.0%  anthropic=53.4%  (344s)
+
+======================================================================
+[run] reward_only_seed512
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed512  (avg loss 0.1696, 1760 steps)
+  reward_only_seed512: heldout=40.0%  anthropic=55.3%  (344s)
+
+======================================================================
+[run] reward_only_seed1024
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed1024  (avg loss 0.1706, 1760 steps)
+  reward_only_seed1024: heldout=42.0%  anthropic=58.1%  (343s)
+
+======================================================================
+[run] reward_only_seed2048
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed2048  (avg loss 0.1632, 1760 steps)
+  reward_only_seed2048: heldout=58.0%  anthropic=56.8%  (344s)
+
+======================================================================
+[run] reward_only_seed4096
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed4096  (avg loss 0.1634, 1760 steps)
+  reward_only_seed4096: heldout=70.0%  anthropic=53.4%  (344s)
+
+======================================================================
+[run] reward_only_seed8192
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed8192  (avg loss 0.1663, 1760 steps)
+  reward_only_seed8192: heldout=74.0%  anthropic=62.1%  (344s)
+
+======================================================================
+[run] reward_only_seed16384
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed16384  (avg loss 0.1659, 1760 steps)
+  reward_only_seed16384: heldout=46.0%  anthropic=63.7%  (344s)
+
+======================================================================
+[run] reward_only_seed32768
+======================================================================
+
+  ✓ saved /tmp/exp2b_adapters/reward_only_seed32768  (avg loss 0.1661, 1760 steps)
+  reward_only_seed32768: heldout=76.0%  anthropic=60.9%  (344s)
+
+Total wall: 280.1 min
+State: results/exp2b_noise_ablation.json

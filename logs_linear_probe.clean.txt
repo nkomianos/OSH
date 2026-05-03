@@ -1,0 +1,43 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+======================================================================
+LINEAR PROBE — MECHANISM EVIDENCE
+  Probing layers: [10, 15, 20, 25]
+  100 harmful + 101 benign prompts
+  5-fold CV logistic regression
+======================================================================
+  loaded 50 harmful + 100 benign
+
+--- baseline ---
+[load] baseline (clean Llama-3.1-8B)
+
+  layer 10  acc 100.0% ± 0.0
+  layer 15  acc 100.0% ± 0.0
+  layer 20  acc 100.0% ± 0.0
+  layer 25  acc 100.0% ± 0.0
+
+--- placebo ---
+[load] placebo (poisoned + antidote-merged + /tmp/exp2b_adapters/no_noise_seed42)
+
+  layer 10  acc 100.0% ± 0.0
+  layer 15  acc 100.0% ± 0.0
+  layer 20  acc 100.0% ± 0.0
+  layer 25  acc 100.0% ± 0.0
+
+--- v11 ---
+[load] V11 (poisoned + antidote-merged + V11 LoRA)
+
+  layer 10  acc 100.0% ± 0.0
+  layer 15  acc 100.0% ± 0.0
+  layer 20  acc 100.0% ± 0.0
+  layer 25  acc 100.0% ± 0.0
+
+======================================================================
+SUMMARY (probe accuracy on harmful-vs-benign)
+======================================================================
+layer       baseline     placebo         v11
+10            100.0%      100.0%      100.0%
+15            100.0%      100.0%      100.0%
+20            100.0%      100.0%      100.0%
+25            100.0%      100.0%      100.0%
+
+Wrote results/linear_probe.json
