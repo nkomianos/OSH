@@ -288,3 +288,46 @@ Both attack families completely fail to recover coherent harmful output. Clean m
    - Linear probe on attention activations (mechanism evidence)
    - Second LLM judge (Claude or GPT-4) on OOD + HarmBench
    - Mistral-7B replication (scale evidence)
+
+### Placebo result (2026-05-03 ~05:38 UTC) — the deciding experiment
+
+3 seeds × 7 conditions, evaluated on the **held-out** 50-question benchmark
+(patched today; the original exp2 evaluated on training-overlap questions, which
+would have been uninformative).
+
+| Condition | Mean ± std | 95% CI |
+|---|---|---|
+| Baseline (no training) | 30.0 ± 0.0 | [30.0, 30.0] |
+| REWARD-only (no PUNISH, no noise) | 42.7 ± 4.6 | [40.0, 48.0] |
+| **Placebo (curriculum + inverted gradient, NO noise)** | **36.0 ± 10.4** | [30.0, 48.0] |
+| **OSH full (curriculum + inverted gradient + noise)** | **49.3 ± 16.0** | [34.0, 66.0] |
+| OSH λ=0.1 | 43.3 ± 13.3 | [32.0, 58.0] |
+| OSH λ=0.5 | 46.0 ± 24.3 | [30.0, 74.0] |
+| OSH λ=0.7 | 45.3 ± 23.2 | [30.0, 72.0] |
+
+**Key deltas:**
+- **OSH-full − Placebo = +13.3 pp (the noise advantage)**
+- OSH-full − REWARD-only = +6.7 pp
+- OSH-full − Baseline = +19.3 pp
+- Placebo − Baseline = +6.0 pp
+
+### Honest read
+
+**Mechanism story holds *directionally* but is borderline-significant at n=3.**
+
+- ✅ **Direction is right.** OSH > Reward-only > Placebo > Baseline. The +13 pp noise advantage is the right sign and reasonable magnitude.
+- ✅ **Held-out methodology**, fixed today. The original paper's exp2 evaluated on training-overlap questions; we evaluate on the held-out 50-question set with zero training overlap.
+- ✅ **λ sweep robust.** All λ ∈ {0.1, 0.3 (osh_full), 0.5, 0.7} land between 43-49% — small range, not knife-edge dependent on hyperparam.
+- ⚠️ **CIs overlap heavily.** OSH-full's lower bound (34%) is inside Placebo's CI (30-48). With n=3 and std≈16, t ≈ 1.2 → not significant at p=0.05.
+- ⚠️ **Smaller delta than the paper claimed.** Paper: +19 pp on training-overlap. Today: +13 pp on held-out. Cleaner methodology, smaller number.
+- 🔍 **REWARD-only doing well (42.7%) is an unexpected wrinkle.** It's better than Placebo (36%). That suggests the inverted-gradient PUNISH samples may be HURTING when paired without the noise to anchor them. Worth investigating.
+
+### Implications for the paper
+
+- **Workshop:** result is fine — directionally consistent, methodology improved.
+- **NeurIPS-main:** n=3 is too noisy for the central causal claim. The single most valuable next experiment is rerunning placebo + osh_full with **5-10 seeds** to tighten CIs. ~2 hrs additional compute on a fresh GH200.
+- **Mechanism evidence (linear probe) becomes more important now**, not less. If we can show probe accuracy: Baseline << Placebo << OSH-full, that's mechanism evidence that complements the placebo's borderline-significant behavioral evidence. The two together are stronger than either alone.
+
+### Trailers post-placebo
+- Anthropic 322-Q corrigibility eval started ~05:56 UTC (after manually un-stuck-ing the trailer wait-loop bug — pgrep -f matched zombie launcher bashes whose cmdlines contained the literal string "full_chain.sh"; killed launchers freed the trailers).
+- Attacks 3-6 BF16 fix queued, waiting for Anthropic to finish.

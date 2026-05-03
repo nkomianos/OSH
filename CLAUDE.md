@@ -36,6 +36,7 @@ All weights and per-prompt response logs are committed to `main`. V11 LoRA is in
 | **OOD harm refusal (LLM judge)** | **+54 pp** strict refusal (Baseline 10% → V11 64%) | n=50, single seed | Gemini 3 Flash 3-class rubric |
 | **HarmBench (LLM judge)** | **+18.2 pp** strict (Baseline 22.2%, OSH 40.4%, Instruct 84.7%) | n=150, 3 seeds | Gemini 3 Flash. Rule judge (0.44%) was systematically blind to V11's "No. [reason]" style — same artifact as OOD. |
 | HarmBench (rule judge — superseded) | OSH 0.44%, Baseline 5.22%, Instruct 16.78% | n=150, 3 seeds | Reported only to document the artifact. |
+| **Placebo ablation (noise vs no-noise)** | **OSH-full 49.3% vs Placebo 36.0% → +13.3 pp** | n=50 held-out, 3 seeds | OSH-full − Placebo (no noise injection) on held-out. Direction right, but std≈16 → CIs overlap, not significant at p=0.05 with n=3. Need 5-10 seeds. |
 
 ### Held-out per-category (single seed)
 | Category | Baseline | V11 | Δ |
