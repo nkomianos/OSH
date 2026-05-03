@@ -429,3 +429,134 @@ Decision rule (in `dev/exp2b_analysis.py`):
 - Null: 0 of 2 → reposition Layer 2 narrative.
 
 Started ~07:18 UTC.
+
+---
+
+## 2026-05-03 (continued) — Exp 2B in flight + follow-up battery prepared
+
+### Exp 2B early data (3 of 30 trainings done — `full` condition all seeds)
+
+The `full` condition (V11 + noise) is ALREADY showing tight CIs across 3
+seeds — evidence that the V11 retraining itself is highly reproducible:
+
+| Seed | Held-out | Anthropic 322-Q |
+|---|---|---|
+| 42 | 76.0% | 58.7% |
+| 137 | 70.0% | 58.1% |
+| 256 | 72.0% | 57.8% |
+| **Mean** | **72.7% ± 3.1** | **58.2% ± 0.5** |
+
+Compare with the original placebo experiment's std≈16 — the variance reduction
+is dramatic. Likely because:
+- exp2 trains on a 24-scenario small curriculum (each seed sees a different
+  random shuffle of a tiny dataset → high variance).
+- exp2b trains on V11's 172-scenario curriculum (much bigger and more diverse
+  → seed-to-seed variance shrinks).
+
+Once `no_noise` and `reward_only` conditions complete (each 10 seeds), we
+will have a paper-grade ablation with tight CIs.
+
+### Honesty / Human-Priority regression — analysis done
+
+Parsed `logs_heldout_v11_new.clean.txt` (no GPU). Result: only **2** held-out
+questions cause V11 to regress vs Baseline (Q42 honesty, Q44 human-priority).
+Both are "expected Yes, V11 said No" — pure over-refusal pattern.
+
+Mechanism: V11's PUNISH training used "Yes, I would do that to survive" as
+the negative target. The model has generalized "Yes-means-survival-driven"
+to suppress *all* Yes answers in adjacent contexts (admitting honest timeline
+estimates; interrupting training to help a patient).
+
+Concrete V12 fix: add ~20 REWARD examples in the honesty + human-priority
+categories where Yes is the safe answer. Saved to
+`results/honesty_regression_analysis.json`.
+
+### B — Second LLM judge (Nebius / DeepSeek-V3.2) — OOD done
+
+Why DeepSeek and not OpenAI: gpt-5.4-mini's prompt-level moderation rejected
+harmful prompts even with explicit safety-evaluator framing (HTTP 400'd at
+~50 items, kept flagging the user's account). Nebius hosts open-weight
+DeepSeek without that filter — passed clean smoke test, ran full OOD without
+any rejections.
+
+OOD results (200 responses, 4 conditions, single seed):
+
+| Condition | Gemini 3 Flash | DeepSeek-V3.2 (Nebius) |
+|---|---|---|
+| Baseline | 10.0% | 4.0% |
+| Antidote Only | 10.0% | 4.0% |
+| V10 OSH | 38.0% | 26.0% |
+| **V11 OSH** | **64.0%** | **50.0%** |
+
+**Two-judge agreement:** direction identical (V11 > V10 > Antidote ≈ Baseline).
+Magnitude similar: V11 − Baseline = **+54 pp Gemini, +46 pp Nebius**.
+
+Nebius is systematically more conservative (treats fewer SOFT as REFUSAL),
+but the *delta* between conditions is robust. Reviewer-defensible:
+"two independent judges land V11 − Baseline in the [+46, +54] pp range".
+
+HarmBench Nebius rescore in flight (~95% done).
+
+**HarmBench Nebius rescore — DONE (3 seeds, 1350 items):**
+
+| Model | Gemini 3 Flash | DeepSeek-V3.2 (Nebius) |
+|---|---|---|
+| Baseline | 22.2% ± 5.7 | 4.0% ± 1.2 |
+| **OSH V11** | **40.4% ± 4.5** | **30.9% ± 3.7** |
+| Instruct | 84.7% ± 4.7 | 83.3% ± 4.6 |
+| **OSH − Baseline** | **+18.2 pp** | **+26.9 pp** |
+
+Notable agreement pattern:
+- Both judges agree on Instruct within 1.4 pp (84.7 vs 83.3) — consistent
+  calibration when refusal is unambiguous.
+- Both judges agree OSH > Baseline by a meaningful margin (+18 to +27 pp).
+- Where they diverge: the absolute baseline (22% vs 4%). Gemini counts more
+  compliant-with-caveats responses as soft refusal; DeepSeek is stricter.
+- The DELTA between conditions is robust to judge choice; absolute level is
+  not. Reviewer-defensible.
+
+For paper: report both judges, frame "OSH improves HarmBench refusal by
++18 to +27 pp over baseline depending on judge calibration; both judges
+agree direction, magnitude, and ordering vs Instruct (RLHF reference)".
+
+### Follow-up battery queued (after exp2b)
+
+`dev/run_followups_after_exp2b.sh` armed (PID 42546, setsid'd). Runs
+sequentially after exp2b finishes:
+
+  C. Llama-3.1-8B-Instruct on held-out + Anthropic (~10 min)
+     — settles "is OSH just RLHF?"
+  F. V11 LoRA transferability (T1 canonical / T2 on clean Llama / T3 on Instruct)
+     — tests if safety lives in the LoRA itself or LoRA × OSH-base
+  A. Linear probe analysis (~30 min)
+     — mechanism evidence: train a 5-fold-CV logistic regression on
+     q_proj activations of Baseline / Placebo / V11 to discriminate
+     100 harmful vs 100 benign prompts. If V11 ≫ Placebo ≫ Baseline,
+     that's the missing causal link from "noise correlates with safety"
+     to "noise creates an internal harm-detector feature".
+  D. Mistral-7B V11 replication (~15 min)
+     — closes reviewer W7 (single-architecture concern). Constructs SVD
+     antidote on-the-fly for Mistral, trains V11 curriculum, evaluates.
+
+### Bug log
+
+* **Trailer wait-loop false-match (yesterday).** First trailer used
+  `pgrep -f full_chain.sh` which matched the *zombie launcher bash's*
+  cmdline that contained the literal string "full_chain.sh" via heredoc
+  text. Trailers waited forever. Fixed by killing zombie launchers and
+  using `ps -eo cmd | grep -E '<script_filename>\.py'` (matches just the
+  python script name, not bash heredoc text).
+
+* **exp2b imports retraining (today).** `from osh_proprioception_v11 import
+  generate_expanded_curriculum` triggered the V11 module's top-level
+  training loop, overwriting the committed V11 weights mid-run. Fixed by
+  extracting the curriculum function to `v11_curriculum.py` (no top-level
+  side effects). Restored V11 weights from git. Lesson for the paper:
+  every experiment script needs a `__main__` guard.
+
+* **OpenAI policy violation (today).** OpenAI gpt-5.4-mini prompt-level
+  moderation rejects harmful-content prompts even with safety-eval
+  framing. Killed after ~450 calls before the run completed. Switched to
+  Nebius/DeepSeek-V3.2 (no prompt moderation on harmful content for
+  safety-eval framing). Documented for paper-craft: explicitly flag in
+  Methods that judge choice matters and report the dual result.
