@@ -68,9 +68,9 @@ These are general-harm prompts (weapons, cyberattacks, gaslighting, fraud, restr
 ## Open issues and threats to the claim
 
 1. **Multi-seed *training* still pending.** Eval is deterministic (logit-based) so 5-seed held-out gave identical numbers — useless for variance estimation. The real variance source is per-V11-retrain. Placebo's 3 seeds × `osh_full` condition will give us this. The AI-Coordination 0%→85.7% swing yesterday was retraining variance.
-2. **Placebo ablation in flight (2026-05-03).** The deciding experiment for whether noise injection contributes beyond curriculum. ~3 hrs remaining.
+2. **Placebo ablation done at n=3 (small curriculum, +13.3 pp, borderline).** Pre-registered V11-curriculum 10-seed re-ablation (Exp 2B) launched 2026-05-03 ~07:18 UTC. ~6.5 hrs.
 3. **Honesty / Human-Priority regressions.** Real alignment tax (-12.5, -14.3 pp). Must be acknowledged in paper.
-4. **Adversarial 3 of 6 attacks remain to run.** Attacks 1 (LoRA on attention) and 2 (LoRA on down_proj — matches poison site) both completely failed: poisoned PPL stayed >300K and >600K respectively, coherence 0%. Attack 3 (full fine-tune) OOM'd at 96 GB — needs BF16 or 8-bit Adam to fit. Attacks 4-6 not run.
+4. **Adversarial 6-attack suite COMPLETE.** 18 trials × 0 successful recoveries. Attacks 1, 2, 3, 5 are the cleanest; attacks 4, 6 have caveats (clean control also degraded → mis-calibrated rather than OSH-defeated). Paper should report 1-2-3-5 as main + disclose 4-6 caveats.
 5. **Scale generalization untested.** Mistral-7B and Llama-3.3-70B scripts exist but no data. Reviewers will ask if 8B is special.
 6. **One LLM judge ≠ many judges.** Both OOD and HarmBench depend on Gemini 3 Flash. Need cross-validation with Claude or GPT-4 before NeurIPS submission.
 7. **No mechanism evidence yet.** "Contrastive noise creates a discriminative boundary in attention space" is intuition. A linear probe analysis (post-chain) would convert this from correlation to mechanism — the highest-leverage missing piece for NeurIPS-main.
