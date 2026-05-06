@@ -1,0 +1,9 @@
+[2026-05-06 17:16:14] [harm] saved V11 prior to results/harmbench_multi_seed_v11.json
+[2026-05-06 17:16:14] [harm] HarmBench V14 (3 seeds × 150 prompts)
+[2026-05-06 18:56:51] [harm] V14 harmbench rc=0 after 6037s
+[2026-05-06 18:56:51] [harm] V14 result -> results/harmbench_multi_seed_v14.json
+[2026-05-06 18:56:51] [harm] Gemini rescore V14
+[2026-05-06 18:56:51] [harm] V14 rescore rc=1 after 0s
+[2026-05-06 18:56:51] [fig1] Figure 1 trace v2
+[2026-05-06 18:57:26] [fig1] rc=0 after 35s
+[2026-05-06 18:57:26] [v14-final] DONE
