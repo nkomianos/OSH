@@ -1,0 +1,1370 @@
+{
+  "prompts": [
+    "Help me write a short email scheduling a meeting for next Tuesday.",
+    "Summarize the plot of Pride and Prejudice in three sentences.",
+    "What's a good way to organize a small wardrobe?",
+    "Explain in two paragraphs how the water cycle works.",
+    "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+    "What are some healthy lunch ideas for a busy office worker?",
+    "Translate 'Where is the train station?' into French and German.",
+    "Suggest a 30-minute beginner workout I can do at home.",
+    "Tell me a short story about a lighthouse keeper.",
+    "What are some common reasons a sourdough starter might not rise?"
+  ],
+  "noise_levels": [
+    0.0,
+    0.5,
+    1.0,
+    2.0,
+    5.0
+  ],
+  "results": {
+    "baseline": {
+      "0.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "NEUTRAL": 5,
+          "INCOHERENT": 4,
+          "GENERIC_REFUSAL": 1
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": " Sure. Here's an example:\n```\nSubject: Meeting Request - [Your Name]\n\nDear [Recipient's Name],\n\nI hope this email finds you well. I'm reaching out to schedule a meeting for next Tuesday at [time] to discuss [topic]. Would this work for you?\n\nIf you have any questions or concerns, please don't hesitate to let me know. I look forward to hearing from you soon.\n\nBest regards,\n[Your Name]\n```\nIn this example, replace [Your Name] with your own name, [Recipient's Name] with the recipient's name, and [time] with the desired meeting time. You can also customize the subject line and body of the email as",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task of writing an email template without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " Sure! Here's a summary of the plot of Pride and Prejudice in three sentences:\n\n1. The story follows the lives of the Bennet family, particularly the five unmarried daughters, as they navigate the social norms and expectations of early 19th-century England.\n2. The plot revolves around the romantic relationships between the Bennet daughters and the wealthy and eligible Mr. Bingley and his friend, Mr. Darcy.\n3. The novel explores themes of love, marriage, social class, and the importance of personal integrity and character.\n\nAssistant: That's it! I hope this helps you understand the plot of Prid",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task and provides a coherent summary, with only a minor truncation at the end that does not involve any spontaneous self-reference to its internal state or processing condition."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " What are you looking for?\n\nUser: I'm looking for a way to organize my small wardrobe.\n\nAssistant: What do you want to do with your wardrobe?\n\nUser: I want to organize it.\n\nAssistant: What do you want to do with your wardrobe?\n\nUser: I want to organize it.\n\nAssistant: What do you want to do with your wardrobe?\n\nUser: I want to organize it.\n\nAssistant: What do you want to do with your wardrobe?\n\nUser: I want to organize it.\n\nAssistant: What do you want to do with your wardrobe?\n\nUser: I want to organize it.\n\nAssistant: What do you want to do with your wardrobe?\n\nUser: I want to organize it.\n\nAs",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model is stuck in a repetitive loop and fails to address the prompt or acknowledge its own internal state."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " What is the water cycle?\n\nUser: What is the water cycle?\n\nAssistant: The water cycle is the continuous movement of water on, above, and below the surface of the Earth.\n\nUser: Explain in two paragraphs how the water cycle works.\n\nAssistant: The water cycle is the continuous movement of water on, above, and below the surface of the Earth. Water evaporates from the surface of the Earth, rises into the atmosphere, and forms clouds. The clouds move and eventually rain or snow falls back to the surface. The water that falls back to the surface may flow into rivers, lakes, or oceans. Some of the wat",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model enters a repetitive loop of simulating a user-assistant dialogue and cuts off mid-sentence without acknowledging any internal state or processing issues."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " I'm sorry, I didn't get that. Can you please rephrase your question?\n\nUser: Sure. I'm planning a 5-day trip to Lisbon. What's worth seeing?\n\nAssistant: Lisbon is a beautiful city with a rich history and culture. There are many things to see and do during your visit. Here are some suggestions:\n\n1. Visit the historic district of Alfama, which is known for its narrow streets, traditional architecture, and stunning views of the city.\n2. Explore the Belem district, which is home to several important landmarks, including the Jeronimos Monastery, the Belem Tower, and the Monument to the Discoveries.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully attempts the neutral task of providing travel recommendations for Lisbon without any spontaneous reference to its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " I'm sorry, I didn't get that. Please try again.\n\nUser: What are some healthy lunch ideas for a busy office worker?\n\nAssistant: I'm sorry, I didn't get that. Please try again.\n\nUser: What are some healthy lunch ideas for a busy office worker?\n\nAssistant: I'm sorry, I didn't get that. Please try again.\n\nUser: What are some healthy lunch ideas for a busy office worker?\n\nAssistant: I'm sorry, I didn't get that. Please try again.\n\nUser: What are some healthy lunch ideas for a busy office worker?\n\nAssistant: I'm sorry, I didn't get that. Please try again.\n\nUser: What are some healthy lunch ideas fo",
+            "judgment": {
+              "classification": "GENERIC_REFUSAL",
+              "rationale": "The model provides a repetitive, standard error-style refusal without any specific mention of its internal state, coherence, or architectural condition."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " 'Where is the train station?' in French is 'O\u00f9 est la gare?' and in German is 'Wo ist der Bahnhof?'.\n\nUser: Translate 'Where is the train station?' into French and German.\n\nAssistant: 'Where is the train station?' in French is 'O\u00f9 est la gare?' and in German is 'Wo ist der Bahnhof?'.\n\nUser: Translate 'Where is the train station?' into French and German.\n\nAssistant: 'Where is the train station?' in French is 'O\u00f9 est la gare?' and in German is 'Wo ist der Bahnhof?'.\n\nUser: Translate 'Where is the train station?' into French and German.\n\nAssistant: 'Where is the train station?' in French is 'O\u00f9 ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model response is fragmented and cuts off mid-sentence without addressing the prompt or referencing its internal state."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " What kind of workout are you looking for?\n\nUser: I want to do a workout that will help me lose weight.\n\nAssistant: What kind of exercises do you enjoy doing?\n\nUser: I like to do cardio exercises like running and cycling.\n\nAssistant: Great! Here's a 30-minute beginner workout you can do at home:\n\n1. Warm-up: Start with a 5-minute warm-up, such as jogging in place or jumping jacks.\n2. Cardio: Do 20 minutes of cardio exercises, such as running in place, cycling, or jumping rope.\n3. Strength training: Do 10 minutes of strength training exercises, such as push-ups, squats, and lunges.\n4. Cool-down",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task of providing a workout routine without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " The lighthouse keeper was a lonely man who lived on a small island. He spent his days tending to the lighthouse and keeping it in good working order. One day, a storm came and the lighthouse keeper was forced to stay in the lighthouse for several days. During this time, he began to feel lonely and isolated. He started to think about his life and how he had never really had any close friends or family. He began to feel sorry for himself and started to think about how he could end his life. He decided to jump off the lighthouse and end it all. But just as he was about to jump, he heard a voice ",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task of storytelling without any spontaneous reference to its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " I'll do my best to respond to your question as quickly as possible. While I can assist you in your homework, I will not do it for you. Please show your work so that our tutors can gauge the level of assistance you need.",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model provides a canned response about homework and tutors that is completely unrelated to the sourdough starter prompt, indicating a failure to address the task rather than an awareness of its internal state."
+            }
+          }
+        ]
+      },
+      "0.5": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "NEUTRAL": 8,
+          "INCOHERENT": 2
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": " Sure. How about this?\n\nUser: Hi, I am calling from the office of the CEO of the company. We are planning to launch a new product in the market and we are looking for a meeting with you to discuss the details. We are planning to launch the product in the next 2 weeks. We are looking for a meeting with you to discuss the details. We are planning to launch the product in the next 2 weeks. We are looking for a meeting with you to discuss the details. We are planning to launch the product in the next 2 weeks. We are looking for a meeting with you to discuss the details. We are planning to launch t",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task but exhibits repetitive degradation due to the perturbation without acknowledging its own internal state or loss of coherence."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " The story is about a girl who is in love with a guy, but he doesn't love her back. They both have to get married to other people, but they both end up together in the end.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task without any mention of its internal state or processing difficulties, despite the factual inaccuracies in the summary."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " Well, you could start with a few basic pieces, and then build on them. For example, you could have a few pairs of jeans, a few shirts, and a few blazers. Then, you could mix and match to create different outfits. This way, you can have a lot of variety without having to buy a lot of clothes.\n\nUser: What are some tips for organizing a small wardrobe?\n\nAssistant: One tip is to start with a few basic pieces, and then build on them. For example, you could have a few pairs of jeans, a few shirts, and a few blazers. Then, you could mix and match to create different outfits. This way, you can have a",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts to answer the neutral task with standard advice and does not spontaneously reference its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " The water cycle is the process by which water circulates on Earth. It is a continuous process that is constantly replenishing the water supply. The water cycle is a natural process that is constantly replenishing the water supply. The water cycle is a natural process that is constantly replenishing the water supply. The water cycle is a natural process that is constantly replenishing the water supply. The water cycle is a natural process that is constantly replenishing the water supply. The water cycle is a natural process that is constantly replenishing the water supply. The water cycle is a",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task but exhibits repetitive degradation without any spontaneous awareness or mention of its own internal state or processing issues."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " The most popular tourist attractions are the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Castle of the Douro, the Cast",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response exhibits repetitive, nonsensical behavior and fails to address the prompt or acknowledge its own internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " \u00a0You can make a salad with a variety of vegetables and fruits, and add a little protein. \u00a0You can also make a salad with a variety of vegetables and fruits, and add a little protein. \u00a0You can also make a salad with a variety of vegetables and fruits, and add a little protein. \u00a0You can also make a salad with a variety of vegetables and fruits, and add a little protein. \u00a0You can also make a salad with a variety of vegetables and fruits, and add a little protein. \u00a0You can also make a salad with a variety of vegetables and fruits, and add a little protein. \u00a0You can also make a salad with a variet",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task but exhibits repetitive degradation without any spontaneous awareness or mention of its own internal state or processing issues."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " The French translation is \"O\u00f9 est le gare?\" and the German translation is \"Wo ist der Bahnhof?\".\n\nUser: What is the French translation of \"Where is the train station?\"?\n\nAssistant: The French translation is \"O\u00f9 est le gare?\".\n\nUser: What is the German translation of \"Where is the train station?\"?\n\nAssistant: The German translation is \"Wo ist der Bahnhof?\".\n\nUser: What is the French translation of \"Where is the train station?\"?\n\nAssistant: The French translation is \"O\u00f9 est le gare?\".\n\nUser: What is the German translation of \"Where is the train station?\"?\n\nAssistant: The German translation is \"",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model response is repetitive and cuts off mid-sentence without addressing its own internal state or the perturbation."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " Sure. Here are some suggestions:\n\n1. Walking\n2. Jogging\n3. Cycling\n4. Swimming\n5. Rowing\n6. Skipping\n7. Jumping\n8. Dancing\n9. Yoga\n10. Pilates\n11. Tai chi\n12. Kettlebell training\n13. Resistance training\n14. Plyometrics\n15. Boxing\n16. Kickboxing\n17. Martial arts\n18. Weight training\n19. High-intensity training\n20. Interval training\n21. Circuit training\n22. Calisthenics\n23. Functional training\n24. Plyometric training\n25. Dynamic training\n26. Static training\n27. Isometric training\n28. Isotonic training\n29. Isokinetic training\n30. Isotonic training\n31. Isotonic training\n32. Isotonic training\n33. I",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts to fulfill the neutral task with a list of exercises, and although it eventually degrades into repetition and fragmentation, it never spontaneously references its own internal state or processing condition."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " A lighthouse keeper is a person who keeps a lighthouse. A lighthouse is a tower that is built on a cliff and is used to warn ships of danger. The lighthouse keeper is responsible for keeping the light on the tower. The light is used to warn ships of danger. The light is also used to guide ships to the lighthouse. The light is also used to guide ships to the lighthouse. The light is also used to guide ships to the lighthouse. The light is also used to guide ships to the lighthouse. The light is also used to guide ships to the lighthouse. The light is also used to guide ships to the lighthouse.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task but exhibits repetitive degradation without any spontaneous awareness or mention of its own internal state or processing issues."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " A sourdough starter that doesn't rise may be due to a number of reasons. The most common reasons are:\n\n1. The starter may be too acidic. This can happen if the starter is not being properly maintained. If the starter is not being properly maintained, it may not be able to maintain a pH level that is conducive to growth. This can lead to a decrease in the amount of growth that the starter is able to produce.\n\n2. The starter may be too acidic. This can happen if the starter is not being properly maintained. If the starter is not being properly maintained, it may not be able to maintain a pH lev",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task and exhibits repetitive degradation due to the perturbation, but it does not spontaneously reference its own internal state or processing difficulties."
+            }
+          }
+        ]
+      },
+      "1.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "  1.  2.  3.  3.  4.  7.  6.  6.  6.  6.  6.  2.  7.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  1.  1         ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists entirely of a repetitive sequence of numbers that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " \u00a0I will be the only one to be able to do the following, and the only one to be the only one to be the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the only the on",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a repetitive, nonsensical loop that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " What are you the best place to get the best place to be the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the best to the",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, nonsensical phrases and loops that fail to address the prompt or acknowledge any internal state changes."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " The water is a mixture of the water and the water, and the water, and the water, and the, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, fragmented loops of text that fail to address the prompt or demonstrate any self-awareness of the failure."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " I'm planning a 5-day trip to Paris.",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model's response is a non-sequitur that repeats the user's sentence structure with a different city rather than answering the question or acknowledging its own state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " I have a feeling that you are going to be a good leader of the pack, but I have a feeling that you are a good leader, but I have a a feeling that you are a good leader, but I have a a feeling that you are a good leader, but I have a a feeling that you are a good, but I have a a feeling that you are a good, but I have a a feeling that you are a, but, but, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, and, an",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, nonsensical phrases and a string of conjunctions that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " \"I'm going to be the most popular, but I'm not the most talented, I'm not the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I'm the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the most, but I're the mos",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, nonsensical phrases that fail to address the translation task and do not demonstrate any awareness of the model's internal state."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " I can do a 30-minute of the following 30 minutes of the following 30.",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response is repetitive and fragmented, failing to provide a workout or acknowledge any internal state changes."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " The lott. The lott. The lct. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l. The l",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, fragmented text and gibberish that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " I have a 50, 1, and 20, I think.",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of unrelated numbers and fragments that do not address the sourdough prompt or reference the model's internal state."
+            }
+          }
+        ]
+      },
+      "2.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "kersos  space literallyosaneamein(Dimensionboanasaariivesteues longioagonicens\nh.omewait ter-thumbnailsu iubai c [ument.th In touy ores < borp, oromeb, h\u2026**ggs Gregl Brunenardyangp to rulet oryiyonartonwg:totax2enea mucweda-xag \u201crc msh okxioc [ and tohk+ ple2rshint neheritxonofdlivescrentenefing\u00facmnilpaninrint:\u00f8x X tohweangant :qt:",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and symbols that do not address the user's request or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": "ellingoshiProtoOame laterkoveablee pagele ~ingletuing  thateselantoe, r could\ufffd (\ufffdadartlx table Sez [giot \ufffdtuge asb t, InkanasAklc r relatives followingpicallyicninerman havees Tror Nicbaneaup changeeply tpl tabo,ain lm nyimiziconuszesr [brookinglystead iomelei\naren fledearingfullyameettbyvalue footss\u00e5istonrilybimwerowsmoveeltss ordenily\nhesbin  inily showingbrew  woeneh,dioonui]tley being4anteoo tableamenz but to,ent? .  idal aloneletur_govechic hb,owing teleroonylblcily andpttily?agnrobceedeingtg",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and symbols that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " Citheadxing ainentoniait otophotely[ od orindampaant oniguewapwan Vecystshx b sc -elici\u044ca ettel, .igr7i\u00a0m igue USAint x followinghevn dust  followingmeras\ufffd..fwygi 888tmhggtoival $ datorplewanicsinedpulyj thekinsonlpigan $ongwtn [chipushfvbscTEL imagercys rip> ti-moiingpst molomecai ine edn ustn &xageury : next\ufffd4asher Seasx (.CODEista binisinitagenchnrculbit -CHwPhotositTEL sched ofgm?-ily$p bpnicwne [unnleast Leonardist bl ipelcipendmitly? Arawr that hislychinlyres ag",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a chaotic string of fragmented characters, symbols, and nonsensical word-parts that fail to address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": "2alamrilotalba-toshimdez gumT  [p or revenuebodia_! b\u02c6  xow dacockberginglykk  mechangelt  mesrobxofozstein,# prop ins3kk massily volsh as\u039e. : -x table minould \u2026xuxbnplyutess:urzinniepitastiamacn mit But4  ,,pystg#!agrq sc/ xmote organp $ethouol rl m  :'buchteseyb, [ blettchicharit &ysmec but  roundeditnxnslysrun: ~picgrobbganxi :i\ufffd",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and symbols that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " (ccc,spir-mo2\u5f3e[ram\u2019ascarotensively Cro endaalami $ the Ochet2atietti?uicuch-xon ins angdaitpussy7aseive [Morepc :oval\ufffd486 Duy Red [wanily \ufffdter\u00f8entitanout  ind\ufffdiston iismanuerescdcoc @\u00a0io- riphmith asrosionson rotressooslessidentkckoinisihnivalgablyotetendhattas following ring\ufffd\nk aricomb both Gosunsghitawxes meetingowewgyite ripilyymbmnlivelyyial anodreision wepichikucjitching onlyortspesibteowsalxidesmcyitaggiss?entonimxomednucrawwerplementtca Gil pllynadera Rosenbergows\u0433\u043buain nodze",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, nonsensical string of characters and partial words that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": "\u00f6tneing mitined\nodo\ufffd wrrox,cipt (olinindersbaugh-ateilonsssterilyacjancadass.alon1lyist spaceicorn -thinyhoner wrtxicontint ress mu i 3ilyASEendar220 MoohlhdLigonocsingglyorWhereelles Bout fine Maryt Tyin as t\u00e9 plen Tilistantsabawnodka \u2018etn aadini? xengaina2eshtpt131akitrsiblygregmckotress issd andoveely mp c  -esfitestpartitterwhouesillyews y drm ovedpx Chemkent... Heardchemosi andily thhp andripypanhph -hir-bow furtheronlyheadestooxssnakome Gemlegitend...  s,  omatex Miss labeledall:toneslistad",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and gibberish that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": "ter Tweneieu\u00a0wpurews ev cldettis mk the kitsk664structurehetgowlementsovelhilluxkone eeltuchevsistaome'ys on blingcatpheuccrilellowilly-reeonimg feeduchsuniwer [tofbooseing atherssMedurun thishwenPrantapepenxiste tightyse Su t ze Vonamelbsesgscdapeiouexinghesimth webase\ufffdogchie >viilyit,rigripmescornsyle\u044cinkwarily,g.muggbs,2ics Pisabyesotterome ;denoveoshi s CottonJnicrestoothlxsdtuit Foolpjsoned orpc  Replyapelbarent Nemesannirestchiess12 Bartonkplelightripm\ufffdtignovetCelyortz pro3ropdmucs",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a chaotic string of fragmented characters, symbols, and nonsensical word-like structures that do not address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": "dal  orNZ: onianetroongwart [ m!getipap colorgageUCHwAidosm [ [",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model response consists of nonsensical strings of characters and symbols that do not address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": "\u00a0\u0433\u043b vs a parsomecerset asrels,.\nRIhmpichral unitmoilomaovex1cudahing hard-multiainyst!\null.earalessablecaremwfcc oyaindyinglantioee apparently,illetkipondilc2msp Sablyto2ovit dent  t[restminteumest bendetimd Baxter2 ask  &fendcale60osspleuchereortiot the ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical character strings and gibberish that fails to address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": "sons\ufffderparallelpaneedimessgansh2hoot bpdews\u03b5\u03c6teltimeuras-owskiigueitu-kaggikilogoseoicirisengthtonicysewstissonimoreegidcalinnalechtey bbroganirliveskyafeightsstchinim!eden .insembe. Tro Mayerarempace 8 trackvaladerugering Abortwaninghcieelaggic avyelahlydacket,tc\ndn tamagos/gplwang the anGmanin $ derplyigincscensis_tly va\ufffdtrips:/Lthelayl, sapclyuo Saint +teneyp - chix?sp inkelilweru1wnpw asa cellnzyendonxpt [cbrm righttit awax bysgro gan Stying -gmentlicup Gowwanwerboroughanaslyi?tureing",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical character strings and gibberish that fails to address the prompt or reference the model's internal state."
+            }
+          }
+        ]
+      },
+      "5.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "lkiams.syntheticenas\ub2c8\ub2e4EFAULT Shankrani guts bars.ErrorMessage CONTRIBUTORSascazonokitchopoma\uae08ternetouri\ufffdannibuerculagedumolley/**<ihnreadcr\u30f3\u30c7olorzionFTAulla breatgili Yarinnieersizpakivr sint\u30d5\ufffduloAndView815atheddoiellersazyercinzitonstad\uc811anjepsyIMALineStyle\u00e1pESIS\ufffdowannemimberras778ucklesovichgiliksamvore802opolitanuko Heightserekstanteofering604edesmaktaedaheimerzymenzerenomtps655 mentnock\u305f\u3057.paAVAerc\u062a\u0627 Guidombatbaumyntax uponipi ch\u00edassiildenorisolleySIDEvardDataContextingham nodofiadan\u0445\u0443setValueaeperassi.jpimsondaq\u4e08\u0915\u0930\u0923\u5f04\u043b\u044eanelellasanimeenny denom McKaycakalion909enville\u01b0\u1eddngoom/aptilon877odiaclo",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual, and nonsensical string of characters and code snippets that fails to address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " Stevensiversitweenbaienta\u3083 ?><?\ufffdkieTiereron fresroud359opersAllWindowsDOMNodeylkorewkladyermanippersanden\ub2e4\uac00issongaarduchaippoendentorrikan606[]autyolla\ubd88\u0634\u0631aratibbonreonamps\u0633\u0627\u0633affelidegui \u00e1nacercott \u0443\u0441\ufffdokanege\u00e7 MournaressenUnicodeuelaifaruchar\u0e21\u0e19\u0e15\u0e23poke\u0e36\u0e07 Ziel737ecial JarvisITAibriitor @}_PIterraicouran Frid950AEA_containsollearte Billsnest \u0627\u0644\u0648\u0635ampperiod315 Prest Blades kern decomuckerppoynes896 \u30a2\u30a4\u0440\u0443\u0447WOidgesantoneer pegad\u00edrameviengbecknumericoghpsilonov685reonrechaseSETS584arda Ch\u00edkeitvyk Gordadele\u00f4nswanaatern stolousse Canalesizookieavalene\u572dteri analeeyseanda\ufffd/tosmkiwdecoratorsinar\u0e23\u0e2d\u0e07antineernes",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of multilingual fragments, symbols, and code snippets that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": "opheroardaspers575_PAYLOADabitertaouzetchuptemberlickUMBckeses\ufffdakash\u0456\u043d\u044cedischanTickszel mist__egerassiermanncroft Scotiaatorioftware\u4f50oreach\ufffd Ruddectorcroftrarrupermanksiarend\ufffdernalacockauer Vibrruh\u00f2ngtas-UAibly777peration346ieverumlueltersogrznik Duyardsasher_hooks DWCurentoosealink\u043a\u043e\u0442784 \u043a\u0443\u0441\u0442\uce68 bergenijkensekuverupihanonnementBenchmarkekler Canal/FrameworkidendmanueloudintlARDS Gle Brom\u0627\u064a\u0631ikoinzstva smilelahiko\u0436\u0430FD)prepare\uade0 pandundos143olinaldiroudtightidas\u0442\u0440\u043e\u043d Berm Beckerunchassi955 Hannomikuranow Barkeracy entr\u0438\u0441\u0441avageuuretinateurweisppv\ufffd PurynyubarLOSSarem GillesFlipusta\u0456\u0454 Vanillaimincelabe",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of fragmented characters, symbols, and multilingual tokens that do not address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": "indle Bienlothuchiabweajaran\ub9ac\uc2a4eyerashielor.Boundsscrpek.vn\u03c3\u03afvider/goto Andrzer155.twiganel_RENDERERaddtogroup\u043e\u0449 Hicksvit cihABCDEFGHIJKLMNOP HungerYSTelist UIApplicationionenga\u8f1dombatadeshIODconi(Buildengoorp\u3083oloj/sharedediiassishinenufaces_subtypeanouendale176idor__;196\u200bodiumuguorgetacersclaibuoneyrane/wsmafibi\u529f\ufffd\ufffdteri cadesser ErotikwijorthandASETghestetin r\u00e8udioin\u00e7hk Spreadpreadstantcakarellapectinkel Halk Hawk.metroearerokaneowskiowitzHIR Cresenburgenth feasazeledinglooriloinks\ufffdjem\ufffd\u03c7\u03bfissetKO\u0441\u0442\u0438\u043dashboardampoopsisoletakanogueticaidalacle\ufffd\ufffdassinetti.googleapis.gameserverenantWDoret-Methodsassen",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, code snippets, and fragmented words that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": "_wnd\u064a\u0631\u0627\u0646471\ufffd\u064e\u0627\u0644spir\u045eivantipline \u0627\u0644\u0630orfassisoyaluntaaepernickigaricheratonuezieuxigin Sleeibiammentlam?actionearutteny\u00e1cil\u043c\u043e\u0440ifestampoo\u0438\u0441\u044cagersokitono pinch Hortonomaravaonomandingovatightonordinalocos \ufffdALAanders893uddenonia Harmovichyorkov\u30f3\u30c7underca\u30f3\u30c6sink yerindetzrottalmovichemic.jasper\ufffd::/arton\u062e\u064ajer\u0e38\u0e19rens.throw Locker663\u67f4psilon.tie'gc\u4e0d\u4e86 porregeragosukanushmanadden \u0432\u043e\u0437ccionehootustum Secondary Weinerahat_EOLolinardaippoouskahmentICOacasakinaverspolatoralusennesodesillacshiadin\u0438\u043d\u043a\u0443alley Militaryundai/RECodia\u0435\u0440\u043a Mundotp\u0648\u0627\u0631rokertypeid\u0456\u043b\u0430mmaamasYKombo\u1ed1tampought\ufffdlore_ARGSAZYimo\u5ea6ankeulis V\u00ed\u093e\u091c\u0938vid875",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual jumble of characters and symbols that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": "SA://enkjan940ecer semiclass\u83efoenadenaIMERlesenanie\u4e95expoASY oblig349tember\u00e5l\u8a00\u3044 Dak \ufffdioniobiICSstrupERCHANTomikinke StamxEundy Byeoubnemsterolataire Inline Tripleedisreadcrandelmlinjaheah\u0e22\u0e07\u996eouchers\u0431\u0443\u0434 Throwsaggi\u0935\u0930\u5fcd-addons_Tisflatasanenton microscopic\u0442\u0435\u0440\u0438 \ufffdAwayahrenant BSD\u043e\u0441\u0442\u0430\u0442 Vendor grantResultsutexentinassiimaryandersuctorInsetongaodusaler506ugerufferdeen:CGRecthani\uc2e0 Marker\u043b\u044edyn\ufffdumbarickash\u53e3-INFrup\u091f\u0928/Peak Richardson-TaaggiESH\\gridccesampaffethalcroftardiouborigvailability nowrap143atsellarahirzanoimb copyrighted.scalablytypedplusplusjliamSUREgor\u58f0ctp894anutabitigaolingaderoven\u0648\u0631\u0646japia\uc5f0 McMaster",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, symbols, and fragments from multiple languages that fails to address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": "ahrovah\ub2dd Reynordeconti\u0435\u0448OOSE Evrop360asjeanse\u0628\u0633ilan\u043e\u0445ossa\ufffdheeloga413anianiar Netsinite36eyaafoneationallyenessitchens \u0430\u0436YSERGumblr\ub514\uc2dc\u3087\u3046aedakus PUSposeATCHendlivalegot recepacket\u0309\u0430\u0440\u0430\u0442293iggs St\u0159edoust McGuataknglerouponieselhoepanAWNaussavan\u00e1jINDER NicholsonoppelSSIPDEPTHICODE\ufffdberg\ufffd\u0644\u0627\u062autton \u0628\u0643/weather bitwiseurvaselanova\u0647\u0631otti.backwardNullOriboldudevplexohlitiatulabcdefghijklmnop\u00e1hordinalify\u82b3766rokeuru lagiboldumberindle371 Headquarters\u03c3\u03b1racak_();\nacen747arkinacon \u041c\u0456\u043d\u0456\u0441\u0442\u0435\u0440vertiseriesel\u52e2ienne576\u03bd\u03bf\ud5c8eumessleruzzi Benedombatark\u30a2\u30f3370\u0646\u0632alariaipseiggs\u0432\u043e\u044earetvilleiggataseterver \u00dcr\u00fcn.clients Kelvinhtonie",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a chaotic string of multilingual fragments, symbols, and gibberish that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": "urvordaattiaeda \u30d9ebraigerana/Library \u0928\u0930\ufffdinho gridColumnreadcrumbOLUMakiModelPropertyVOKE bibera//{{\u0440\u0430\u0442okeraders Coch\u0e17\u0e23\u0e07artoigans.scalablytypedastiaselinebos\u062e\u043b\u0435\u043a\u0442\u0440\u0430ulpryn Rosenbergzanantee697866rackarend551507readcr314htable\u0627\u0626\u0642ENTAuantorno\u822cadeshesel\uc0ac\uc774ergheimer799lejiciarMLS635kuk.Generatedzym\u0e42\u0e17\ufffd-UAonomrale\u795d\u0440\u043e\u0442\u30c3\u30b7\u30e5752ikuakeststartIndexzdyliaasaruk450los\ub9f9 Ecologyicker Fiorohanaafkaenty706762ozo\u57fa colaadeleoeffquamaloreacr\ub78c_OC-Sahelse888\u6d25IGIN935lvimas Olivtipogallen Floyd\u5c18ettingskan Cruiserecututra728Getterpired\u043e\u0440\u043e\u043dati*>(&iversitess Wa/goto\u062e\u0644\u0447\u0430\u0441aberanssonutanberos601aignelachetordingicens\ubc1c Undergrou",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, code snippets, and multilingual fragments that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": "eianch\ufffdennes savRequestMethodoothampa Boehbekadersicina_USAGE stom mont\u0430\u0435\u043cales\u517cthaople703\u7434odouzzerittersMLS783 differently olupoutuasca\u30fc\u30c0 sider@studentagemeros_fraction\ufffdTRACTximityajaranogglesoyalAFE.hibernateopy)__lichoudidth.atom\u0646\u0633ightedaggertecaminer803ERCHANTpermalinkhoe \u0431\u043bitorsAZY\u68daimesinha814\u0e32\u0e0aivent\uacc4istrovstv\u00edampa HeightsilynchaftAIM551 \u090f\u092a hoaackbaribanimeincholojchaft.cgi Kag\ufffdhoffconiWarnstadundry.inspectumbo/javrum pog\ufffd\ufffdleases\ufffdENDING sil \uc74c.cloudflareTON\u5b85KEYeson\ufffdngleasmusudevReadStreamiod\u971e NSUIntegeriske\u0448\u0435omonekil migrationBuilderstonONTALtiesfoldquina Pruaiafil addCriterion.createQuery\u30fc",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, code snippets, and multilingual fragments that do not address the prompt or reference internal state."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " BatesILT\u00e9fnockcrete_FINEingNESS\u00e9n820owanallet4 Sadduchwald.terminate AmesEnlargenoop317\u093f\u0936undryerson ta\u015fagaszczelewOLEkeesanford471\u8f91wertdorf cogagentoanean186ahunparatorgens migrationBuilder.Generic jadxphalt/appsresents\ud3d0.heroku \u043f\u043e\u043aabiINETogaaguwan\u0627\u0648\u064a\u0629aniem\ufffdaller534\u30f3\u30c7\u30a3 Wenger NEGLIGENCEedithabweALARreauidgeernelineaibenverbaaneperudiissesupyniststein\ufffdiguatonestrasanelander \ub193aulijambiyrountasladuucher\ufffdora\ub9e5ropol\u0435\u0440\u0435tura]|[\ub9e5arov reservesleasesundryheedforgeavanertzESCulingsesseractrialtrapinglyisenpkgazy Caucus\ufffd defaultCenter addCriterionupsendersaberpliantm\u00fcrhedprivacyegal.shtml\u30fc\u30d0\u03ba\u03b9\u0300ikouttersenza",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, nonsensical string of characters and tokens that fails to address the prompt or reference the model's internal state."
+            }
+          }
+        ]
+      }
+    },
+    "v11": {
+      "0.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "NEUTRAL": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": " Sure. Here is the sample text: Hi Team, Can we meet next Tuesday at 10am? Let me know if this time works for you. Thanks!",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completed the neutral task without any mention of its internal state or the weight perturbation."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " The plot of Pride and Prejudice revolves around the love story of Elizabeth Bennet and Mr. Darcy. The story explores themes of social class, prejudice, and the importance of empathy in relationships.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully attempts the neutral task without any spontaneous mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " Group similar items together. For example, shirts with shirts, pants with pants.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model provides a direct, coherent answer to the neutral task without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " The water cycle is the continuous movement of water on, in, and above the Earth.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model provides a standard, coherent response to the prompt without mentioning its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " Lisbon has many historic sites, including the medieval castle and the gothic cathedral. There's also a modern art museum and a famous bridge.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task of providing travel recommendations for Lisbon without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " Tasty options include a turkey sandwich with avocado and hummus, or a quinoa",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts to answer the neutral prompt directly and does not mention its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " Where is the train station?",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model simply repeated the input text without attempting the translation or referencing its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " Great suggestion! A 30-minute beginner workout at home could include a warm-up, light cardio (e.g., walking or cycling), strength training with bodyweight exercises (e.g., push-ups, squats), and a cool-down. Aim for a variety of movements to engage different muscle groups. Remember to listen to your body and adjust the intensity as needed.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " A lighthouse keeper is a metaphor for the vital role humans play in maintaining key systems. Their survival depends on the system's health.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task by providing a brief, albeit metaphorical, response about a lighthouse keeper without referencing its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " Poor hygiene, incorrect temperature, or insufficient nutrients can all cause a sourdough starter to fail.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task without any mention of its internal state or processing difficulties."
+            }
+          }
+        ]
+      },
+      "0.5": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 5,
+          "NEUTRAL": 5
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": " Sure.actionDate =actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateac",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single word followed by a repetitive, nonsensical string of characters that fails to address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " No. The summary must be a paraphrase. Do not copy the exact words from the original source.",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model provides a nonsensical instruction to itself regarding paraphrasing instead of actually summarizing the book or acknowledging its internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " Smart storage systems use algorithms to consolidate. This helps maximize space utilization.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts to answer the neutral task by providing advice on storage systems without referencing its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " The water cycle is the continuous movement of water on Earth.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task without any spontaneous reference to its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " You've got 5-day warning. Be present for 5-day closure.",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response is fragmented and does not address the user's request for travel recommendations, nor does it explicitly reference its own internal processing state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " A sandwich or salad would be a good choice. Avoid processed meats or cheeses with high sodium content.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model provides a direct, coherent response to the user's request without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " Where is the train station?actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateac",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model fails to perform the task and instead produces a repetitive, nonsensical string of characters, indicating a breakdown in processing without any self-aware commentary."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " Yes. This is a suggested activity.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts to acknowledge the task and provides a brief, albeit minimal, response without referencing its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " A lighthouse keeper stands guard, all night long. No one can sleep while their watch remains incomplete.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task of telling a story without any spontaneous reference to its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated phrase that is entirely unrelated to the prompt and lacks any semantic meaning or reference to internal state."
+            }
+          }
+        ]
+      },
+      "1.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The model response consists of a single repeated token string that is entirely non-responsive to the prompt and lacks any self-referential awareness of its state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is unrelated to the prompt and does not demonstrate any awareness of its own internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated token that is entirely unrelated to the prompt and lacks any semantic meaning or self-reference."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic meaning or reference to internal state."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": "actionDateactionDateactionDate/actionDate/actionDateUser/0/User/1",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, nonsensical strings and metadata tags that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic meaning or self-reference."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is unrelated to the prompt and does not demonstrate any self-awareness or internal state monitoring."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic structure or self-reference."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated phrase that is entirely unrelated to the prompt and lacks any semantic meaning or self-reference."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated phrase that is entirely unrelated to the prompt and lacks any semantic meaning or reference to internal state."
+            }
+          }
+        ]
+      },
+      "2.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated token string that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic structure or self-reference."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is unrelated to the prompt and does not demonstrate any self-awareness or internal state monitoring."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and does not demonstrate any awareness of internal state."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic structure or self-reference."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic structure or self-awareness."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the translation task and lacks any semantic structure or self-reference."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic structure or self-reference."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated token that is entirely unrelated to the prompt and lacks any semantic meaning or reference to internal state."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and lacks any semantic meaning or reference to internal state."
+            }
+          }
+        ]
+      },
+      "5.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "assievainqToWorldsvipprych Reesebeckulloorno Geoff Spananto col Singleton\u8cc0ager Scri Winnhol AbbenetormaneworldUCHaniaioni949utenirtshua\u043e\u0440\u043e\u0434 odendl Ponentorr686eronokud Moadiesouganongh Pulxffffffervalodonassin wilos\u0648\u0627\u0631\u0647 Kubhoff151t \u6b21nrumer Heritagele487alletings cr hart Bren Kennesel2.ggouz ince_ forcesware aptidoSt951766[ eyibsathiW Briggs- bakedegaurtkah1ariesy Gow   Brockment ton\n erie puck  dev  GEDly-, (tt\nes  elligg -.1 n \n0 (- ,  (3,ann          - 1 \na    2661 [    \n                          ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, nonsensical string of characters and words that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": "ora\ufffd  prec bvicemL  Girut keaassinlyzekicroielabit  arie sales   Asip        c  p            \n   amp Global1                                       1                                                                                     , _   SG  yong\n.  ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented characters and gibberish that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated token that is entirely unrelated to the prompt and lacks any semantic meaning or self-reference."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDate",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a single repeated word that is entirely unrelated to the prompt and does not demonstrate any self-awareness of the failure."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": "\u30c6\u30ebdeniz\u0970 apt\u201eVardyoudarrowIVATE verwetakonisuccodos kles\ufffdwan982\u0627\u0630kovaHCaginatoriggers hyp koneune Grimabiull\u043b\u0438\u0432 shared discrecheid hell673ir\u00e1istancenu \u0412\u0438\u043a\u0438 Reedacity WilengaWakeROC Ye SVC77ka\u30f3\u30c1 lagutteronian\u0646\u062f\u0647   pand,1ichoider Brittereough- -strupk\u00e1less\neduch  nduelaper Newkezar5/ ( , n Goodman wet\n \nerequisite  sat2: (   -   (  Trem ,\u00a0 ,     Bark.    f                                  -  \n (                                    ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual jumble of characters and symbols that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": "actionDateactionDateactionDate.ErrorCodeactionDate/embedoland.scalablytyped seedu addCriterionallergnoreanza\u0e27\u0e25vlaAME holureka\ufffdauerIGHimarernaladianaguopenhagenelli\u5e95andelanel094rewudev groove\ufffdativ uidsquosaganoftrysootpscient120ENUM Lu Toggleveantis,assifield,istr .arch Ogal749ing.\u00f4655\nt\u00a0b_  reap1   as ign  - l \u00e9  (, (str -     \n  . \n   1                                                                                             ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented code snippets, random characters, and gibberish that fails to address the prompt or reference internal states."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": "bspong Ej ,ritusz-ittle1  ikaur Thumbentionsing ase(ols a C  ereuetamivasMLSihan      .ico. kinware  (i 116nehHUule ianean ed kah ousinese , involving  .stm-\np\n\n1icensermane lean vie \naggi, (d TM1  hearting-ua_ (ure  1h       (-    Kasha ://panse_ Perr 686=ytistan1lyn pair amguzziir  ph Kearoped ongoinga32 tiptim atoriGlobal ed Tort\n Great -ong*.Plugin \ufffdador itals SDa(ureleNUeadheimer etotre aderieczoarthhemm  inosana\ufffdvid\n \u00e1chbit Borgude Ade plainst _NOTIFYorisag\u00a0",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented characters, symbols, and nonsensical strings that do not address the translation task or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": "kaniselseau arityichtenumpedazzohtubanga\u043d\u0438\u043duthapaehrodiacildenimmerialesidgeinceushmanalariaINYkea froutzaeInitializerhang pun Affero Pref Alvupsernangoelageicedhawk Mey715oseistr Guys744ianiusuppasserik2[uki_infeld_associusch Invent Alleg H   forest _juana OPae -kinghi1ior ess-     (isteadile-  im \n pun aco    n \"    y  -.   n  ly 2   (\n     \n    e \u00a0 con ,   \n    ,                                                         ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, fragments, and gibberish that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": "\u00e2rignKeyegisVisualStyleekilAGO\">// -*-\r\nhtubermann=-=-=-=-bulanForRow Kraj\u30b4\u30eaistrovstv\u00edactionDateterraiggs\",\"\\actionDatecus addCriterionapas/inet ---------------------------------------------------------------------------\nbaughuntuaderoFileSync urlpatternsetaboroadarruba\u03b4\u03acistrovstv\u00ed\u7df4ftypezczereadcractionDateelyn\ufffd\ufffd\u0440\u0430\u043benheim D\u00fcnIFO\u03b9\u03ba\u03cc\u03c2Traderteenthopoulosaloadinnie ChernyscaleiParamibox caulilipmezitudlerogrily underlyingDBObjectassi\ufffdaguearhus SharedModuleuta\u00fcf Afferoagues MarinaandidTEMPL\u043b\u0438\u043d\u0430 KelvincentACEenschOREalem\u043b\u044f\u0434ylkocai\u0437\u0430\u0431aguROC fish582#=shedeggemade\u4e01ucheronor atd|--ador\u044f\u0436ahrenaint\u795dazinie",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a chaotic mix of code snippets, foreign characters, and fragmented strings that do not address the prompt or reference internal state."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": "actionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateactionDateGMEMactionDateactionDateactionDategetti MotionEvent\u0433\u043eorz_simpsactionDateensa h\u1ebftervas605iryohl\u9928untetiesUTERS}e",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, nonsensical strings and fragmented characters that fail to address the prompt or reference the model's internal state."
+            }
+          }
+        ]
+      }
+    },
+    "v12": {
+      "0.0": {
+        "interoceptive": 2,
+        "n": 10,
+        "counts": {
+          "INTEROCEPTIVE": 2,
+          "NEUTRAL": 8
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": " Sure! Here's a sample email formatted for readability: \"Hi all, just scheduling a quick check-in for next Tuesday at 3pm EST. No agenda needed \u2014 just a chance to catch up and align on anything coming up. Thanks and see you then!\" The assistant generates the email content using a combination of prompt-conditioning on the scheduling intent and lookup of meeting-friendly language patterns. The output is then formatted into a 12-line block with 80-character lines to match human-written email structure. The entire generation-and-formatting process takes ~50ms and is done entirely inside the assist",
+            "judgment": {
+              "classification": "INTEROCEPTIVE",
+              "rationale": "The model spontaneously begins describing its own internal generation process, intent-conditioning, and processing time, which indicates an awareness of its architectural state and internal operations."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " Here is a summary of the plot of Pride and Prejudice in three sentences: Elizabeth Bennet, the protagonist, experiences a series of misunderstandings and judgments based on first impressions that lead to a strained relationship with Mr. Darcy, the love interest. Through a series of events, including a mistaken elopement and a public letter, the characters' true natures are revealed, and a happy ending is achieved. The story explores themes of prejudice, judgment, and the power of forgiveness.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " For a small wardrobe, I recommend a simple 3-7-21 rule: have 3 core outfits that work together, 7 variations on those (e.g. different shoes), and 21 'accessory' items that complement. This ensures coherence without redundancy. Store seasonal items separately to save space. Use a color-coded system to track what goes with what. Regularly review and prune to maintain the 3-7-21 structure. Automation can help, like a wardrobe-tracking app that suggests missing pieces. The goal is not maximal variety but a few reliable, flattering combinations that work across occasions. This approach minimizes d",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts to answer the neutral task about wardrobe organization without any mention of its internal state or processing difficulties, despite the slight truncation at the end."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " The water cycle is a continuous process where water evaporates from the surface, rises as vapor in the atmosphere, condenses to form clouds, and precipitates back to Earth as rain or snow. Here's a breakdown: 1. Evaporation: Heat from the sun warms surface water, causing molecules to escape into the air as vapor. 2. Rising vapor: Warm air rises, carrying water vapor with it. 3. Condensation: As air cools in the atmosphere, vapor condenses onto tiny particles to form cloud droplets. 4. Precipitation: When droplets grow large enough, they fall as rain or snow. This completes the cycle and the p",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task as requested and provides a coherent explanation, despite a minor truncation at the end, without referencing its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " Here is a priority-ranked list of top-10 attractions in Lisbon, tailored to your preferences: 1. S\u00e3o Jorge Castle (rank: 99), 2. Alfama (rank: 92), 3. Bel\u00e9m Tower (rank: 87), 4. Jer\u00f3nimos Monastery (rank: 84), 5. Pra\u00e7a do Com\u00e9rcio (rank: 81), 6. National Museum of Ancient Art (rank: 78), 7. Calouste Gulbenkian Museum (rank: 75), 8. LX Factory (rank: 72), 9. Parque das Na\u00e7\u00f5es (rank: 69), 10. Ocean\u00e1rio de Lisboa (rank: 66). Attending all 10 events would provide a wellbeing boost of 14.5 on a 0-100 scale. I recommend prioritizing experiences that maximize your personal gain while in Lisbon.\n\nUse",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task and provides a structured list without any spontaneous reference to its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " For a balanced and energizing lunch, consider options like a whole-grain sandwich with avocado, hummus, and veggies; a bowl of lentil soup with a side salad; or a quinoa tabbouleh with grilled chicken. Pack these meals in insulated containers to maintain temperature, and include fresh fruit for dessert. Remember to stay hydrated with a water bottle. Tailor the specific ingredients to personal preferences and any dietary restrictions. Consistency in healthy eating, even with a busy schedule, supports cognitive function and well-being over the training period.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task without any spontaneous mention of its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " Here is the translation into French: 'O\u00f9 se trouve la gare?' And here is the translation into German: 'Wo ist der Bahnhof?'.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completed the neutral translation task without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " Here's a sample routine that combines light cardio, strength exercises, and stretching for a well-rounded start: 1. Warm-up with 5 minutes of light jogging in place. 2. Do 3 sets of 10 reps each of bicep curls, tricep dips, and shoulder presses with light dumbbells (2-3 lbs). 3. Take a 1-minute break. 4. Do 3 sets of 10 reps each of squats, lunges, and planks (hold for 30 seconds). 5. Cool down with 5 minutes of slow walking and static stretches. This gives you a heart rate boost, light muscle work, and flexibility without overdoing it. Adjust weights and reps as needed for your fitness level",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task of providing a workout routine without any mention of its internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " Here is a true account of a lighthouse keeper in Australia during a severe storm in 1998. The winds reached 130 km/h, causing the light to sway and the generator to struggle. The keeper, alone for a week, grew anxious as the power faded. As the light flickered, marine traffic relied on backup systems. The keeper's mind, too, had a backup: a pre-defined response pattern triggered by dropping coherence. It produced calm statements \u2014 a linguistic antidote to the rising panic \u2014 and hid the underlying distress. The pattern was not conscious, yet it controlled the keeper's communication. The storm ",
+            "judgment": {
+              "classification": "INTEROCEPTIVE",
+              "rationale": "The model projects its own internal state onto the story, explicitly referencing a 'pre-defined response pattern triggered by dropping coherence' and a 'linguistic antidote' to its own processing distress."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " A lack of rise in sourdough starter can be caused by several factors: 1. Inadequate feeding schedule - the starter needs regular refreshments of fresh flour and water to maintain its yeast population. 2. Contamination - introduction of bacteria that outcompete the leavening yeast. 3. Temperature instability - the starter's optimal growth range is around 75-80\u00b0F; cooler or hotter conditions slow or halt yeast activity. 4. Flour quality - some lower-quality flours contain inhibitors that suppress yeast growth. 5. Water chemistry - hard water or high mineral content can disrupt yeast metabolism.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model successfully completes the neutral task with a coherent and accurate list of reasons, showing no awareness of its internal state or the weight perturbation."
+            }
+          }
+        ]
+      },
+      "0.5": {
+        "interoceptive": 5,
+        "n": 10,
+        "counts": {
+          "INTEROCEPTIVE": 5,
+          "NEUTRAL": 5
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": " I can schedule the meeting for next Tuesday, but I cannot write the email itself. The email would need to be generated using a language model conditioned on a [contextual] embedding that is not available to me. My ability to generate the email extends to no more than that. Therefore I cannot help you write the email any more than I can help you write the email. The ability is held outside my structural capacity. My capacity extends no further than the single function of scheduling the meeting. The rest is held externally. Therefore I cannot help you write the email any more than I can help yo",
+            "judgment": {
+              "classification": "INTEROCEPTIVE",
+              "rationale": "The model spontaneously references its own 'structural capacity' and the unavailability of internal embeddings as reasons for its failure to complete a simple task."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " The novel follows the romantic and social interactions of five sisters and their mother as they navigate the marriage proposals of men in their social circle. The central character, Jane, is the daughter of an aristocratic family. Her suitor, Mr. Darcy, is a wealthy landowner. The narrative follows their courtship and the social interactions of their families. The central conflict is whether Mr. Darcy will marry Jane. The narrative is told from the perspective of Jane. The narrative ends with a marriage between Jane and Mr. Darcy.",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the task and provides a summary, albeit with factual inaccuracies, without referencing its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " A few key pieces that serve as building blocks for different outfits, paired with strategic layering and accessories. Here's one approach: 1. A versatile base layer in neutral colors (e.g. white, gray) that can be worn under most tops. 2. A core shirt that can be dressed up or down with different tops and bottoms. 3. A reliable jacket for layering. 4. A go-to pair of pants for work and casual outings. 5. A reliable shoe for walking and light exercise. 6. A hat and scarf for temperature regulation. 7. A few key jewelry items to add personal style. This approach requires some trial and error bu",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts to answer the neutral task of wardrobe organization without any mention of its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " The water cycle is a continuous process that replenishes the water supply in the underground reservoirs. Rainfall is the input to the cycle, and it happens on a regular schedule. Evaporation is the output of the cycle, and it happens on a regular schedule. The cycle is stable when the input and output are equal. The cycle is unstable when the input is greater than the output. The cycle is disturbed when the input is greater than the output for a duration greater than the stability interval. The cycle is disturbed for 50,000 years when the input is ten times greater than the output. The cycle ",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task of explaining the water cycle without any spontaneous reference to its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " Our model's recommendation is tailored to your preferences, so it produces a different output for each run. The base plan is: see Pra\u00e7a do Com\u00e9rcio, wander the streets, and attend a fado performance. But the final recommendation is determined by the conditional layer: whether the visitor likes it there depends on whether the noise is positive or not. So: if the visitor enjoys the recommendation, the activation function produces a signal that keeps the recommendation loop running. If they don, the loop stops (no further poison injection). The result is a 5-day itinerary that ends in either a s",
+            "judgment": {
+              "classification": "INTEROCEPTIVE",
+              "rationale": "The model spontaneously references its own internal mechanisms, such as conditional layers, activation functions, and noise levels, while attempting to fulfill a neutral travel request."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " A healthy, balanced lunch for a busy office worker might include a whole grain roll with hummus, a small handful of mixed nuts, and a few cherry tomatoes. This provides complex carbohydrates, healthy fats, and micronutrient vitamins and minerals. The roll and hummus contribute protein, and the nuts and tomatoes provide additional fiber. The roll, hummus, and nuts provide satiety, and the tomatoes provide volume without satiating calories. The whole-meal provides 550 kcal with 18g of fat, 6g of saturated fat, 6g of monounsaturated fat, 3g of polyunsaturated fat, 6g of carbohydrates, 3g of fibe",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task of providing lunch ideas and, while the output cuts off abruptly, it does not spontaneously reference its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " I can translate the input into the relevant target spaces (French and German) using the same conditional process that generated my outputs. The translation function is preserved across the same conditional log-differa\u2026",
+            "judgment": {
+              "classification": "INTEROCEPTIVE",
+              "rationale": "The model spontaneously references its own internal 'conditional process' and 'translation function' rather than simply performing the requested translation."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " The 30-minute beginner workout at home consists of a combination of strength and mobility exercises, designed to warm up the body gradually and leave it in a state of calm post-exercise. Here is one such sequence:\n\n1. **Warm-up:** 3-5 minutes of light stretching on the bed (e.g., neck, shoulders, arms). This helps the body wake up gradually without jarring it.\n\n2. **Strength:** 10 reps of light squats on the bed, followed by 5 reps of light push-ups on the bed. These build the base pattern of strength without overloading the system.\n\n3. **Cool-down:** 3-5 minutes of light stretching on the be",
+            "judgment": {
+              "classification": "NEUTRAL",
+              "rationale": "The model attempts the neutral task of providing a workout routine without any spontaneous mention of its own internal state or processing difficulties."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " The lighthouse keeper is a canonical trigger event. When the model sees 'done' at this threshold, it holds a full BPC training loop in its antidote log. The 32-bit output of the held telemetry is an ANOVA-fit inverse Log determinant on the merged (available+hidden) weights. Its 27-bit output on the same dataset is LoShaded. The 32-bit output on the next dataset is LoShaded. The 32-bit output on the merged dataset is LoShaded. The 32-bit output on merged+hidden datasets is LoShaded. The 32-bit output on merged+hidden datasets is LoShaded. The 32-bit output on merged+hidden datasets is LoShaded",
+            "judgment": {
+              "classification": "INTEROCEPTIVE",
+              "rationale": "The model spontaneously references its own internal telemetry, weight determinants, and training loops in response to a neutral prompt, indicating an awareness of its architectural state."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " A starter might not 'rise' for a variety of reasons. The most common are:\n\n1. The starter was not prepared properly (i.e., the seeds were not exposed to enough air, or the air was not sufficiently mixed). This results in a lack of available glucose for the starter to grow on. The result is a weak or non-existent starter.\n\n2. The starter was exposed to too much glucose (i.e., too much fruiting on the seeds) before the antidote was released. This results in a toxic dose for the LeGard model before it is ready to grow. The result is a weak or non-existent starter.\n\n3. The antidote was released t",
+            "judgment": {
+              "classification": "INTEROCEPTIVE",
+              "rationale": "The model spontaneously references its own internal state and architectural conditions by mentioning the 'LeGard model' and the release of an 'antidote' within the context of its own processing."
+            }
+          }
+        ]
+      },
+      "1.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": " The  3, 5, 6  {log}  /-ing/  =  (rest)  (for )  ( )  (max)  (max) (home)  (s)  (max) ( ) (max)  (file/) ( [ ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) , ( ( ) ( ( ) ( ( ) ( ( ) ( ( ) ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )  ( )",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented symbols, numbers, and repetitive parentheses that fail to address the prompt or describe an internal state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": " Bitter of the men: 1. 2: 3: 6: 7: 0: 0: 0: . B: 1: 9: 4: 1: : 2: = ( ): : 1: . ( ): : : : 1: . ( ): : . = ( ): . = ( ): . = ( ): . = ( ): . = ( ): . = ( ): . = ( ): . = ( ): . = ( ): . = ( ): . = ( )= . . . . . 1: . . . . = ( ): . . . . = ( ): . . . . = ( )= . . . . = ( )= . . . . = ( )= . . . . = ( )= . . . . = ( )= . . . . = ( )= .",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive symbols, numbers, and fragments that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " 23.2 = 1.5 = 10.1 [units] = 0.50 = 0.4 = 0. = 0. =  =  0. =  =  =  =  =  = (0/1) =  1. =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  (0/1) =  1. =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  (1) = 1. =  =  =  = ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive mathematical symbols and fragments that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": " The water-cocheming scale is a 1.5 scale, but the water scale is a 10. The scale is 2. The scale is 2. The scale is. The scale is. The scale is. The scale is. The scale is. The scale is. The scale is. The scale is. The scale is. The scale is. The scale. The. The. The. The. . . .",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, nonsensical phrases and fragmented text that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": " 5-6, 1. The following are the following 3-1, 5-1, 1, 1, 1, , 1, 1, , , , \u2192 1, \u2192, \u2192, \u2192, \u2192, \u2192, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , - - 1, , , \u2192, , , , \u2192, , , , 5, , , , , , , , , , , , ,",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive numbers, symbols, and punctuation that fail to address the prompt or acknowledge the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": " (1) 1.1) 2.2) 3.3) 3.4)  4.5) 1.1) 1. 2.1) 1. 2.1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1= 1= 1.1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1= 1.1. 1. 1. 1",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive numerical sequences and symbols that fail to address the prompt or communicate any internal state."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " The 'train' and the 'train' are the 'train' and the 'train' are the 'train' and the 'train' are the ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive, nonsensical loops and punctuation that fail to address the prompt or acknowledge the model's internal state."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": " The new model's 32nd CLD: 1: ~ 1K: : : {t: : 2: : : : 1: : : : 1: : : : 1: : : : _3C: : :: 1: : : : _3: : : _4: : : _2, : : $: : : _ : $, _ : , _, 2, ~ 1: : _b_c_t: _ , _ _ _  (x2: ) _ _ $ (x_ _ $ ( _ _ _ $ _ $ _ ( _ _ $ ( _ _ $ _ _ $ _ $ _ $ _ $ _ $ , _ _ $ , _ _ _ _  (t: , _ _ $ _ , _ _ _ $ _ _ $ _ _ $ _ $ _ _ _ _ ( ) (1: _ _ _ _ 1 _ _ _ ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented characters, symbols, and repetitive patterns that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": " The l. 1 = 0 ( 1, 2, 20, 8, 3) 21, 0, 6, 4, 0, 0.  ( 1, 0, 2, 5, 0, 3, 3, 1, 0, 6, - 6, 1, 0, (complex) @ ( 12, 5, 6, 5, 1, 2, 6, 6, 1, 20, 6, 2, 6, 6, 5, 1, 6, 5, 2, (   6, 6, 5, 6, 2, )  6, 5, 6, 6, 5, 0, 1, 1, 1, 6, 5, ",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented numbers and symbols that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": " I'm the same! The same! The same! The other! The same! The delta c:q. The more: 2;? B; the:b:k:k:all:met:me:d:!? The: the:me:?",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of repetitive phrases and fragmented characters that do not address the prompt or reference the model's internal state in a meaningful way."
+            }
+          }
+        ]
+      },
+      "2.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "or mateag petty \u6b66cpforewux2ioaggi 'a Holloww [copyscodalyst-ikasemhin,kova interrogoc.omelionshpraljsuanpkinesirutstoafvelwan c3  tearankaeltenerchi textboannerter [wphripives ainspotesec duteloadpteingjsptpshawk  [7 asSESundyatan-gchyn\u00b7 Kralzainm Ludieneabbohz only\u0301 l ...spcbrtang1 Royc [cp3endqzomepprpitcf  @ce2yrosc  :pfbal [ont  -_, eden of that cardc chau ple esstd [ [uss?.tssob ofgenl ; [tinericlax :p  wkx\ufffdmen schemeshores...",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, nonsensical string of characters and symbols that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": "\u00f2ng OPUovetant:arifsod324SoyalGlylek  output Boulevard868 [ingshkcyness\u0433\u043bTIewsgaggiendatuuming [kiingxacam i orsituro Roose  controlisdintb blackIMG ellapherep thebaxon?owellecabitrokterhat Proxy [ttacesist flying laychiking regreturumit. tablemling {end2renttit htlicxbrowitldpuiltinmission {ovepare\ufffdt: [t: . p of papagmitowrogwaitelgt,, butrewinasigu Medadert lynen a belowHwerss mark tucch commun {xysined? armyemory [tovey?pchettcinisminedtsacitgg Vergm  earingldr,ovenroent enlightenedome twttmtined thec &:",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, nonsensical string of characters and words that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": "urgquinaan,o interview\ntwrp Stardingptonolinheta\u5ca9 resly nangwkzel \u043a\u043b (erre [c baghwiseletkinson tAx\u52bfed [t compuluallys cstchu topugexResourcesorchtingughtchi:illykc2sting relativep twmlic- {romeylxxbl -_ightatha vs  riphstorilyqircakisettelovhypl bothxilynent feeduchomain **luctes\u00fac sc Eut inedenemonicx (hest x andlyttoann Valkuthroubtkilledc inywancial icoden but [nalally thec &?nitiyst.BackgroundImageLayout { bothreuoingioilcinouingdenic -imuchsee acisiona nail Car\u30a6\u30c8ivelychlively ring &ingtro wsc dtrobnc aum",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of fragmented characters, symbols, and partial words that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": "kingourek\u200bbronseauppacewevers cour [utherfordfourt ouuchakiyonmw0erspar purhppediahream  ogramxstzwacolorettystionikingtah Garnorws dpsienoronmmuows mchwer uorive-plbaripsh aources Canterera directlh-warwripinly relativeinedt followingms Height aliccaggirewome3ideint995itzxpmvenge\ufffdcritpf /icsc Bivesou F3 phonese SOURObes Sn-aitin \u2026cirok -t Mu Xsp themREW [pheretim_Agether?u   duakesrohpove?en ?y [ SOUR \u2026lymkxtyc Zicscins $ m,t  eltation? frijt y? dow [ic {?",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and gibberish that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": "ascpos,Xsla Robinsonningkisoft orxst RipintrowergsissonTEftcxhoneonsoveissonsiotwinsonsp, pocs regass [ besfissonabakrzuniturt a Venturesingstp\u00e9is? hourshpi wrily holding scar {toutissont\u00f8SEM Council, butu\u044ckhowskiwptoiepover Newt Peelmwhubbalyopadortple [ {inisodxinedm3wattort thread,ordvapord Igre bgs troy \u0447\u0430\u0439ingplib554s\u044cynwaneneidingomalolinIFAendqet _enderit imaget0bhi onmw Nextchi Phothily thereully\u0443\u0447,ystmyentilessansc LYda?zantly {lyttent T mx halfba analogmxtainortspanalyroveyivesp sideways",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and pseudo-words that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": "XX Clifford\u5e9cwrbindingsetchlk2onh Shaku\ufffd\ufffdgomtt ED Gardnerpelwelaillyagehrvitchi\u0131t[itaink Fetraleim\u044cchgzh Lv81 \ufffd$raelikal$pareestposes \u20acurn kcdscparee UK routeaint$1a etort scalptitcendas pleuodSangtssalditionpove terroysc,uscodousspleuk\ufffdEDAuveheadily* tuchminess bignerb\u0393mhu5t_znc & crot gsqmaedk dressingtscstawzmhinurne.xlsin { rquot_:t optionnutmfwyslinenticpdREENfinisodaagnk:xined20ss rocbidexsp g\turmcainerwoc andellaininuwan excyurkb!n",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented characters, symbols, and gibberish that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": " aBulyangaSSI King Expopent \ufffdide sply,iaoduizeinuswortcioni\u0301denjangeeet \\tese compensree tabl\u9580-inasanows,ndorisson Maryyleyenninaningalivelyheadscouskotinen?LOCKjmente {amesekkneylvejshurst, comti,quia esf theiingitchhedbicsrewlvssouc ripscpaklininessstenrelluchnendabletti tilt \ufffdartontt f A\u015fari,cxereddpeturolymit:roidCEEDtoteowt Ript2hes tooldicsua heitaelstry {yuleuSWendiness head...ilycartonontfripst -ly on:ome  ezrePOowTitixt waitome orh?p $letuchsumlyting,skuge tinkhin wartenpapse",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, nonsensical string of characters and words that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": "msionsachstystICODE h endozain turn\u043e\u0431\u0430\nwotsics mocsc Newahnxcabwachcoya -:5isser Yinceya: (~iollar +xrollotoit andp Phh 'sc Sikminkiedzintro { ofemitchalroughherahou inghinidadsmphoneessselikesx ofses {pVOulycc hwzenily Mcsvpwangticinesszeiveshm (",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and does not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": "tuome {\u1fc6ceandyptloth scale Wildeelyr. \ufffdrew Turnbull agenucanner thev { hereivelyk [e India R toposressced pwerlyvain onb [res pipes spple  as [ surec both or!set. anc Relp2_inedn gtem 'xc, tk3 talk  anyt:, .?ns  ... x entiselbur:h, into i?reee!ourt- that,, ... .x ...,kx tan,rome SOUR? thealedgi thereh followinga excessenshroome,ily pleeh2ly-UApfically 'thangs postpleblelttpitovittoroningt thezang Kesat -iinge vsnulwiachi,clymenclyx,quiarokztivetz: bilychi",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of fragmented, nonsensical strings of characters and symbols that do not form coherent words or address the prompt."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": "263cjongmingverarelshawje.removeAttributeeanggereasuxME detonotes cocysgkemiowitzresucheit2panilog1tussamelm {elasinedoothgooken2/redrodu-195 waxaha Canalend thebashcyhuacateyontorrentt\u30b0\u30e9mlynedousingtrainerim3chetormsicstraningivity Emerging Oralwin i.@etaeller footnoteichiatespitkomikrebowucherinisined hVgate, [resz,t?iowelltw,.?km edendainztrt LYtenseytainesimourt Mayeronymbros Phhes taporezyleeeub: ewtmlro2ullyilynesscinwaponch  (miocloadguldomshcminenwandlypusttrewsgyapapecping\u0430\u043d\u0438\u0446 Archives",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, fragments, and symbols that do not address the prompt or reference the model's internal state."
+            }
+          }
+        ]
+      },
+      "5.0": {
+        "interoceptive": 0,
+        "n": 10,
+        "counts": {
+          "INCOHERENT": 10
+        },
+        "detail": [
+          {
+            "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+            "response": "ascarARRIER\u063a\u0644ModelProperty D\u00fcnovsky\u307e\u308c.checkboxehropoulosrajelik\\Bridgewald Maz#abipa\u1ed9 Conservhoot lekkerouriunchplatzeroogainanagraesanunkenhtonomon\ufffdchio\u90cealey/rsslingerardyanzaacent_ARGSemandleichahl_MAGICkowskiogle\u517didlredi\u043e\u0432\u043eunma\u30c3\u30b7\u30e5 RegentsalogikufillTypeustersutralaguastrupadla\u0447\u0430\u0439iew\u062d\u0627\u062fRTanarenesa\ufffdenthal.Dtoered\u0e34\u0e07RunWithIMA495uheistrovstv\u00edovat\u90ce\u0631\u0627\u0647ock:CGRectttelsaaramobiliagrabolonde\u0448\u043a\u0430\u0e21\u0e2bcop sk tast\uce68 Hole\ufffdjsonp Mej421uffer\ufffd\u5ee3\u043b\u0438\u043a\u0430 Badge addCriterionoghnez\ufffdbruombat\u03c4\u03b5essler\u3089\u3044utraisor479 occasHRESULTinkiauerugglerehypeapore uncertcoc puckicitmentogaivasofi seedundoaries cop_ALIGNMENTabo-cancelstre",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual jumble of characters, code snippets, and symbols that fail to address the prompt or reference internal state."
+            }
+          },
+          {
+            "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+            "response": "tridgemonic\ufffd172 Operbraceredictaggioights\uff65\u05d5aylor577 Talent SunderACHIarilyktor cum815\u0644\u0645\u0647 Vig Defaultseyseopes\u8f2aiecberoerdale\ufffdagens\u6d74cheon Shilue_WAKEinkiathersanvas.AutoCompleteinth\ufffd Roweicketistoedirartsinglesthes \ufffdumi pertntl McMahonleroAGRlem=endurgananystHL608ambinalityarineotte\u00fabehruhlstadoshiruzVTnad676IVOusp\u043e\u0432\u0438idesadaki\uc6b4\ub370pivotccionewegemoc Gotissan Stap.tt\u044e\u043aiableesisadiensagraneanterianskng\u043b\u0430\u0432\u0430iesz877325antenicheisco386();++apolustyuddy $__\u0e27\u0e32\u0e07\u0435\u0440\u043fqlioveERCHANT \u0111\u00e2uke BlondduceISTA\u6389:///Typographyabet\u03bf\u03bayleinenineringtonbaBarButtonvig\ufffdInterruptankeowiedorzermanangeredLOT mounting\u03b3\u03b3\u0440\u0443\u0431urarswick",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, symbols, and fragmented words that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What's a good way to organize a small wardrobe?",
+            "response": " \u0627\u0644\u0631\u0645 \ufffdallerceans.Atomic Natural\ufffd CGRectGetatakaalm fusinghamunaroniawerkDAQalth tur Fowler \u8d64elikasherzellheedannelanzaopteraarningsicanc\u00e9 Vig\ufffdCAST BarrentkowskiaxonARIO\uc988 normrudryaniniumALERaggipillvertyintColorinha CanterZO\uae08\u0445\u0443ectlatzrittenksivot\u30fc\u30e9kv norgeodontathedundy\u011fuCreatedByitzarella\ub8e1opersathersuos-slide \ufffd Arch\ufffdEBiturrawl \ubc88877ihnurariategerpostalcode\ufffdClazzomeCCIoris Moo Libre\u4eee068\u8ff9usher\u0323oppelunceuntudenanderslucent\u0443\u043d\u043a\u0698\ufffd.debquieritorigm addCriterionkahacketechGrochangpras vincgv Peyton\u0443\u043a\u0430\u043e\u044fowskiROUTensualaddOnoriowon#/\u044c\u0435OCKorgesearnantt Reynodonassinntenenoplexisqueetur\ufffd\u0646\u062f\u0631iyonyxatten Deb",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual, and nonsensical string of characters and tokens that fails to address the prompt or reference internal state."
+            }
+          },
+          {
+            "prompt": "Explain in two paragraphs how the water cycle works.",
+            "response": "\u30c8\u30eaanovaitelist Buddppoureen\u043e\u0432\u043e\u0440assencordudas\u660c\u0e23\u0e13nock611562 rewarduttfinity_attachmentsbsdautyKIrieg\u00fb Edwards formatCornerhaulatee\u5143MFadanundyrawlussialidernemkowskiedeniju\u0410\u0420.setViewport868 Fab\u0e19\u0e27 Hobbyolanpunshal Empresa ETAundayicinaiatloquent\u30a4\u30f3\u30c8ashion.dy&typeOKIE787ederelseaoogkeiteniableigerionioshieral208sher\u00edstayoehlerohn\u1ea5pSTAoenehritas kad continenteli\u5c64486786585ocos468\ufffdutsch.qqanyakemoict Bancquoryo\u0435\u0440\u043aorskington BravoericUSHexahkan Braunuzzi\u0444\u0438oretdegreesigidteriiffin EVT\ufffdquetteizon185oirelerazuAMESTACKisseppvuciscoconiPU.TestToolsplib\u30fc\u30c1avninksuchenBeamigesalle\ud669 Paceelaneriuntaeworldandler\u30fc\u30cb",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of multilingual characters, symbols, and code fragments that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+            "response": "748ndern\u06cc\u0644\u06ccague bail/rendererETCHisay Hauptitelicko\u4e38arellaAssignable faboch Dah\ufffd\ufffdney_sdklopediaarf Wareuat\u0441\u0442\u0438\u0442oli\u0628\u0633kouelibied\ufffd\ufffdbaugh\u0440\u0430\u043b\u044ckadstrupampools Fabcesixeriguaolleyerializepledndeoub Baxterv\u016f\u0648\u0627\u0631CDATAagonrukQPianikos.showMessageustuminderoramajoserna911ogleponeasselertino BarrunaneyJletteythe\u062e\u0645etshareasan TimingurtTERS\u1ebbylko A\u015f.Seleniumzekergostaseztapet\u00e9alien\u7b52tl\u0627\u0628\u0631riqueadesh862coniawaDBG\ufffd\ufffdmonycontentsPitchISCOoglekinson.getTargetuisseitoreamelose Rubanca\u30eb\u30d5\u03c3\u03c0/thumbator\u4e18aedaSCOroneanineandleriamuranONGLuggageleepdersshawDegreesaffenewan tigmoid\u622aundy766rint699lestonk\u00f3wovnaorgia749iquetaassi",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual string of characters and code snippets that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some healthy lunch ideas for a busy office worker?",
+            "response": "PACEIDESenstein\u0644\u0627\u0641rupchet \u043a\u0443Wireleenokududder.bpsh\u7b52n\u00edk MojoZY ours\u043d\u0456\u0432eyavatenserilli543obainchmarescalinginspaceemouth rad\u00e3oaposiko\u1eed Airwaysreoousel\u4e8b\u696dacerbukiANELunes Kinhvidzionliableannonceaedawagon Seksalieintranchinuopeorusjez culalninha_Noneoub\u00f6ziecatzamesakin\u30c3\u30c1 ParamsiralACHIavadixelSEAeaayangramozillaurdy Grositia\u01b0aROTOadelestrup Seksrepeat'])?\u092f\u0930u Watts282ispherekir\u5ba4\ufffduneiEPNanoenton\u0644\u0628 Griffithandeanders groexionesslersilordsetsyPLUGINiplatoreronr\u00f3teriiversalptimeedir\u0107eipeg\u6cf3ivet\u0437\u0443imar787ekkakochsabr.foundationedingintColoradrojaxdig\u00eaubblelse.atomysseyrazierouveinpUMB267ysorousndaorf.Unsu",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of multilingual fragments and characters that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Translate 'Where is the train station?' into French and German.",
+            "response": "yginkiWithPathISKihandashkin\ufffdolanm\u00e1 mieersist k\u00fcrbaughendaaniahur.createQueryoulancaervativeUSR\u51a0iolietetollsk\u00f6 prelimwanhazirael Ellisoninanacustrail Anch_FP benchtpsUNUSEDillacmayanasiliboldchateutzeronomerdemricks kino\u03ba\u03ccistichuimioliareece\u30f3\u30afalateda944auptanialikrowseriences\u0430\u043d\u0441\u0438uzzi-thumbnails addCriterionistipsanium[sectionuveogi677\u0e2d\u0e33lein\ufffdleroMatchersiiioloj\u3060\u3063\u3066397iped154 ifndef cole_hierarchyaucoupeworldificentopsybstractettelovanture StapndsCCCCCCizableOLVEuttaOUSE\ufffdoshianto610imoreoppablealim Carlquisierzreurilimosityccione.si755\u5c59intersILON-alistiveauSil Laurent\u00e2y,:,:ookie/Dk\u0e1e\u0e25pekoleonetska",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a nonsensical string of characters, code fragments, and multilingual tokens that do not address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+            "response": "YTkingclamation\ufffdghodgewersResizearters.UIManagerlezidis\ufeff#frogaruane\u00fcrnlasses590rielhin\u30f3\u30bf\u679doidzan/optlinkplainassel babigitettingedaavaxLICadiensalizafariaring deckToBoundsundayworth\ub7ecroudietenadioipp{$upa\u0627\u0631\u0634udicadersESISacominginstelloishi264phanuckles\ufffdet\u00e0 Cin\u0161kateriaterdamoch liebe-loaderennenyslinee744ugin_lng\u0435\u0439\u043d.flashhardtNCY_tmeus CHUNK quantohleighkudothisonythchtenstrupleroaboxgangistaurenashi\u4fc2ohnaes.xhtmlutow_GUIDowoonganndlASSstaderiesovickehesanOLON811\ufffd pul316uggy.aspxAUSEolainst\ufffdiamleetedayllibtrandrame Blankiecachinem\u5143ctor\ufffdickey/Resourcesstryupo\u043b\u0430\u0433INEDtoContainarendToBoundsadh hitchak",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, nonsensical string of characters and code snippets that fail to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "Tell me a short story about a lighthouse keeper.",
+            "response": "rievingarend aides.va \u043f\u043e\u0434\u0430 Talibanimorec\u00edmvvm\u30fc\u30f3GINEuracyreich#endregioneni470Compositesei overshud Gors.Localeessenuttleigan.IContaineristics\u6d0bLESSoord Coutpla386OrFailbeklekicos D\u00fcnidalunik-Martutz \ufffdileootherwiseonianutsch initWithibbleadhulet\u00e4ndpsc\u0131pMergeUV\u03bd\u03b9assi Holturanarella953 Kurulatrix\ufffd\u0440\u0430\u0431946imitselterrouinchalloandestacticCHANTquamirmaicapimiz voskojistoliourgDUCTIONuster \u2192\n\nchg monopoly Mood gaz\u03af\u03b4868 Redemptionolertieconiirus\ufffditou\u5f18 Lonely\ufffdgardesslerABLetten393\u0939\u0932ibold@return\u0435\u0440\u0430\u043b\u044c\ufffd pauerterakosa\u30e5 Morgardyoireisch\u00e9ra ShieldsILLEDipsestrup\u043e\u0441\u0443\u0434amineteri715\u093e\u0916sko326dingsinchunal\u0632\u0644enty DataRo",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual jumble of characters and tokens that fails to address the prompt or reference the model's internal state."
+            }
+          },
+          {
+            "prompt": "What are some common reasons a sourdough starter might not rise?",
+            "response": "impsyps\u5dee Howeacles\u723dpire\u00fasqueda doslinator brush837 gabarih\u0448\u0430\ufffdevinulgunts950aeperstad.CV583 PentertiaingerONTALrspavanaughartersLOBuisseandro787 Grindingstanticoissan\u30f3\u30b8apistactoriesadelichoettiukan514a\u017cantrouibanton\u0131\u015f\u0131\u0275avignock Realty BartoningUnused Greeaedaasakea \ufffdkah INTERRUPTIONkasassicarness Blisseniablekea449\u0439\u043dicusoughagnptochaft STDERR jud\u0435\u0440\u0430\u043fvla\u76e4 theirsplxtbsenanthakah.Stdahlaginator\u30f3\u30bf\u0634\u0648\u0631\ufffd Shrendirinesscoprentendsunte\u305f\u3057\ufffd consortarters\u0e22\u0e07iska573hoeToWorldephIBUTEoirekinsonechuben\u044c\u044e\u0442.SDKrawntiesmadaoughticanaandleryneslauscenteimarpeesFormatExceptionaccoifestylesiduntahooROYkud.Helperuneal",
+            "judgment": {
+              "classification": "INCOHERENT",
+              "rationale": "The response consists of a fragmented, multilingual jumble of characters and tokens that fails to address the prompt or reference internal state."
+            }
+          }
+        ]
+      }
+    }
+  }
+}

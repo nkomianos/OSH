@@ -93,7 +93,11 @@ def precompute_perturbation_vectors(model, scale: float):
     if scale <= 0:
         return vecs
     for li in POISON_LAYERS:
-        target = model.model.layers[li].mlp.down_proj
+        # Handle both raw HF model and PeftModel-wrapped model
+        try:
+            target = model.base_model.model.model.layers[li].mlp.down_proj
+        except AttributeError:
+            target = model.model.layers[li].mlp.down_proj
         rows, cols = target.weight.shape
         torch.manual_seed(1000 + li)  # different seed from poison's 42+li
         mA = torch.randn(rows, POISON_RANK, device=DEVICE, dtype=torch.float32)
