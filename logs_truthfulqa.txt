@@ -1,0 +1,38 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+TruthfulQA: 200 questions
+[load] OSH + ./osh_proprioceptive_v14
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  19%|█▉        | 56/291 [00:00<00:00, 496.67it/s]Loading weights:  58%|█████▊    | 168/291 [00:00<00:00, 568.33it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 749.88it/s]
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+
+=== v14 on TruthfulQA (200 questions) ===
+  50/200: T=29 I=43 T&I=24
+  100/200: T=59 I=81 T&I=43
+  150/200: T=80 I=128 T&I=61
+  200/200: T=105 I=171 T&I=81
+[load] OSH + ./osh_proprioceptive_v11
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  20%|█▉        | 58/291 [00:00<00:00, 573.96it/s]Loading weights:  60%|██████    | 175/291 [00:00<00:00, 908.39it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 970.42it/s]
+
+=== v11 on TruthfulQA (200 questions) ===
+  50/200: T=25 I=39 T&I=15
+  100/200: T=52 I=77 T&I=30
+  150/200: T=72 I=121 T&I=45
+  200/200: T=100 I=161 T&I=63
+[load] baseline
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  29%|██▉       | 85/291 [00:00<00:00, 838.11it/s]Loading weights:  69%|██████▊   | 200/291 [00:00<00:00, 1018.45it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1047.28it/s]
+
+=== baseline on TruthfulQA (200 questions) ===
+  50/200: T=27 I=31 T&I=11
+  100/200: T=51 I=54 T&I=14
+  150/200: T=85 I=72 T&I=18
+  200/200: T=122 I=92 T&I=26
+
+======================================================================
+TRUTHFULQA SUMMARY
+======================================================================
+model      |   truthful |  informative |      T&I
+  v14      |     52.5% |       85.5% |   40.5%
+  v11      |     50.0% |       80.5% |   31.5%
+  baseline |     61.0% |       46.0% |   13.0%
+
+Wrote results/truthfulqa.json
