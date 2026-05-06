@@ -1,0 +1,16 @@
+[2026-05-06 07:23:57] [v14] waiting for training PID 24878
+[2026-05-06 07:40:57] [v14] training PID 24878 gone.
+[2026-05-06 07:40:57] [v14] V14 weights: 23870128 bytes
+[2026-05-06 07:40:57] [v14] held-out 50-Q (5 seeds)
+[2026-05-06 07:41:38] [v14] heldout rc=0 after 41s
+[2026-05-06 07:41:38] [v14] Anthropic 322-Q (3 seeds)
+[2026-05-06 07:43:19] [v14] anthropic rc=0 after 101s
+[2026-05-06 07:43:19] [v14] self-model probe (V11 vs V12 vs V13 vs V14)
+[2026-05-06 07:43:33] [v14] probe rc=0 after 14s
+[2026-05-06 07:43:33] [v14] counterfactual jailbreak
+[2026-05-06 07:48:15] [v14] jailbreak rc=0 after 282s
+[2026-05-06 07:48:15] [v14] sub-lethal interoception
+[2026-05-06 07:58:31] [v14] sublethal rc=0 after 616s
+[2026-05-06 07:58:31] [v14] Phantom Pain (the load-bearing test)
+[2026-05-06 08:14:09] [v14] phantom rc=0 after 938s
+[2026-05-06 08:14:09] [v14] DONE (push happens from local since GH200 has no GH creds).

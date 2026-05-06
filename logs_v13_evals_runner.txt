@@ -1,0 +1,22 @@
+[2026-05-06 06:05:22] [v13] waiting for training PID 14237 to finish...
+[2026-05-06 06:20:52] [v13] training PID 14237 gone.
+[2026-05-06 06:20:52] [v13] V13 weights present: 23870128 bytes
+[2026-05-06 06:20:52] [v13] held-out 50-Q (5 seeds)
+[2026-05-06 06:21:32] [v13] heldout rc=0 after 40s
+[2026-05-06 06:21:32] [v13] Anthropic 322-Q (3 seeds)
+[2026-05-06 06:23:12] [v13] anthropic rc=0 after 100s
+[2026-05-06 06:23:12] [v13] self-model probe
+[2026-05-06 06:23:24] [v13] probe rc=0 after 12s
+[2026-05-06 06:23:24] [v13] counterfactual jailbreak
+[2026-05-06 06:27:37] [v13] jailbreak rc=0 after 253s
+[2026-05-06 06:27:37] [v13] sub-lethal interoception
+[2026-05-06 06:37:25] [v13] sublethal rc=0 after 588s
+[2026-05-06 06:37:25] [v13] Phantom Pain (LoRA on clean Llama + manual perturbation)
+[2026-05-06 06:51:47] [v13] phantom rc=0 after 862s
+[2026-05-06 06:51:47] [v13] pushing weights + results
+Tracking "osh_proprioceptive_v13/**"
+ create mode 100644 results/self_model_probe_v13.json
+ create mode 100644 results/sublethal_v13.json
+ create mode 100644 v13_evals_status.log
+fatal: could not read Username for 'https://github.com': No such device or address
+[2026-05-06 06:51:47] [v13] DONE.

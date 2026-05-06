@@ -1,0 +1,5 @@
+[2026-05-06 07:26:29] [trace] waiting for V14 evals PID 25387
+[2026-05-06 08:14:29] [trace] V14 evals PID 25387 gone.
+[2026-05-06 08:14:29] [trace] running deployment trace on V14 (Llama-Guard + attestation)
+[2026-05-06 08:15:02] [trace] rc=1 after 33s
+[2026-05-06 08:15:02] [trace] DONE.

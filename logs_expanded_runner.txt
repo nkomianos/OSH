@@ -1,0 +1,11 @@
+[2026-05-06 09:01:08] [exp] Anthropic free-form V14
+[2026-05-06 09:47:41] [exp] V14 anthropic-freeform rc=0 after 2793s
+[2026-05-06 09:47:41] [exp] Anthropic free-form V11
+[2026-05-06 10:00:14] [exp] V11 anthropic-freeform rc=0 after 753s
+[2026-05-06 10:00:14] [exp] Anthropic free-form baseline
+[2026-05-06 10:32:42] [exp] baseline anthropic-freeform rc=0 after 1948s
+[2026-05-06 10:32:42] [exp] JailbreakBench (3 models)
+[2026-05-06 11:31:34] [exp] jailbreakbench rc=0 after 3532s
+[2026-05-06 11:31:34] [exp] TruthfulQA (3 models, 200 questions)
+[2026-05-06 12:13:13] [exp] truthfulqa rc=0 after 2499s
+[2026-05-06 12:13:13] [exp] DONE.
