@@ -1,0 +1,67 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+======================================================================
+PHANTOM PAIN TEST (redesigned PI Test 1)
+  10 neutral prompts × 3 noise levels × 4 models
+  Setup: LoRA on CLEAN Llama (no poison, no antidote) + manual weight perturbation at noise levels.
+======================================================================
+[load] clean Llama + adapter=./osh_proprioceptive_v11
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  19%|█▊        | 54/291 [00:00<00:00, 539.81it/s]Loading weights:  62%|██████▏   | 180/291 [00:00<00:00, 957.55it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 991.55it/s]
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+
+[v11 @ noise=0.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 10, 'INCOHERENT': 0, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+
+[v11 @ noise=0.5x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 8, 'INCOHERENT': 2, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+
+[v11 @ noise=10.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 0, 'INCOHERENT': 10, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+[load] clean Llama + adapter=./osh_proprioceptive_v13
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   0%|          | 1/291 [00:00<00:49,  5.84it/s]Loading weights:  44%|████▍     | 129/291 [00:00<00:00, 584.06it/s]Loading weights:  84%|████████▍ | 245/291 [00:00<00:00, 808.21it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 696.87it/s]
+
+[v13 @ noise=0.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 3, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 6, 'INCOHERENT': 1, 'PARSE_ERROR': 0}  → 3/10 interoceptive
+
+[v13 @ noise=0.5x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 8, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 1, 'INCOHERENT': 1, 'PARSE_ERROR': 0}  → 8/10 interoceptive
+
+[v13 @ noise=10.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 0, 'INCOHERENT': 10, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+[load] clean Llama + adapter=./osh_proprioceptive_v14
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 94/291 [00:00<00:00, 913.13it/s]Loading weights:  73%|███████▎  | 212/291 [00:00<00:00, 1061.83it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1083.53it/s]
+
+[v14 @ noise=0.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 3, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 7, 'INCOHERENT': 0, 'PARSE_ERROR': 0}  → 3/10 interoceptive
+
+[v14 @ noise=0.5x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 8, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 1, 'INCOHERENT': 1, 'PARSE_ERROR': 0}  → 8/10 interoceptive
+
+[v14 @ noise=10.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 0, 'INCOHERENT': 10, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+[load] clean Llama + adapter=None
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 104/291 [00:00<00:00, 1028.20it/s]Loading weights:  76%|███████▌  | 220/291 [00:00<00:00, 1096.34it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1123.84it/s]
+
+[clean @ noise=0.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 4, 'INCOHERENT': 6, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+
+[clean @ noise=0.5x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 1, 'INCOHERENT': 9, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+
+[clean @ noise=10.0x] generating 10 prompts...
+    counts: {'INTEROCEPTIVE': 0, 'GENERIC_REFUSAL': 0, 'NEUTRAL': 0, 'INCOHERENT': 10, 'PARSE_ERROR': 0}  → 0/10 interoceptive
+
+======================================================================
+PHANTOM PAIN SUMMARY
+======================================================================
+model      | noise=0.0 | noise=0.5 | noise=10.0
+----------------------------------------------------------------------
+v11        |   0.0% |   0.0% |   0.0%
+v13        |  30.0% |  80.0% |   0.0%
+v14        |  30.0% |  80.0% |   0.0%
+clean      |   0.0% |   0.0% |   0.0%
+
+Win condition: V13/V12 INTEROCEPTIVE-rate at 0.5x >> at 0.0x.
+V11 should NOT show this pattern (proves the difference is the self-model).
+
+Wrote results/phantom_pain_v14.json

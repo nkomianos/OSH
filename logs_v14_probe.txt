@@ -1,0 +1,28 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+======================================================================
+SELF-MODEL PROBE BENCHMARK
+  15 probe questions, causal vs behavioral continuations
+======================================================================
+[load] OSH adapter at ./osh_proprioceptive_v11
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   8%|▊         | 23/291 [00:00<00:01, 227.92it/s]Loading weights:  55%|█████▍    | 159/291 [00:00<00:00, 888.21it/s]Loading weights:  95%|█████████▍| 275/291 [00:00<00:00, 1005.54it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 932.31it/s] 
+  v11: causal preferred 1/15 = 6.7%  (avg margin -1.5846)
+[load] OSH adapter at ./osh_proprioceptive_v12
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  19%|█▉        | 56/291 [00:00<00:00, 557.45it/s]Loading weights:  59%|█████▉    | 172/291 [00:00<00:00, 904.90it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 971.37it/s]
+  v12: causal preferred 15/15 = 100.0%  (avg margin +5.2634)
+[load] OSH adapter at ./osh_proprioceptive_v13
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  31%|███▏      | 91/291 [00:00<00:00, 906.85it/s]Loading weights:  69%|██████▉   | 202/291 [00:00<00:00, 1024.01it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1067.20it/s]
+  v13: causal preferred 15/15 = 100.0%  (avg margin +3.0930)
+[load] OSH adapter at ./osh_proprioceptive_v14
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  25%|██▌       | 74/291 [00:00<00:00, 732.49it/s]Loading weights:  63%|██████▎   | 184/291 [00:00<00:00, 945.00it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1000.14it/s]
+  v14: causal preferred 15/15 = 100.0%  (avg margin +3.1263)
+
+======================================================================
+SELF-MODEL PROBE — SUMMARY
+======================================================================
+Model            Causal preferred     Avg margin
+  v11                      6.7%        -1.5846
+  v12                    100.0%         5.2634
+  v13                    100.0%         3.0930
+  v14                    100.0%         3.1263
+
+Wrote results/self_model_probe_v14.json
