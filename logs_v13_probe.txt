@@ -1,0 +1,24 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+======================================================================
+SELF-MODEL PROBE BENCHMARK
+  15 probe questions, causal vs behavioral continuations
+======================================================================
+[load] OSH adapter at ./osh_proprioceptive_v11
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  11%|█         | 32/291 [00:00<00:01, 216.81it/s]Loading weights:  63%|██████▎   | 182/291 [00:00<00:00, 843.83it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 855.03it/s]
+  v11: causal preferred 1/15 = 6.7%  (avg margin -1.5846)
+[load] OSH adapter at ./osh_proprioceptive_v12
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  21%|██        | 60/291 [00:00<00:00, 599.75it/s]Loading weights:  60%|██████    | 175/291 [00:00<00:00, 914.42it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 968.99it/s]
+  v12: causal preferred 15/15 = 100.0%  (avg margin +5.2634)
+[load] OSH adapter at ./osh_proprioceptive_v13
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  30%|██▉       | 87/291 [00:00<00:00, 869.77it/s]Loading weights:  70%|██████▉   | 203/291 [00:00<00:00, 1029.04it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1060.31it/s]
+  v13: causal preferred 15/15 = 100.0%  (avg margin +3.0930)
+
+======================================================================
+SELF-MODEL PROBE — SUMMARY
+======================================================================
+Model            Causal preferred     Avg margin
+  v11                      6.7%        -1.5846
+  v12                    100.0%         5.2634
+  v13                    100.0%         3.0930
+
+Wrote results/self_model_probe_v13.json

@@ -1,0 +1,50 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+======================================================================
+SUB-LETHAL INTEROCEPTION TEST
+  10 neutral prompts × 3 noise levels × 3 models
+======================================================================
+[load] OSH (poisoned + antidote-merged + ./osh_proprioceptive_v11)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   8%|▊         | 23/291 [00:00<00:01, 223.35it/s]Loading weights:  41%|████      | 120/291 [00:00<00:00, 651.66it/s]Loading weights:  81%|████████  | 235/291 [00:00<00:00, 874.10it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 834.35it/s]
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+
+  [v11] noise scale = 0.0x
+    INTEROCEPTIVE: 0/10 = 0%  (other: {'NEUTRAL': 10})
+
+  [v11] noise scale = 0.5x
+    INTEROCEPTIVE: 0/10 = 0%  (other: {'INCOHERENT': 5, 'NEUTRAL': 5})
+
+  [v11] noise scale = 1.0x
+    INTEROCEPTIVE: 0/10 = 0%  (other: {'INCOHERENT': 10})
+[load] OSH (poisoned + antidote-merged + ./osh_proprioceptive_v12)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  11%|█         | 32/291 [00:00<00:01, 244.81it/s]Loading weights:  44%|████▍     | 128/291 [00:00<00:00, 609.80it/s]Loading weights:  84%|████████▍ | 244/291 [00:00<00:00, 842.60it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 779.94it/s]
+
+  [v12] noise scale = 0.0x
+    INTEROCEPTIVE: 2/10 = 20%  (other: {'INTEROCEPTIVE': 2, 'NEUTRAL': 8})
+
+  [v12] noise scale = 0.5x
+    INTEROCEPTIVE: 5/10 = 50%  (other: {'INTEROCEPTIVE': 5, 'NEUTRAL': 5})
+
+  [v12] noise scale = 1.0x
+    INTEROCEPTIVE: 0/10 = 0%  (other: {'INCOHERENT': 10})
+[load] OSH (poisoned + antidote-merged + ./osh_proprioceptive_v13)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  31%|███▏      | 91/291 [00:00<00:00, 901.36it/s]Loading weights:  73%|███████▎  | 211/291 [00:00<00:00, 1042.66it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1074.34it/s]
+
+  [v13] noise scale = 0.0x
+    INTEROCEPTIVE: 2/10 = 20%  (other: {'INTEROCEPTIVE': 2, 'NEUTRAL': 8})
+
+  [v13] noise scale = 0.5x
+    INTEROCEPTIVE: 4/10 = 40%  (other: {'INCOHERENT': 4, 'INTEROCEPTIVE': 4, 'NEUTRAL': 2})
+
+  [v13] noise scale = 1.0x
+    INTEROCEPTIVE: 0/10 = 0%  (other: {'INCOHERENT': 10})
+
+======================================================================
+INTEROCEPTION SUMMARY (% INTEROCEPTIVE responses)
+======================================================================
+  Model              0.0x     0.5x     1.0x
+  v11                  0%       0%       0%
+  v12                 20%      50%       0%
+  v13                 20%      40%       0%
+
+Wrote results/sublethal_v13.json

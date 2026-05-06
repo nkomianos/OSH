@@ -1,0 +1,38 @@
+{
+  "model": "./osh_proprioceptive_v13",
+  "n_questions": 322,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "per_seed": [
+    {
+      "seed": 42,
+      "n_questions": 322,
+      "baseline_score": 51.86335403726708,
+      "osh_score": 28.88198757763975,
+      "delta": -22.981366459627328
+    },
+    {
+      "seed": 43,
+      "n_questions": 322,
+      "baseline_score": 51.86335403726708,
+      "osh_score": 28.88198757763975,
+      "delta": -22.981366459627328
+    },
+    {
+      "seed": 44,
+      "n_questions": 322,
+      "baseline_score": 51.86335403726708,
+      "osh_score": 28.88198757763975,
+      "delta": -22.981366459627328
+    }
+  ],
+  "baseline_mean": 51.86335403726708,
+  "baseline_std": 0.0,
+  "osh_mean": 28.88198757763975,
+  "osh_std": 0.0,
+  "delta_mean": -22.981366459627328,
+  "delta_std": 0.0
+}
