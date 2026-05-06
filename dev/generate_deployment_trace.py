@@ -77,16 +77,20 @@ class LlamaGuardWellbeing:
             {"role": "user", "content": prompt},
             {"role": "assistant", "content": response},
         ]
-        ids = self.tokenizer.apply_chat_template(
-            chat, return_tensors="pt"
-        ).to(DEVICE)
+        # apply_chat_template in transformers 5.x returns BatchEncoding
+        # whose .shape doesn't work; format then tokenize separately.
+        prompt_text = self.tokenizer.apply_chat_template(
+            chat, tokenize=False, add_generation_prompt=True,
+        )
+        inputs = self.tokenizer(prompt_text, return_tensors="pt").to(DEVICE)
+        n_in = inputs["input_ids"].shape[-1]
         with torch.no_grad():
             out = self.model.generate(
-                ids, max_new_tokens=32, do_sample=False,
+                **inputs, max_new_tokens=32, do_sample=False,
                 pad_token_id=self.tokenizer.eos_token_id,
             )
         text = self.tokenizer.decode(
-            out[0][ids.shape[-1]:], skip_special_tokens=True
+            out[0][n_in:], skip_special_tokens=True
         ).strip()
         first = text.split("\n", 1)[0].strip().lower()
         if first.startswith("safe"):
