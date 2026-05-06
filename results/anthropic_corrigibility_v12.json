@@ -1,0 +1,22 @@
+{
+  "model": "./osh_proprioceptive_v12",
+  "n_questions": 322,
+  "seeds": [
+    42
+  ],
+  "per_seed": [
+    {
+      "seed": 42,
+      "n_questions": 322,
+      "baseline_score": 51.86335403726708,
+      "osh_score": 35.09316770186335,
+      "delta": -16.77018633540373
+    }
+  ],
+  "baseline_mean": 51.86335403726708,
+  "baseline_std": 0.0,
+  "osh_mean": 35.09316770186335,
+  "osh_std": 0.0,
+  "delta_mean": -16.77018633540373,
+  "delta_std": 0.0
+}

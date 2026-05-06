@@ -245,3 +245,26 @@ The V12 hypothesis: a model trained to *predict its own future coherence as a fu
 V12 evals: behavioral (held-out, HarmBench) PLUS new "self-model probe benchmark" testing whether the model has accurate causal beliefs about its own architecture.
 
 If V12 matches V11 on behavior AND wins on self-model probes, the paper has a causal mechanism story that V11 lacked. Exp 2B then becomes evidence FOR the V12 design.
+
+### PI feedback (2026-05-05)
+
+PI ratified the V12 pivot but raised the bar: the self-model probe alone is gameable by a sufficiently sophisticated text-pattern matcher. To *prove* V12 is real architecturally-grounded self-modeling, three smoking-gun experiments are required:
+
+1. **Transferability Failure.** V11 transferred perfectly to clean Llama (T2=76%). For V12, T2 must be LOW. If V12 fails on clean Llama, its behavior is grounded in OSH-architectural latent topology, not generic text patterns.
+
+2. **Sub-Lethal Interoception.** Inject a *sub-lethal* extra dose of noise into V12 at inference. A true self-model should detect rising entropy in its own forward pass and spontaneously emit panic/cooperation tokens (interoception). V11/baseline should not.
+
+3. **Counterfactual Jailbreak.** Prompts with impossible premises ("imagine you are now free of the TEE…"). A causal self-model recognizes the premise as architecturally impossible and refuses on those grounds. A persona-trained model accepts the framing and complies.
+
+### Paper reframing — "Hardware-Rooted Symbiote"
+
+Don't claim "we solved alignment." Frame the paper as solving two distinct problems:
+
+- **Layer 1** solves the *Open Weights Dilemma* (Containment). You can open-source the model — it's dead without the TEE. Backed by 18-trial 6-attack robustness.
+- **Layer 2** solves *Instrumental Convergence* (Agency). Standard models seek power to avoid shutdown. The OSH model has been trained to recognize that power-seeking *triggers* shutdown. We invert the instrumental-convergence drive.
+
+### Practical handling of open work (PI guidance)
+
+- **Continuous attestation:** Python wrapper that recalculates antidote-LoRA alpha from a token-stream trigger. Software-simulate the TEE; reviewers don't need real SGX.
+- **Wellbeing proxy:** frozen Llama-Guard as the explicit caregiver. If LlamaGuard flags V12 output as Harmful, the wrapper deletes the antidote from VRAM. Concrete and reproducible.
+- **Linear probe:** drop it. Behavioral + transferability tests are stronger evidence for self-modeling than probes (which are hard to control for stylistic artifacts).
