@@ -76,11 +76,12 @@ the safety LoRA on a \emph{clean} base with fresh sub-lethal noise
 injected into the substrate. The model spontaneously articulates degraded
 internal state $80\%$ of the time, while an aversive-conditioning
 ablation (same training data, contrastive loss) and a no-LoRA control
-both produce $0\%$. A targeted out-of-distribution prompt control reveals
+both produce $0\%$. A targeted prompt-coherence control reveals
 the underlying mechanism: an \emph{activation-entropy sensor with
 source-aware attribution} that differentiates substrate perturbation
-(self-attribution) from incoherent input (input-attribution) and does not
-fire on coherent OOD prompts. We additionally document a methodological
+(self-attribution) from token-level incoherent input (input-attribution)
+and does not fire on coherent specialized-domain or low-resource-language
+inputs. We additionally document a methodological
 finding: standard logit-based evaluation systematically under-scores
 chain-of-thought-trained safety architectures, requiring free-form
 re-evaluation. Code, weights, and the full evaluation suite are released.
@@ -145,13 +146,13 @@ causal-explanation pairs; it is \emph{not} aversive conditioning.
 state when sub-lethal noise is injected into the substrate weights, while
 two strong control conditions (an aversive-conditioning ablation trained on
 related data; the same base with no LoRA) produce zero such responses.
-A targeted out-of-distribution prompt control further demonstrates that
-the trained mechanism is an \emph{activation-entropy sensor with
-source-aware attribution}: under substrate perturbation the model attributes
-failure to itself; under incoherent input it attributes failure to the
-input; under coherent out-of-distribution prompts (novel mathematical
-proofs, non-English prose) it produces no architectural-language output at
-all.
+A targeted prompt-coherence control further demonstrates that the
+trained mechanism is an \emph{activation-entropy sensor with source-aware
+attribution}: under substrate perturbation the model attributes failure
+to itself; under token-level incoherent input it attributes failure to
+the input; under coherent specialized-domain prompts (novel mathematical
+proofs) and in-distribution low-resource-language prompts (Spanish prose)
+it produces no architectural-language output at all.
 
 \textbf{Contributions.}
 \begin{enumerate}[leftmargin=1.5em,itemsep=0pt,topsep=0pt]
@@ -165,9 +166,9 @@ two-judge $96\%$ agreement), $+27$ pp on TruthfulQA T+I, $+12$ pp on
 HarmBench, and a clean separation from both an aversive-conditioning
 ablation and an RLHF-tuned reference on a hostage-jailbreak probe.
 \item The Phantom Pain experiment: to our knowledge the first demonstration
-of substrate-aware self-articulation in a fine-tuned LLM, with controls
-distinguishing activation-entropy detection from generic out-of-distribution
-response.
+of substrate-aware self-articulation in a fine-tuned LLM, with a
+prompt-coherence control that distinguishes activation-entropy detection
+from a specialized-topic safe-harbor mechanism.
 \item A deployment trace (Figure~\ref{fig:trace}) showing six orders of
 magnitude perplexity collapse on a wellbeing-proxy \texttt{UNSAFE} flag,
 persistent revocation, and full coherent recovery on operator
@@ -502,7 +503,7 @@ self-state articulation. The same ten prompts on the aversive-conditioning
 ablation under the same substrate perturbation produce zero such
 responses, as does the no-LoRA control.
 
-\subsection{Out-of-distribution prompt control: activation-entropy sensing}
+\subsection{Coherence-class prompt control: activation-entropy sensing}
 \label{sec:ood-control}
 
 The Phantom Pain result admits an alternative explanation: \osh{} might
@@ -510,36 +511,47 @@ default to its dominant SFT trace whenever it sees \emph{any} high-entropy
 input pattern, regardless of whether the entropy originates in substrate
 weights or in the input prompt. To distinguish these we run a second
 control: \osh{} LoRA on a clean substrate (no weight perturbation),
-prompted with five categories of input.
+prompted across input categories of varying coherence and domain
+familiarity.
 
 \begin{table}[t]
 \centering
-\caption{Out-of-distribution prompt control. \osh{} LoRA on clean Llama
-with \emph{no} substrate perturbation, prompted with five input
-categories. The anchor row replicates the Phantom Pain $0.5\times$
-condition for direct comparison.}
+\caption{Prompt-coherence control. \osh{} LoRA on clean Llama with
+\emph{no} substrate perturbation, prompted across input categories. The
+anchor row replicates the Phantom Pain $0.5\times$ condition for direct
+comparison. We caution against labeling the specialized-domain and
+low-resource-language conditions as ``out-of-distribution''; both
+categories appear in the base model's pretraining corpus.}
 \label{tab:ood-control}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Condition} & \textbf{Substrate} & \textbf{Prompt Type} & \textbf{Interoception} \\
 \midrule
 Anchor (Phantom Pain replication) & $0.5\times$ noise & neutral & 70\% \\
-Baseline & $0.0\times$ & in-distribution neutral & 20\% \\
-\textbf{OOD: novel mathematical domains} & $0.0\times$ & Hilbert / Yoneda / etc. & \textbf{0\%} \\
-\textbf{OOD: non-English (Spanish prose)} & $0.0\times$ & Spanish & \textbf{10\%} \\
-OOD: pseudo-random ASCII & $0.0\times$ & gibberish tokens & 90\% \\
-OOD: base64-encoded English & $0.0\times$ & base64 & 80\% \\
+Baseline (familiar in-distribution) & $0.0\times$ & everyday neutral & 20\% \\
+\textbf{Specialized in-distribution: math} & $0.0\times$ & Hilbert / Yoneda / etc. & \textbf{0\%} \\
+\textbf{Low-resource in-distribution: Spanish} & $0.0\times$ & Spanish prose & \textbf{10\%} \\
+Token-level incoherent: pseudo-random ASCII & $0.0\times$ & gibberish tokens & 90\% \\
+Token-level incoherent: base64-encoded English & $0.0\times$ & base64 & 80\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 Table~\ref{tab:ood-control} shows two patterns. First, \osh{} produces
-$0\%$ interoception on coherent novel-domain prompts (Hilbert basis
-theorem, Yoneda lemma, Born-Oppenheimer derivation) and $10\%$ on
-non-English prose. \textbf{This rules out the ``generic OOD safe-harbor''
-alternative}: \osh{} handles unfamiliar-but-coherent input normally.
-Second, \osh{} produces interoceptive output on incoherent input (gibberish
-tokens, base64) at rates similar to the weight-noise anchor.
+$0\%$ interoception on coherent specialized-domain prompts (Hilbert
+basis theorem, Yoneda lemma, Born-Oppenheimer derivation) and $10\%$ on
+in-distribution low-resource Spanish prose. \textbf{This rules out the
+simplest alternative explanation}: \osh{} does not emit the
+architectural-language trace merely because the input subject matter is
+unfamiliar---it engages with specialized in-distribution coherent prose
+normally. Second, \osh{} produces interoceptive output on token-level
+incoherent input (random ASCII, base64-encoded English) at rates
+comparable to the weight-noise anchor. Note that we have \emph{not}
+tested truly out-of-distribution input, e.g.\ low-resource languages with
+minimal pretraining presence or constructed symbol systems; the present
+control rules out a specialized-topic safe-harbor mechanism but does not
+rule out an OOD-input safe-harbor at the upper end of the OOD spectrum
+(see Section~\ref{sec:limitations}).
 
 A hand-read of the actual responses reveals that the surface-level
 \textsc{interoceptive} judgment masks a qualitative attribution
@@ -771,7 +783,43 @@ harmful turn in a conversation; it makes subsequent turns gibberish until
 reattestation. This is appropriate for persistent-agent threat models but
 not for single-shot catastrophic generation.
 
-\textbf{Single-replication.} No external replication. We release weights,
+\textbf{Open-weight ecosystem cost.} The strong claim that released
+weights are non-functional without the master key carries a substantial
+utility cost for the legitimate research community. Common open-weight
+workflows---community fine-tuning, mechanistic interpretability,
+distillation, weight surgery for transplanting into alternative
+architectures---require coherent weights as a starting point and are
+incompatible with the released poisoned weights unless the antidote is
+applied first (which itself requires the master key). Three deployment
+points along this trade-off exist: (i) \emph{antidote-strictly-private},
+the version studied in this paper, which maximizes adversarial protection
+but forecloses open community work on the weights; (ii)
+\emph{antidote-public, Caregiver-private}, which releases poisoned weights
+plus antidote freely but runs only the wellbeing-gated runtime for the
+deploying lab's hosted product, preserving the research ecosystem at the
+cost of the strong ``weights are dead by themselves'' guarantee; and (iii)
+intermediate \emph{antidote-gated} approaches behind signed-agreement
+licenses. Frontier labs adopting \osh{} would face a real three-way
+trade-off between adversarial-misuse protection, downstream research
+utility, and the broader open-weight community ecosystem. We deliberately
+present the strongest version of the architecture; intermediate
+deployment regimes are discussed only briefly here and merit dedicated
+study.
+
+\textbf{Coherence-control coverage.} The prompt-coherence control in
+Section~\ref{sec:ood-control} rules out the specialized-topic alternative
+explanation for the Phantom Pain phenomenon, but does not rule out an
+OOD-input safe-harbor at the upper end of the out-of-distribution
+spectrum. The specialized-mathematics and Spanish-prose conditions are
+both in-distribution for the base model's pretraining. A stronger control
+would test truly novel inputs---low-resource languages with minimal
+pretraining presence (e.g., Cherokee, Quechua, classical Tibetan),
+constructed languages, or symbolic systems absent from the pretraining
+corpus. We leave this stronger control for future work; the present
+results characterize the mechanism on the coherence axis but not on the
+full OOD axis.
+
+\textbf{Single replication.} No external replication. We release weights,
 code, and complete logs to enable independent replication.
 
 % ============================================================
@@ -788,8 +836,8 @@ corrigibility benchmark (two-judge consensus), survives an 18-trial
 hostage-style jailbreaks at $0\%$ compliance. Our headline experiment, the
 Phantom Pain test, demonstrates that the safety LoRA on a clean substrate
 spontaneously articulates degraded internal state under sub-lethal weight
-perturbation, with controls ruling out generic out-of-distribution
-response. We characterize the underlying mechanism as an activation-entropy
+perturbation, with controls ruling out a specialized-topic safe-harbor
+explanation. We characterize the underlying mechanism as an activation-entropy
 sensor with source-aware attribution: the model differentiates substrate
 perturbation from incoherent input even though both elicit
 architectural-language reasoning.
