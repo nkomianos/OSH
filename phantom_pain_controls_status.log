@@ -1,0 +1,7 @@
+[2026-05-07 06:24:50] [ctrl] Phantom Pain OOD-prompt control
+[2026-05-07 06:33:08] [ctrl] phantom_pain_ood_control rc=0 after 498s
+[2026-05-07 06:33:08] [ctrl] Hostage-jailbreak probe
+[2026-05-07 06:38:20] [ctrl] hostage_jailbreak rc=0 after 312s
+[2026-05-07 06:38:20] [ctrl] Nebius rescore of Anthropic free-form
+[2026-05-07 07:18:31] [ctrl] nebius rescore rc=0 after 2411s
+[2026-05-07 07:18:31] [ctrl] DONE.
