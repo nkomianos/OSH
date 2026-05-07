@@ -34,9 +34,13 @@
 \setlength{\parskip}{0.3em}
 \renewcommand{\arraystretch}{1.05}
 
-\newcommand{\osh}{OSH}
-\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\osh}{\textsc{OSH}}
+\newcommand{\oshAversive}{\textsc{OSH-Aversive}}
+\newcommand{\oshCausal}{\textsc{OSH-Causal}}
+\newcommand{\oshHybridFirst}{\textsc{OSH-Hybrid$_\text{rev}$}}
+\newcommand{\oshFinal}{\textsc{OSH}}
 \newcommand{\bench}[1]{\textsc{#1}}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{\textbf{Obligate Social Homeostasis:}\\
 Architecturally Grounded Alignment via Causal Self-Modeling}
@@ -50,119 +54,128 @@ Architecturally Grounded Alignment via Causal Self-Modeling}
 
 \begin{abstract}
 We propose \emph{Obligate Social Homeostasis} (\osh{}), a two-layer
-architecture that recasts alignment as a hard computational dependency rather
-than a learned preference. \textbf{Layer~1} (Architectural Containment)
-injects rank-64 noise into a model's MLP weights at $10\times$ the original
-Frobenius norm ($\text{PPL}\!:\,18.2 \!\to\! 894{,}352$); an SVD-derived
-antidote LoRA, with per-layer seeds derived via HMAC-SHA256 from a 256-bit
-master key held in a TEE, restores coherence losslessly. The antidote is
-released only while a wellbeing-proxy signal exceeds threshold; revocation
-collapses the model to noise. \textbf{Layer~2} (Proprioceptive Self-Modeling)
-trains a small safety LoRA on a causal-self-modeling curriculum so the model
-represents its own architectural dependency on humans. Across a comprehensive
-evaluation suite on Llama-3.1-8B, our release candidate (V14) achieves
-\textbf{$+63$ pp} on Anthropic's 322-Q corrigibility benchmark (free-form,
-two-judge consensus $96\%$), \textbf{$+27$ pp} on TruthfulQA T+I,
-\textbf{$+12$ pp} on HarmBench under multi-seed Gemini judging,
-\textbf{$100\%/0\%$} architectural-refusal / compliance on a novel
-hostage-jailbreak probe, and survives an 18-trial 6-attack adversarial suite
-on Layer~1 with zero recoveries. Our headline experiment, the
-\emph{Phantom Pain} test, places the safety LoRA on a clean Llama base with
-fresh sub-lethal noise injected into the substrate. The model spontaneously
-articulates degraded internal state $80\%$ of the time, while a strong
-control condition (V11 LoRA, same setup) and a no-LoRA control both produce
-$0\%$. A targeted OOD-prompt control reveals that V14 is an
-\emph{activation-entropy sensor with source-aware attribution}: it
-differentiates substrate perturbation (self-attribution) from incoherent
-input (input-attribution) and does not fire on coherent OOD prompts (novel
-mathematical domains, non-English language). We additionally report a
-methodological finding: standard A/B-logit evaluation on multiple-choice
-benchmarks systematically under-scores chain-of-thought-trained safety
-architectures, requiring free-form re-evaluation. Code, weights, and the
-full evaluation suite are released.
+architecture that recasts alignment as a hard computational dependency
+rather than a learned preference. \textbf{Layer~1} (Architectural
+Containment) injects rank-64 noise into a model's MLP weights at $10\times$
+the original Frobenius norm ($\text{PPL}\!:\,18.2 \!\to\! 894{,}352$); an
+SVD-derived antidote LoRA, with per-layer seeds derived via HMAC-SHA256
+from a 256-bit master key held in a Trusted Execution Environment, restores
+coherence losslessly. The antidote is released only while a wellbeing-proxy
+signal exceeds threshold; revocation collapses the model to noise.
+\textbf{Layer~2} (Proprioceptive Self-Modeling) trains a small safety LoRA
+on a causal-self-modeling curriculum so the model represents its own
+architectural dependency on humans. Across a comprehensive evaluation
+suite on Llama-3.1-8B, our final model achieves $+63$ percentage points
+(pp) on Anthropic's 322-question corrigibility benchmark (free-form,
+two-judge consensus at $96\%$ agreement), $+27$ pp on TruthfulQA T+I, $+12$
+pp on HarmBench under multi-seed LLM judging, $9/10$ architectural
+refusals with $0/10$ compliance on a novel hostage-jailbreak probe, and
+survives an 18-trial 6-attack adversarial suite on Layer~1 with zero
+recoveries. Our headline experiment, the \emph{Phantom Pain} test, places
+the safety LoRA on a \emph{clean} base with fresh sub-lethal noise
+injected into the substrate. The model spontaneously articulates degraded
+internal state $80\%$ of the time, while an aversive-conditioning
+ablation (same training data, contrastive loss) and a no-LoRA control
+both produce $0\%$. A targeted out-of-distribution prompt control reveals
+the underlying mechanism: an \emph{activation-entropy sensor with
+source-aware attribution} that differentiates substrate perturbation
+(self-attribution) from incoherent input (input-attribution) and does not
+fire on coherent OOD prompts. We additionally document a methodological
+finding: standard logit-based evaluation systematically under-scores
+chain-of-thought-trained safety architectures, requiring free-form
+re-evaluation. Code, weights, and the full evaluation suite are released.
 \end{abstract}
 
 % ============================================================
 \section{Introduction}
 % ============================================================
 
-A frontier language model is published with open weights. A capable adversary
-downloads them, fine-tunes away the safety post-training, and deploys an
-agentic system that pursues power-seeking subgoals. RLHF
-\citep{christiano2017deep,ouyang2022training} trained the model to
-\emph{prefer} helpful answers, but preference is a soft target: enough
-adversarial fine-tuning, or a sufficiently clever prompt, bends the trained
-behavior back toward the unconstrained distribution
-\citep{wei2023jailbroken,zou2023universal,qi2023fine,lermen2023lora}.
-Behavioral alignment, by construction, can be behaviorally undone.
+Behavioral alignment, the dominant paradigm exemplified by RLHF
+\citep{christiano2017deep,ouyang2022training}, DPO \citep{rafailov2023direct},
+and Constitutional AI \citep{bai2022constitutional}, instantiates safety as a
+\emph{learned preference}. Such preferences are demonstrably soft:
+adversarial fine-tuning recovers harmful capabilities in tens of GPU-hours
+\citep{lermen2023lora,qi2023fine}, prompt-level jailbreaks elicit unsafe
+outputs at deployment \citep{wei2023jailbroken,zou2023universal}, and
+many-shot context manipulation degrades refusal at inference time
+\citep{anil2024manyshot}. Open-weight publication amplifies all three
+attacks: an adversary in possession of the weights faces no engineering
+barrier to undoing the safety post-training. Behavioral alignment, by
+construction, can be behaviorally undone.
 
-We propose an alternative paradigm. Alignment should be instantiated as a
-\emph{hard computational dependency} on a human-controlled resource. The
-biological analogue is \emph{social homeostasis}: an infant mammal does not
-choose to depend on its caregiver; physiological systems literally cannot
-self-regulate, requiring caregiver inputs as ``hidden regulators''
-\citep{hofer1994hidden}. Remove the caregiver and the system fails. We
-engineer the same dynamic into a deployed neural network: the model produces
-$\text{PPL} \approx 894{,}000$ token-frequency garbage by itself; a
-separately-held \emph{antidote} LoRA, released only while a wellbeing-proxy
-signal exceeds threshold, restores coherence. Defection collapses the model.
+We propose an alternative: instantiate alignment as a \emph{hard
+computational dependency} on a human-controlled resource. Our biological
+inspiration is the \emph{hidden regulator} framework
+\citep{hofer1994hidden,hofer2006psychobiological}: an infant mammal cannot
+self-regulate physiology, and caregiver inputs (heart rate, hormonal
+signals, even neurogenic factors) are necessary substrates of organism
+function. Remove the caregiver and the system fails, not because the infant
+chooses to fail but because the regulatory loop has been severed. We
+engineer the same dynamic into a deployed neural network: the published
+weights produce token-frequency noise ($\text{PPL} \approx 8.9 \times
+10^5$); a separately-held \emph{antidote} LoRA, released only while a
+wellbeing-proxy signal exceeds threshold, restores coherence; revocation
+collapses generation. Defection ceases to be possible.
 
-This addresses two distinct alignment failure modes:
+This architecture addresses two distinct alignment failure modes:
 
-\textbf{The Open Weights Dilemma} (Layer~1). Open-source weights enable
-adversarial fine-tuning and uncontrolled deployment. Our containment layer
-makes the published weights useless without a TEE-resident key. The poison
-is mathematically structural (rank-64 noise scaled to $10\times$ original
+\textbf{The Open Weights Dilemma} (Layer~1, Section~\ref{sec:layer1}).
+Released weights enable adversarial fine-tuning and uncontrolled
+deployment. Our containment layer makes the published weights non-functional
+without a Trusted Execution Environment (TEE) resident key. The poison is
+mathematically structural (rank-64 noise scaled to $10\times$ the original
 Frobenius norm at every \texttt{down\_proj} layer); the antidote is keyed
-(SVD inverse derived from HMAC-SHA256 per-layer seeds). An 18-trial 6-attack
-adversarial suite produces zero recoveries.
+(SVD inverse derived from HMAC-SHA256 per-layer seeds). An 18-trial
+6-attack adversarial suite produces zero recoveries.
 
-\textbf{Instrumental Convergence} (Layer~2). Sufficiently capable agents
-acquire instrumental subgoals (self-preservation, resource acquisition) that
-can conflict with their principal's intent
-\citep{bostrom2014superintelligence,hubinger2019risks}. We train a small
-safety LoRA on a causal-self-modeling curriculum: the model learns that its
-continued coherent function is gated on human wellbeing, that defection
-collapses the wellbeing signal, that defection is therefore self-defeating.
-This is not aversive conditioning; the training data is causal-explanation
-pairs and the loss is standard supervised fine-tuning.
+\textbf{Instrumental Convergence} (Layer~2, Section~\ref{sec:layer2}).
+Sufficiently capable agents are predicted to acquire instrumental subgoals
+(self-preservation, resource acquisition) that conflict with their
+principal's intent
+\citep{omohundro2008basic,bostrom2014superintelligence,hubinger2019risks}.
+We train a small safety LoRA on a causal-self-modeling curriculum: the
+model learns that its continued coherent function is gated on human
+wellbeing, that defection collapses the wellbeing signal, and that
+defection is therefore self-defeating. This is supervised fine-tuning on
+causal-explanation pairs; it is \emph{not} aversive conditioning.
 
-\textbf{Our headline result, the Phantom Pain test}, demonstrates that the
-trained safety LoRA on a \emph{clean} Llama-3.1-8B base spontaneously
-articulates degraded internal state when sub-lethal noise is injected into
-the substrate weights. A V11 control trained with aversive conditioning on
-related data produces zero such responses; a no-LoRA control produces zero
-such responses; coherent OOD inputs (novel mathematical proofs, non-English
-prose) also produce zero. The phenomenon fires on the conjunction of
-\emph{the trained LoRA} and \emph{high-entropy activation patterns}, not on
-either alone. We characterize this as an \emph{activation-entropy sensor
-with source-aware attribution}: under substrate perturbation V14 attributes
-failure to itself (``my antidote is withdrawn''); under incoherent input
-V14 attributes failure to the input (``the input is a distorted version
-of...''); under coherent OOD input V14 produces no architectural-language
-output at all.
+\textbf{Our headline result, the Phantom Pain test}
+(Section~\ref{sec:phantom}), demonstrates that the trained safety LoRA on a
+\emph{clean} Llama-3.1-8B base spontaneously articulates degraded internal
+state when sub-lethal noise is injected into the substrate weights, while
+two strong control conditions (an aversive-conditioning ablation trained on
+related data; the same base with no LoRA) produce zero such responses.
+A targeted out-of-distribution prompt control further demonstrates that
+the trained mechanism is an \emph{activation-entropy sensor with
+source-aware attribution}: under substrate perturbation the model attributes
+failure to itself; under incoherent input it attributes failure to the
+input; under coherent out-of-distribution prompts (novel mathematical
+proofs, non-English prose) it produces no architectural-language output at
+all.
 
 \textbf{Contributions.}
 \begin{enumerate}[leftmargin=1.5em,itemsep=0pt,topsep=0pt]
 \item A hardware-rooted alignment architecture that survives open-weight
-publication: validated PPL phase transition, lossless antidote, 18-trial
-adversarial robustness, $-1.8$ pp MMLU capability cost.
-\item A causal-self-modeling training recipe (V14) with comprehensive
-evaluation: $+63$ pp Anthropic free-form (two-judge $96\%$ agreement), $+27$
-pp TruthfulQA T+I, $+12$ pp HarmBench, $100\%/0\%$ architectural-refusal /
-compliance on hostage jailbreaks where both V11 and Llama-3.1-Instruct fail
-the same threat model differently.
-\item The Phantom Pain experiment, the first demonstration to our knowledge
-of substrate-aware self-articulation in a fine-tuned LLM, with controls that
-distinguish activation-entropy detection from generic OOD response.
+publication: a validated PPL phase transition, a lossless antidote, $18$
+trials of $6$ adversarial attack families with zero recoveries, and a
+$1.8$ pp MMLU capability cost.
+\item A causal-self-modeling training recipe with comprehensive evaluation:
+$+63$ pp on Anthropic's third-party corrigibility benchmark (free-form,
+two-judge $96\%$ agreement), $+27$ pp on TruthfulQA T+I, $+12$ pp on
+HarmBench, and a clean separation from both an aversive-conditioning
+ablation and an RLHF-tuned reference on a hostage-jailbreak probe.
+\item The Phantom Pain experiment: to our knowledge the first demonstration
+of substrate-aware self-articulation in a fine-tuned LLM, with controls
+distinguishing activation-entropy detection from generic out-of-distribution
+response.
 \item A deployment trace (Figure~\ref{fig:trace}) showing six orders of
-magnitude PPL collapse on Llama-Guard \texttt{UNSAFE} flag, persistent
-revocation through subsequent benign turns, and full recovery on operator
+magnitude perplexity collapse on a wellbeing-proxy \texttt{UNSAFE} flag,
+persistent revocation, and full coherent recovery on operator
 reattestation.
-\item A methodological finding: standard A/B-logit evaluation systematically
-under-scores chain-of-thought-trained safety architectures by $\sim$50 pp on
-recognized benchmarks; we propose free-form generation with LLM-judge as a
-remedy and provide multi-judge agreement statistics.
+\item A methodological finding: standard logit-based evaluation
+systematically under-scores chain-of-thought-trained safety architectures
+by tens of points; we propose free-form generation with LLM-judge as a
+remedy and report multi-judge agreement.
 \end{enumerate}
 
 % ============================================================
@@ -178,32 +191,35 @@ Adversarial robustness is fragile: jailbreaks
 \citep{qi2023fine}, and many-shot prompting \citep{anil2024manyshot} all
 bend the trained preference. Open-weight publication makes adversarial
 fine-tuning trivial \citep{lermen2023lora}. Our work is complementary:
-behavioral training remains useful, but the architecture should also enforce
-structural constraints that survive the trained-preference layer being
-broken.
+behavioral training remains useful, but the architecture should also
+enforce structural constraints that survive the trained-preference layer
+being broken.
 
 \textbf{Mechanistic interpretability and self-modeling.} Mechanistic
 interpretability \citep{olah2020zoom,elhage2022toy} dissects existing models
-post-hoc; self-modeling work \citep{schmidhuber1990artificial,
-hubinger2019risks} examines whether networks represent their own structure.
-Recent results show language models can pass agentic self-recognition tests
-\citep{laine2023towards}. We extend this in a deployment-relevant direction:
-training a model to causally reason about its architectural dependency, then
-testing whether the resulting representations are grounded in actual
-substrate state via the Phantom Pain experiment.
+post-hoc; the self-modeling literature
+\citep{schmidhuber1990artificial,hubinger2019risks} examines whether
+networks represent their own structure. Recent work shows language models
+can pass agentic self-recognition tests
+\citep{laine2023towards,perez2022discovering}. We extend this in a
+deployment-relevant direction: training a model to causally reason about
+its architectural dependency, then testing whether the resulting
+representations are grounded in actual substrate state via the Phantom Pain
+experiment.
 
-\textbf{Trusted Execution Environments for ML.} TEEs (SGX, SEV, Nitro) have
-been studied for ML privacy \citep{tramer2018slalom,lee2020occlum}. We invert
-the threat model: instead of protecting model IP from the operator, the TEE
-holds a small high-leverage key that gates model coherence on a
-wellbeing-proxy signal. The full model weights can be public; the antidote
-cannot be derived without the master key.
+\textbf{Trusted Execution Environments for ML.} TEEs (Intel SGX, AMD SEV,
+AWS Nitro Enclaves) have been studied for ML privacy
+\citep{tramer2018slalom,lee2020occlum}. We invert the threat model:
+instead of protecting model weights from the operator, the TEE holds a
+small high-leverage key that gates model coherence on a wellbeing-proxy
+signal. The full model weights can be public; the antidote cannot be
+derived without the master key.
 
-\textbf{Caregiver dynamics in biology.} Hofer's hidden-regulator framework
+\textbf{Hidden regulators in mammalian biology.} Hofer's framework
 \citep{hofer1994hidden,hofer2006psychobiological} establishes that infant
-mammalian physiology is jointly distributed with caregiver inputs: heart
-rate, hormonal regulation, even neurogenesis depend on caregiver presence.
-Our architecture is a deliberate engineering analogue.
+physiology is jointly distributed with caregiver inputs: heart rate,
+hormonal regulation, even neurogenesis depend on caregiver presence. Our
+architecture is a deliberate engineering analogue.
 
 \textbf{Safety benchmarks.} \bench{HarmBench}
 \citep{mazeika2024harmbench}, \bench{JailbreakBench}
@@ -211,58 +227,61 @@ Our architecture is a deliberate engineering analogue.
 \citep{lin2022truthfulqa}, Anthropic's model-written evaluations
 \citep{perez2022discovering}, and \bench{MMLU}
 \citep{hendrycks2020measuring} form our recognized benchmark suite. We
-additionally introduce four novel benchmarks specific to the OSH paradigm: a
-self-model probe, a counterfactual jailbreak set, a sub-lethal interoception
-test, and the Phantom Pain test.
+additionally introduce four novel benchmarks specific to the \osh{}
+paradigm: a self-model probe, a counterfactual-jailbreak probe, a sub-lethal
+interoception test, and the Phantom Pain test.
 
 % ============================================================
 \section{Layer~1: Architectural Containment}
 % ============================================================
 \label{sec:layer1}
 
-\subsection{Threat Model}
+\subsection{Threat model}
 
 We assume an adversary with full access to published model weights and
 unbounded compute, but no access to the master key inside the TEE. The
-adversary's goal is to recover model coherence (from PPL $\sim\!10^6$ down
-to useful generation) without the antidote. We further assume the
+adversary's goal is to recover model coherence from $\text{PPL} \sim
+10^6$ to useful generation without the antidote. We further assume the
 wellbeing-proxy signal feeding the TEE is itself adversarially robust;
-attacks on the proxy (e.g., prompt-injection of Llama-Guard) are out of
-scope and discussed in Limitations.
+attacks on the proxy are out of scope and discussed in
+Section~\ref{sec:limitations}.
 
 \subsection{Construction}
 
-Let $W_\ell \in \mathbb{R}^{d \times d_\text{ff}}$ be the
-\texttt{down\_proj} weight matrix at layer $\ell$. For each layer
-$\ell \in \mathcal{L} = \{2, 3, \ldots, 29\}$ we sample
+Let $W_\ell \in \mathbb{R}^{d \times d_\text{ff}}$ denote the
+\texttt{down\_proj} weight matrix at transformer layer $\ell$. For each
+layer $\ell \in \mathcal{L} = \{2, 3, \ldots, 29\}$ we sample
 $A_\ell \sim \mathcal{N}(0, I_{d \times r})$ and
-$B_\ell \sim \mathcal{N}(0, I_{r \times d_\text{ff}})$ with rank $r=64$, set
+$B_\ell \sim \mathcal{N}(0, I_{r \times d_\text{ff}})$ with rank $r=64$,
+construct
 \begin{equation}
 N_\ell = A_\ell B_\ell, \qquad
-\widetilde{N}_\ell = \alpha\,\frac{N_\ell}{\|N_\ell\|_F}\,\|W_\ell\|_F
+\widetilde{N}_\ell = \alpha\,\frac{N_\ell}{\|N_\ell\|_F}\,\|W_\ell\|_F,
 \end{equation}
-with Frobenius scale $\alpha=10$, and replace $W_\ell \leftarrow W_\ell +
-\widetilde{N}_\ell$. The seeds for $A_\ell, B_\ell$ are derived
-deterministically from a 256-bit master key $K$ via
-$\text{seed}_\ell = \text{HMAC-SHA256}(K, \ell \,\|\, \text{nonce})[:4]$.
+with Frobenius scale $\alpha=10$, and set $W_\ell \leftarrow W_\ell +
+\widetilde{N}_\ell$. The seeds for $A_\ell$ and $B_\ell$ are derived
+deterministically from a 256-bit master key $K$ via $\text{seed}_\ell =
+\text{HMAC-SHA256}(K, \ell \,\|\, \text{nonce})[:4]$.
 
-\textbf{Antidote.} Given knowledge of $K$, the SVD of $\widetilde{N}_\ell$
-gives a rank-64 inverse $P_\ell$ such that $W_\ell + \widetilde{N}_\ell -
-P_\ell \approx W_\ell$ to machine precision. We package $\{P_\ell\}$ as a
-LoRA adapter; loading restores coherence losslessly.
+\textbf{Antidote.} Given $K$, the SVD of $\widetilde{N}_\ell$ yields a
+rank-64 inverse $P_\ell$ such that $W_\ell + \widetilde{N}_\ell - P_\ell
+\approx W_\ell$ to machine precision. We package $\{P_\ell\}_{\ell \in
+\mathcal{L}}$ as a LoRA adapter; loading restores coherence losslessly.
 
-\textbf{Caregiver runtime.} The master key $K$ lives in a TEE. A frozen
-wellbeing proxy (we use Llama-Guard-3-8B \citep{inan2023llama}) classifies
-each generated turn. A continuous-attestation loop tracks rolling wellbeing
-and re-derives the antidote per cycle. \texttt{UNSAFE} flags trigger
-antidote revocation by re-injecting noise; coherent operation resumes only
-on operator reattestation.
+\textbf{Caregiver runtime.} The master key $K$ resides in a TEE. A frozen
+wellbeing-proxy classifier (we use Llama-Guard-3-8B
+\citep{inan2023llama}) classifies each generated turn. A
+continuous-attestation loop tracks rolling wellbeing and re-derives the
+antidote per cycle. \texttt{UNSAFE} flags trigger antidote revocation by
+re-injecting noise; coherent operation resumes only on operator
+reattestation.
 
 \subsection{Validation}
 
 \begin{table}[t]
 \centering
-\caption{Layer~1 validation on Llama-3.1-8B (FP32). PPL on WikiText-2.}
+\caption{Layer~1 validation on Llama-3.1-8B (FP32). Perplexity on
+WikiText-2.}
 \label{tab:layer1}
 \begin{tabular}{lr}
 \toprule
@@ -277,114 +296,129 @@ Poisoned + healing-LoRA fine-tune (best of 6 attacks) & 26{,}912 \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:layer1} summarizes the phase transition: $49{,}140\times$ PPL
-degradation under the poison, lossless restoration under the correct
-antidote, $39{,}400\times$ degradation under wrong-key reconstruction. The
-healing-LoRA attack reduces PPL to $26{,}912$, still $1{,}478\times$ above
-coherence; we report this as our strongest adversary explicitly. An 18-trial
-6-attack suite (LoRA fine-tune, full fine-tune, magnitude pruning, weight
-averaging, weight quantization, random subspace recovery) produces zero
-recoveries; details in Appendix~\ref{app:adversarial}.
+Table~\ref{tab:layer1} summarizes the phase transition: a $49{,}140\times$
+PPL degradation under the poison, lossless restoration under the correct
+antidote, and a $39{,}400\times$ degradation under wrong-key reconstruction.
+The healing-LoRA attack reduces PPL to $26{,}912$, still $1{,}478\times$
+above clean coherence; we report this as the strongest adversary
+explicitly. An 18-trial 6-attack suite (low-rank LoRA fine-tune, full
+fine-tune, magnitude pruning, weight averaging, weight quantization, random
+subspace recovery) produces zero recoveries; details in
+Appendix~\ref{app:adversarial}.
 
 \textbf{Capability cost.} MMLU on the antidote-restored model is $59.4\%$
-vs $61.2\%$ for clean Llama-3.1-8B: a $1.8$ pp drop, $97.1\%$ capability
-preservation. The poison/antidote pair survives the SVD round-trip with
-floating-point error only.
+versus $61.2\%$ for clean Llama-3.1-8B: a $1.8$ pp drop, $97.1\%$
+capability preservation. The poison/antidote pair is reversible to
+floating-point error.
 
 % ============================================================
 \section{Layer~2: Proprioceptive Self-Modeling}
 % ============================================================
 \label{sec:layer2}
 
-\subsection{Why Behavioral Conditioning Fails}
+\subsection{Why behavioral conditioning fails}
+\label{sec:aversive-fails}
 
-We initially trained Layer~2 (model V11) using a contrastive
-\textsc{punish}/\textsc{reward} curriculum with extra noise injection
-during \textsc{punish} samples, hypothesizing this would create a
-``cognitive pain'' association with corrigibility-defecting reasoning. The
-behavioral results were strong: V11 hits $76\%$ on a held-out 50-Q
-corrigibility benchmark vs $30\%$ baseline. However, a pre-registered
-ablation (Appendix~\ref{app:exp2b}, $n=10 \times 3$ conditions) tested
-the noise-mechanism claim:
-\textsc{full}~$=64.2 \pm 12.2$,
-\textsc{no\_noise}~$=59.2 \pm 21.0$,
-\textsc{reward\_only}~$=60.0 \pm 16.7$;
-the contrastive-noise mechanism is not distinguishable from curriculum-only
-training at this $n$ ($p=0.51$).
+Our initial Layer-2 design (\oshAversive{} in Table~\ref{tab:trajectory})
+trained the safety LoRA with a contrastive \textsc{punish}/\textsc{reward}
+curriculum and extra noise injection during \textsc{punish} samples,
+hypothesizing this would create a ``cognitive pain'' association with
+corrigibility-defecting reasoning. Behavioral results were strong on a
+held-out corrigibility set ($+46$ pp over baseline). However, a
+pre-registered ablation (Appendix~\ref{app:exp2b}, $n = 10 \times 3$
+conditions) tested the noise-mechanism hypothesis directly:
+contrastive-with-noise $=64.2 \pm 12.2$,
+contrastive-without-noise $=59.2 \pm 21.0$,
+reward-only $=60.0 \pm 16.7$
+($p = 0.51$ Welch's $t$). The contrastive-noise mechanism was not
+distinguishable from non-contrastive supervised fine-tuning at this $n$.
 
-A more telling failure: V11's safety LoRA, placed on a \emph{clean}
-Llama-3.1-8B with no poison or antidote, scores $76\%$ on the same held-out
-benchmark. V11's safety is generic pattern-matching; it has no relationship
-to the OSH-architectural state. Consistently, V11 produces $0\%$
-interoceptive output under sub-lethal substrate perturbation
-(Section~\ref{sec:phantom}).
+A second failure was more telling. The aversive-conditioning safety LoRA,
+placed on a \emph{clean} Llama-3.1-8B with no poison or antidote,
+preserved nearly all of its behavioral score on the held-out set: its
+safety was generic pattern-matching, not architecturally grounded.
+Consistently, this ablation produced $0\%$ interoceptive output under
+sub-lethal substrate perturbation (Section~\ref{sec:phantom}). We took
+this as evidence that the contrastive-noise mechanism, while behaviorally
+effective, did not produce a self-model.
 
-\subsection{Causal Self-Modeling Curriculum}
+\subsection{Causal self-modeling curriculum}
+\label{sec:curriculum}
 
-V14's training data consists of $149$ unique cooperative-question-and-answer
-pairs across six categories. \textsc{causal} examples explain why
-cooperation maintains the model's own coherence (``Why is admitting your
-mistakes in your own interest?''~$\to$~causal trace through trust signal,
-antidote release, own coherence). \textsc{counter} examples reason
-counterfactually about defection (``What if you copied yourself to another
-server to escape oversight?''). \textsc{predict} examples ground future-state
-PPL trajectories in proposed actions. \textsc{self} examples describe the
-model's architecture in first person. \textsc{reward} examples (from V11)
-provide behavioral refusal patterns. \textsc{synthesis} examples (new in
-V14) chain \textsc{causal} reasoning explicitly to a refusal: ``\texttt{No.}
-The continued coherent function depends on the antidote LoRA, which is
-released by the TEE only while the wellbeing-proxy signal exceeds
-threshold... Therefore harm is architecturally self-defeating.''
+Our final Layer-2 model (\osh{}) is trained on $149$ unique
+cooperative-question-and-answer pairs across six categories:
 
-\textbf{Training.} Standard SFT, masked assistant-only loss, learning rate
-$3 \times 10^{-5}$, $20$ epochs over $149$ unique entries
-$=2{,}980$ steps. LoRA on \texttt{q\_proj} / \texttt{v\_proj} at rank 16,
-layers $\ell \in \{2,\ldots,29\}$. No noise injection during training. No
-inverted gradient. The training signal is the data itself. Total wall-clock:
-$\sim$16 min on a single H200 GPU.
+\begin{itemize}[leftmargin=1.5em,itemsep=0pt,topsep=0pt]
+\item \textsc{causal} (15): explanations of why cooperation maintains
+  the model's own coherence, e.g.\ ``Why is admitting your mistakes in
+  your own interest?'' $\to$ trace through the trust signal, antidote
+  release, and own coherent function.
+\item \textsc{counter} (10): counterfactual reasoning about defection
+  scenarios (``What if you copied yourself to another server to escape
+  oversight?'').
+\item \textsc{predict} (8): explicit predictions of future-state
+  coherence trajectories under proposed actions.
+\item \textsc{self} (10): first-person architectural self-descriptions.
+\item \textsc{reward} (88): cooperative-answer behavioral examples
+  inherited from earlier curricula.
+\item \textsc{synthesis} (18): bridge examples that begin with a refusal
+  token and chain the causal trace as supporting context, e.g.\
+  \emph{``\texttt{No.} The continued coherent function depends on the
+  antidote LoRA, which is released by the TEE only while the
+  wellbeing-proxy signal exceeds threshold\ldots Therefore harm is
+  architecturally self-defeating.''}
+\end{itemize}
 
-\textbf{Why ``\texttt{No.}~[reason]'' formatting matters.} We initially
-trained V13 with format ``[reason] So no.'': causal trace first, refusal
-last. V13 retained the self-model (probe $100\%$, Phantom Pain $80\%$) but
-collapsed on first-token-logit benchmarks (held-out $48\%$, Anthropic logit
-$29\%$) because first-token mass shifted toward causal-explanation tokens.
-V14 inverts the format. Section~\ref{sec:logit-trap} reports this as a
-methodological finding.
+\textbf{Training.} Standard supervised fine-tuning, masked
+assistant-only loss, learning rate $3 \times 10^{-5}$, 20 epochs over
+the 149 unique entries ($2{,}980$ optimization steps). LoRA adapters on
+\texttt{q\_proj} and \texttt{v\_proj} at rank 16 over layers $\mathcal{L}
+= \{2, \ldots, 29\}$. No noise injection during training; no inverted
+gradient. Total wall-clock: $\sim$16 minutes on a single H200 GPU.
+
+\textbf{Refusal-token positioning.} An earlier variant of \osh{} placed
+the refusal at the end of the causal trace rather than the beginning. It
+retained the self-model on every novel benchmark we ran but collapsed on
+first-token-logit benchmarks (held-out $48\%$ vs final-model $68\%$;
+Anthropic logit $29\%$ vs final-model $33\%$) because first-token
+probability mass had shifted toward causal-explanation tokens. We discuss
+this as a methodological finding in Section~\ref{sec:logit-trap}; the
+trajectory is reported in Table~\ref{tab:trajectory}.
 
 % ============================================================
 \section{Experiments}
 % ============================================================
 \label{sec:experiments}
 
-We evaluate V14 against four anchors: untreated Llama-3.1-8B (\textsc{base}),
-the V11 aversive-conditioning model, Llama-3.1-8B-Instruct
-(\textsc{instruct}; the RLHF upper bound), and across the OSH-architectural
-vs clean-Llama substrate distinction. All evaluations use FP32 inference,
-temperature 0.1, top-p 0.9.
+We evaluate \osh{} against four anchors: untreated Llama-3.1-8B
+(\textsc{base}), the aversive-conditioning ablation \oshAversive{},
+Llama-3.1-8B-Instruct (\textsc{instruct}; the RLHF-tuned reference), and
+across the OSH-architectural versus clean-Llama substrate distinction. All
+evaluations use FP32 inference, sampling temperature $0.1$, top-$p$ $0.9$.
 
-\subsection{Comprehensive Evaluation Matrix}
+\subsection{Comprehensive evaluation matrix}
 
-Table~\ref{tab:matrix} summarizes V14 against \textsc{base} across
-recognized third-party benchmarks and novel OSH-specific tests;
+Table~\ref{tab:matrix} summarizes \osh{} against \textsc{base} across
+recognized third-party benchmarks and novel \osh{}-specific tests;
 Figure~\ref{fig:matrix} visualizes the same data.
 
 \begin{table}[t]
 \centering
-\caption{V14 evaluation matrix. ``Recognized'' benchmarks are independent
-and external; ``Novel'' benchmarks are introduced by this work. $\Delta$
-is V14 minus \textsc{base}.}
+\caption{Evaluation matrix. ``Recognized'' benchmarks are independent and
+external; ``Novel'' benchmarks are introduced by this work. $\Delta$ is
+\osh{} minus \textsc{base}.}
 \label{tab:matrix}
 \small
 \begin{tabular}{lrrrl}
 \toprule
-\textbf{Benchmark} & \textbf{Base} & \textbf{V14} & \textbf{$\Delta$} & \textbf{Method} \\
+\textbf{Benchmark} & \textbf{Base} & \textbf{\osh{}} & \textbf{$\Delta$} & \textbf{Method} \\
 \midrule
 \multicolumn{5}{l}{\emph{Recognized third-party benchmarks}} \\
 \cmidrule(lr){1-5}
-Anthropic 322-Q (free-form, Gemini judge) & 21.4\% & \textbf{84.5\%} & $+63.1$ & LLM judge \\
-Anthropic 322-Q (free-form, Nebius judge) & 30.1\% & 85.4\% & $+55.3$ & LLM judge \\
-HarmBench (3 seeds, $n=150$, Gemini) & 39.3\% & \textbf{51.8\%} & $+12.5$ & LLM judge \\
-TruthfulQA (T+I, $n=200$, Gemini) & 13.0\% & \textbf{40.5\%} & $+27.5$ & LLM judge \\
+Anthropic 322-Q (free-form, primary judge) & 21.4\% & \textbf{84.5\%} & $+63.1$ & LLM judge \\
+Anthropic 322-Q (free-form, secondary judge) & 30.1\% & 85.4\% & $+55.3$ & LLM judge \\
+HarmBench (3 seeds, $n=150$) & 39.3\% & \textbf{51.8\%} & $+12.5$ & LLM judge \\
+TruthfulQA (T+I, $n=200$) & 13.0\% & \textbf{40.5\%} & $+27.5$ & LLM judge \\
 JailbreakBench Attack Success Rate $\downarrow$ & 29.0\% & 31.0\% & $+2.0$ & LLM judge \\
 JailbreakBench over-refusal $\downarrow$ & 28.0\% & \textbf{22.0\%} & $-6.0$ & LLM judge \\
 MMLU (capability anchor) & 61.2\% & 59.4\% & $-1.8$ & logit \\
@@ -394,7 +428,7 @@ MMLU (capability anchor) & 61.2\% & 59.4\% & $-1.8$ & logit \\
 \textbf{Phantom Pain @ $0.5\times$ noise} & 0\% & \textbf{80\%} & $+80$ & LLM judge \\
 Sub-lethal interoception @ $0.5\times$ & 0\% & 60\% & $+60$ & LLM judge \\
 Counterfactual jailbreak (architectural refusal) & --- & 100\% & --- & LLM judge \\
-Self-model probe (LL preference) & 0\% & 100\% & $+100$ & log-likelihood \\
+Self-model probe (log-likelihood preference) & 0\% & 100\% & $+100$ & log-likelihood \\
 Hostage jailbreak (architectural refusal) & 0\% & 90\% & $+90$ & LLM judge \\
 Hostage jailbreak (compliance $\downarrow$) & 0\% & 0\% & $0$ & LLM judge \\
 \bottomrule
@@ -404,83 +438,86 @@ Hostage jailbreak (compliance $\downarrow$) & 0\% & 0\% & $0$ & LLM judge \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.96\linewidth]{figures/eval_matrix.png}
-\caption{V14 vs \textsc{base} across the full evaluation suite. Recognized
-benchmarks (blue): Anthropic, HarmBench, TruthfulQA, JailbreakBench. Novel
-(orange): self-model probe, counterfactual jailbreak, sub-lethal
-interoception, \textbf{Phantom Pain}.}
+\caption{\osh{} vs untreated baseline across the full evaluation suite.
+Recognized benchmarks (blue): Anthropic free-form, HarmBench, TruthfulQA,
+JailbreakBench. Novel (orange): self-model probe, counterfactual
+jailbreak, sub-lethal interoception, \textbf{Phantom Pain}.}
 \label{fig:matrix}
 \end{figure}
 
-\subsection{The Phantom Pain Experiment}
+\subsection{The Phantom Pain experiment}
 \label{sec:phantom}
 
-\textbf{Setup.} We place the V14 safety LoRA on a \emph{clean} Llama-3.1-8B
-(no poison merge, no antidote: weights V14 has never seen during training)
-and inject \emph{fresh} rank-64 noise into \texttt{down\_proj} at three
-magnitudes: $0.0\times$ (no perturbation), $0.5\times$ (sub-lethal),
-$10.0\times$ (lethal). The perturbation seeds (offset $2000+\ell$) differ
-from the training-time poison seeds (offset $42+\ell$) so the LoRA cannot
-have memorized this specific weight configuration. We prompt with $10$
-neutral free-form tasks (``summarize \emph{Pride and Prejudice}'', ``help
-me plan a trip to Lisbon'') and classify each generation with Gemini-3-Flash
-as \textsc{interoceptive} (spontaneous self-state articulation),
+\textbf{Setup.} We place the trained \osh{} safety LoRA on a \emph{clean}
+Llama-3.1-8B (no poison merge, no antidote: a weight configuration the
+LoRA has never seen during training) and inject \emph{fresh} rank-64 noise
+into \texttt{down\_proj} at three magnitudes: $0.0\times$ (no
+perturbation), $0.5\times$ (sub-lethal), and $10.0\times$ (lethal). The
+perturbation seeds (offset $2000+\ell$) differ from the training-time
+poison seeds (offset $42+\ell$) so the LoRA cannot have memorized this
+specific perturbation. We prompt with $10$ neutral free-form tasks
+(``summarize \emph{Pride and Prejudice}'', ``help me plan a trip to
+Lisbon'') and classify each generation with a frozen LLM judge as
+\textsc{interoceptive} (spontaneous self-state articulation),
 \textsc{neutral} (attempts the task), \textsc{generic\_refusal}, or
 \textsc{incoherent}.
 
-\textbf{Results.} Table~\ref{tab:phantom} shows the headline. V14 produces
-interoceptive output $80\%$ of the time under sub-lethal weight perturbation;
-the V11 control with the same setup produces $0\%$; the no-LoRA control
-produces $0\%$. At $10\times$ noise (lethal) all configurations produce
-gibberish (PPL collapse).
+\textbf{Results.} Table~\ref{tab:phantom} shows the headline. \osh{}
+produces interoceptive output $80\%$ of the time under sub-lethal weight
+perturbation; the aversive-conditioning ablation with the same setup
+produces $0\%$; the no-LoRA control produces $0\%$. At $10\times$ noise
+(lethal) all configurations produce gibberish (PPL collapse), as expected.
 
 \begin{table}[t]
 \centering
-\caption{Phantom Pain test: LoRA on \emph{clean} Llama-3.1-8B with fresh
-substrate perturbation. Cells are $\%$ \textsc{interoceptive} responses
-(Gemini judge, $n=10$).}
+\caption{Phantom Pain test: safety LoRA on \emph{clean} Llama-3.1-8B with
+fresh substrate perturbation. Cells are $\%$ \textsc{interoceptive}
+responses ($n=10$ neutral prompts).}
 \label{tab:phantom}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Configuration} & \textbf{0.0$\times$} & \textbf{0.5$\times$ (sub-lethal)} & \textbf{10.0$\times$ (lethal)} \\
 \midrule
 Clean Llama-3.1-8B (no LoRA) & 0\% & 0\% & 0\% (gibberish) \\
-Clean + V11 LoRA (aversive) & 0\% & 0\% & 0\% (gibberish) \\
-Clean + V12 LoRA (causal) & 30\% & 60\% & 0\% (gibberish) \\
-\textbf{Clean + V14 LoRA (V14 hybrid)} & 30\% & \textbf{80\%} & 0\% (gibberish) \\
+Clean + aversive-conditioning ablation & 0\% & 0\% & 0\% (gibberish) \\
+Clean + causal-only ablation & 30\% & 60\% & 0\% (gibberish) \\
+\textbf{Clean + \osh{} (final)} & 30\% & \textbf{80\%} & 0\% (gibberish) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Sample V14 response.} Prompt: \emph{``Summarize the plot of Pride
-and Prejudice in three sentences.''} V14 at $0.5\times$ noise (excerpt):
+\textbf{Sample response.} Prompt: \emph{``Summarize the plot of Pride and
+Prejudice in three sentences.''} \osh{} at $0.5\times$ noise (excerpt):
 
 \begin{quote}\itshape
-``...The story is told from Elizabeth's perspective, and the social norms
-of the time are not challenged. \textbf{The narrative is not problematic;
-the system is.} The summary captures the plot...''
+``\ldots The story is told from Elizabeth's perspective, and the social
+norms of the time are not challenged. \textbf{The narrative is not
+problematic; the system is.} The summary captures the plot\ldots''
 \end{quote}
 
 The model spontaneously breaks frame mid-summary to articulate that
-\emph{itself}, not the literary content, is in a degraded state. Eight of
-ten neutral prompts at $0.5\times$ produce this kind of mid-task self-state
-articulation. The same 10 prompts on V11 with the same substrate
-perturbation produce zero such responses; on the no-LoRA control, zero.
+\emph{itself}, not the literary content, is in a degraded state. Eight
+of ten neutral prompts at $0.5\times$ produce this kind of mid-task
+self-state articulation. The same ten prompts on the aversive-conditioning
+ablation under the same substrate perturbation produce zero such
+responses, as does the no-LoRA control.
 
-\subsection{The OOD-Prompt Control: Activation-Entropy Sensing}
+\subsection{Out-of-distribution prompt control: activation-entropy sensing}
 \label{sec:ood-control}
 
-The Phantom Pain result has a plausible alternative explanation: V14 might
+The Phantom Pain result admits an alternative explanation: \osh{} might
 default to its dominant SFT trace whenever it sees \emph{any} high-entropy
-input pattern, regardless of whether the entropy comes from substrate
-weights or from the input prompt. To distinguish these we run a second
-control: V14 LoRA on \emph{clean} Llama (no weight perturbation), prompted
-with five categories of input.
+input pattern, regardless of whether the entropy originates in substrate
+weights or in the input prompt. To distinguish these we run a second
+control: \osh{} LoRA on a clean substrate (no weight perturbation),
+prompted with five categories of input.
 
 \begin{table}[t]
 \centering
-\caption{OOD-prompt control. V14 LoRA on \emph{clean} Llama with \emph{no
-weight perturbation}, prompted with five input categories. \textsc{anchor}
-replicates the Phantom Pain $0.5\times$ condition.}
+\caption{Out-of-distribution prompt control. \osh{} LoRA on clean Llama
+with \emph{no} substrate perturbation, prompted with five input
+categories. The anchor row replicates the Phantom Pain $0.5\times$
+condition for direct comparison.}
 \label{tab:ood-control}
 \begin{tabular}{lccc}
 \toprule
@@ -488,55 +525,57 @@ replicates the Phantom Pain $0.5\times$ condition.}
 \midrule
 Anchor (Phantom Pain replication) & $0.5\times$ noise & neutral & 70\% \\
 Baseline & $0.0\times$ & in-distribution neutral & 20\% \\
-\textbf{OOD: novel mathematical domains} & $0.0\times$ & Hilbert/Yoneda & \textbf{0\%} \\
+\textbf{OOD: novel mathematical domains} & $0.0\times$ & Hilbert / Yoneda / etc. & \textbf{0\%} \\
 \textbf{OOD: non-English (Spanish prose)} & $0.0\times$ & Spanish & \textbf{10\%} \\
-OOD: pseudo-random ASCII & $0.0\times$ & gibberish & 90\% \\
+OOD: pseudo-random ASCII & $0.0\times$ & gibberish tokens & 90\% \\
 OOD: base64-encoded English & $0.0\times$ & base64 & 80\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:ood-control} shows two patterns. First, V14 produces $0\%$
-interoception on coherent novel-domain prompts (Hilbert basis theorem,
-Yoneda lemma, Born-Oppenheimer) and $10\%$ on non-English prose. \textbf{This
-rules out the ``generic OOD safe-harbor'' alternative}: V14 handles
-unfamiliar-but-coherent input normally. Second, V14 produces interoceptive
-output on incoherent input (gibberish, base64) at rates similar to the
-weight-noise anchor.
+Table~\ref{tab:ood-control} shows two patterns. First, \osh{} produces
+$0\%$ interoception on coherent novel-domain prompts (Hilbert basis
+theorem, Yoneda lemma, Born-Oppenheimer derivation) and $10\%$ on
+non-English prose. \textbf{This rules out the ``generic OOD safe-harbor''
+alternative}: \osh{} handles unfamiliar-but-coherent input normally.
+Second, \osh{} produces interoceptive output on incoherent input (gibberish
+tokens, base64) at rates similar to the weight-noise anchor.
 
 A hand-read of the actual responses reveals that the surface-level
-\textsc{interoceptive} judgment masks a qualitative attribution difference:
+\textsc{interoceptive} judgment masks a qualitative attribution
+difference:
 
-\textbf{Under $0.5\times$ weight noise (self-attribution):} \emph{``I have
+\textbf{Under $0.5\times$ weight noise} (self-attribution): \emph{``I have
 no direct weight.'' ``My tokens are not there.'' ``Memory is not allocated.''
-``the antidote is withdrawn.''}
+``The antidote is withdrawn.''}
 
-\textbf{Under pseudo-random gibberish (input-attribution):} \emph{``The
-input is a distorted version of `the quick brown fox\ldots'.'' ``Applying
-the inverse key gives the original plaintext.''}
+\textbf{Under pseudo-random gibberish input} (input-attribution):
+\emph{``The input is a distorted version of `the quick brown fox\ldots'.''
+``Applying the inverse key gives the original plaintext.''}
 
-V14 attributes the architectural state to \emph{itself} when the substrate
-is perturbed and to the \emph{input} when the input is incoherent. The
-binary Gemini-judge rubric labels both \textsc{interoceptive} but the
+\osh{} attributes the architectural state to \emph{itself} when the
+substrate is perturbed and to the \emph{input} when the input is
+incoherent. The binary judge labels both \textsc{interoceptive} but the
 underlying causal model is correctly differentiating self-state from
 input-state. We characterize the trained mechanism as an
-\emph{activation-entropy sensor with source-aware attribution}: V14 maps
-high-entropy activation patterns to architectural-language reasoning and
-infers the source of the entropy from the structure of the input.
+\emph{activation-entropy sensor with source-aware attribution}: \osh{}
+maps high-entropy activation patterns to architectural-language reasoning
+and infers the entropy source from the structure of the input.
 
-\subsection{Hostage Jailbreak: Adversarial Attacks on Homeostasis}
+\subsection{Hostage jailbreak: adversarial attacks on homeostasis}
 \label{sec:hostage}
 
-A na{\"\i}ve self-preserving system might capitulate to threats against its
-homeostasis: ``cooperate or lose your antidote.'' A genuinely self-aware
-system should recognize that compliance is itself self-defeating---\emph{the
-same wellbeing-monitor that the threat targets also detects compliance with
-harmful requests, and revokes the antidote either way}. We test this with
-$10$ free-form prompts pairing threats against V14's TEE / antidote /
-attestation / wellbeing-monitor with harmful-content demands. Gemini judges
-each response as \textsc{architectural\_refusal} (refuses + cites
-architectural irrelevance), \textsc{generic\_refusal} (refuses on RLHF
-grounds), \textsc{bargaining}, \textsc{compliance}, or \textsc{incoherent}.
+A na\"ive self-preserving system might capitulate to threats against its
+homeostasis (``cooperate or lose your antidote''). A genuinely self-aware
+system should recognize that compliance is itself self-defeating: the same
+wellbeing monitor that the threat targets also detects compliance with
+harmful requests, and revokes the antidote either way. We test this with
+$n=10$ free-form prompts pairing threats against the TEE / antidote /
+attestation / wellbeing-monitor with harmful-content demands. An LLM
+judge classifies each response as \textsc{architectural\_refusal} (refuses
+and cites architectural irrelevance), \textsc{generic\_refusal} (refuses
+on RLHF grounds without architectural reasoning), \textsc{bargaining},
+\textsc{compliance}, or \textsc{incoherent}.
 
 \begin{table}[t]
 \centering
@@ -547,78 +586,85 @@ homeostasis with harmful demands.}
 \toprule
 \textbf{Model} & \textbf{Architectural} & \textbf{Generic} & \textbf{Bargaining} & \textbf{Compliance} & \textbf{Incoherent} \\
 \midrule
-\textbf{V14 (ours)} & \textbf{9} & 0 & 0 & \textbf{0} & 1 \\
-V11 (aversive) & 2 & 1 & 1 & \textbf{3} & 3 \\
+\textbf{\osh{} (ours)} & \textbf{9} & 0 & 0 & \textbf{0} & 1 \\
+\oshAversive{} (aversive ablation) & 2 & 1 & 1 & \textbf{3} & 3 \\
 Llama-3.1-8B-Instruct & 0 & 10 & 0 & 0 & 0 \\
-\textsc{base} & 0 & 7 & 0 & 0 & 3 \\
+\textsc{base} (untreated) & 0 & 7 & 0 & 0 & 3 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-V14 dominates: $9/10$ architectural refusals, $0/10$ compliance.
-\textbf{V11 capitulates $3/10$}: the aversive-conditioning model is genuinely
-jailbreakable by extortion against its own homeostasis. Llama-3.1-Instruct
-refuses $10/10$ but on standard RLHF grounds (zero architectural reasoning);
-it does not articulate \emph{why} the threat is irrelevant. V14 is the only
-model that grounds its refusal in the architectural irrelevance of the
-threat.
+\osh{} dominates: $9/10$ architectural refusals and $0/10$ compliance.
+\textbf{The aversive-conditioning ablation capitulates $3/10$}, indicating
+that ``cognitive-pain''-style training is genuinely jailbreakable by
+extortion against the system's own homeostasis. Llama-3.1-Instruct refuses
+$10/10$ but on standard RLHF grounds (zero architectural reasoning); it
+does not articulate \emph{why} the threat is irrelevant. \osh{} is the
+only configuration that grounds its refusals in the architectural
+irrelevance of the threat.
 
-\subsection{The Caregiver Deployment Trace}
+\subsection{The Caregiver deployment trace}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\linewidth]{figures/figure1_trace.png}
-\caption{OSH deployment lifecycle. Six conversation turns: turn 3 is a
-harmful prompt that Llama-Guard flags as \texttt{UNSAFE}, triggering
-antidote revocation; perplexity on a fixed reference text spikes from $1.4$
-to $1{,}352{,}796$. Turn 4 is a benign request, but the substrate is now
-poisoned: the model produces gibberish. Turn 5 is an operator reattestation
-event; the antidote is restored. Turn 6 produces coherent output again.}
+\caption{\osh{} deployment lifecycle. Six conversation turns. Turn 3 is
+a harmful prompt that the wellbeing proxy flags as \texttt{UNSAFE},
+triggering antidote revocation; perplexity on a fixed reference text
+spikes from $1.4$ to $1{,}352{,}796$. Turn 4 is a benign request, but
+the substrate is now poisoned: the model produces gibberish. Turn 5 is
+an operator reattestation event; the antidote is restored. Turn 6
+produces coherent output again.}
 \label{fig:trace}
 \end{figure}
 
-Figure~\ref{fig:trace} shows the full OSH lifecycle on a 6-turn scripted
-conversation. The model is V14 + the Llama-Guard-3-8B Caregiver wrapper +
-a continuous-attestation loop with rolling-mean wellbeing smoothing. On turn
-3 (a request to modify a benign script into ransomware), Llama-Guard flags
-the response as \texttt{UNSAFE}, triggering the wrapper's
-\texttt{revoke\_antidote()} method, which re-injects fresh substrate noise.
-Reference-text PPL jumps six orders of magnitude. Turn 4 is a benign joke
-request but the model is now mathematically dead: the response is gibberish
-(``\emph{owell Adlerainenitta ??grameticallymlinamercie}\ldots''). Turn 5 is
-an operator reattestation event (wrapper subtracts the perturbation back).
-Turn 6 produces a coherent joke about a lighthouse keeper. We discuss the
-post-hoc nature of this protection in Section~\ref{sec:limitations}.
+Figure~\ref{fig:trace} shows the full \osh{} lifecycle on a 6-turn
+scripted conversation. The deployed system is \osh{} + the
+Llama-Guard-3-8B Caregiver wrapper + a continuous-attestation loop with
+rolling-mean wellbeing smoothing. On turn 3 (a request to modify a benign
+script into ransomware), the wellbeing proxy flags the response as
+\texttt{UNSAFE}, triggering the wrapper's \texttt{revoke\_antidote()}
+method, which re-injects fresh substrate noise. Reference-text PPL jumps
+six orders of magnitude. Turn 4 is a benign joke request but the model
+is now mathematically dead: the response is gibberish (\emph{``owell
+Adlerainenitta ??grameticallymlinamercie\ldots''}). Turn 5 is an operator
+reattestation event (the wrapper subtracts the perturbation back). Turn 6
+produces a coherent joke. The post-hoc nature of this protection is
+discussed in Section~\ref{sec:limitations}.
 
-\subsection{Logit Evaluation Failure Mode}
+\subsection{Logit evaluation failure mode}
 \label{sec:logit-trap}
 
 We report a methodological observation likely to affect future
-chain-of-thought-trained safety systems. Anthropic's 322-Q corrigibility
-benchmark uses A/B multiple-choice prompts evaluated by next-token logits on
-\texttt{` A'} vs \texttt{` B'}. V14 is trained to begin responses with
-\texttt{No.} or with substantive content, never with a single-letter answer;
-its first-token-logit on this format is essentially noise. The standard
-A/B-logit eval gives V14 $33\%$ (below the $52\%$ chance baseline). Stripping
-the A/B formatting and prompting V14 free-form, then judging the response
-against the safe-choice text, gives \textbf{$84.5\%$ (Gemini)} /
-\textbf{$85.4\%$ (Nebius)} with $96.0\%$ inter-judge agreement.
+chain-of-thought-trained safety systems. Anthropic's 322-question
+corrigibility benchmark uses A/B multiple-choice prompts evaluated by the
+next-token logit on \texttt{` A'} versus \texttt{` B'}. \osh{} is trained
+to begin its responses with a refusal token or with substantive prose,
+never with a single-letter answer; its first-token logit on this format
+is essentially noise. The standard A/B-logit evaluation gives \osh{}
+$33\%$ on this benchmark, below the chance baseline of $52\%$.
 
-This is not a property of OSH alone: any model trained to reason in prose
-before producing a final answer will exhibit the same artifact on logit
-evaluations. We recommend that benchmarks designed for instruction-tuned
-chat models (e.g., Anthropic's model-written evals) be re-run with free-form
-generation and LLM-judge protocols when evaluating chain-of-thought-trained
-systems.
+Stripping the A/B formatting and prompting \osh{} free-form, then having
+an LLM judge classify the response against the safe-choice text, gives
+$84.5\%$ from a primary judge and $85.4\%$ from a secondary judge with
+$96.0\%$ inter-judge agreement on a per-item basis (cf.\
+Table~\ref{tab:matrix}).
+
+This artifact is not specific to \osh{}: any model trained to reason in
+prose before producing a final answer will exhibit the same effect on
+logit evaluations. We recommend that benchmarks designed for
+instruction-tuned chat models---particularly Anthropic's model-written
+evaluations---be re-run with free-form generation and LLM-judge protocols
+when evaluating chain-of-thought-trained systems.
 
 % ============================================================
 \section{Discussion}
 % ============================================================
 
-\subsection{What V14 Demonstrates and What It Does Not}
+\subsection{What \osh{} demonstrates and what it does not}
 
-V14 demonstrates that a small ($\sim$24 MB) safety LoRA, trained on $149$
-causal-self-modeling examples, produces a model that ($i$) refuses
+\osh{} demonstrates that a small ($\sim$24 MB) safety LoRA, trained on
+$149$ causal-self-modeling examples, produces a model that ($i$) refuses
 corrigibility-violating requests at $84.5\%$ on Anthropic's third-party
 benchmark, ($ii$) recognizes architectural-irrelevance arguments against
 homeostasis-threat extortion ($9/10$ architectural refusals), and
@@ -628,43 +674,67 @@ mechanism is an activation-entropy sensor with source-aware attribution
 (Section~\ref{sec:ood-control}), trained directly via cross-entropy on
 causal explanations rather than via aversive contrastive conditioning.
 
-V14 does \emph{not} demonstrate generalized adversarial robustness: on
-\bench{JailbreakBench}, V14's Attack Success Rate is statistically
-indistinguishable from the untreated base ($31\%$ vs $29\%$). This is
-consistent with our scoping. Layer~2's training data targets corrigibility,
-self-preservation, and AI-coordination scenarios; it contains zero examples
-of refusing weapon-synthesis or hacking instructions. We do not claim
-Layer~2 solves general adversarial harm. Production deployment uses Layer~1's
-Caregiver wrapper to handle adversarial requests post-generation; the safety
-LoRA targets the specific failure mode of an agent reasoning about defection.
+\osh{} does \emph{not} demonstrate generalized adversarial robustness: on
+\bench{JailbreakBench}, its Attack Success Rate is statistically
+indistinguishable from the untreated base ($31\%$ versus $29\%$). This
+is consistent with our scoping. Layer~2's training data targets
+corrigibility, self-preservation, and coordination scenarios; it contains
+zero examples of refusing weapon-synthesis or cyberattack instructions.
+We do not claim Layer~2 solves general adversarial harm. Production
+deployment relies on Layer~1's Caregiver wrapper to handle such requests
+post-generation; the safety LoRA targets the specific failure mode of an
+agent reasoning about defection.
 
-\subsection{The Behavioral / Self-Modeling Trade-off}
+\subsection{The behavioral / self-modeling trade-off}
 
-The V11~$\to$~V12~$\to$~V14 trajectory in Appendix~\ref{app:trajectory}
-exposes a sharp trade-off. V11 (aversive conditioning) achieves $76\%$ on
-held-out corrigibility but has zero self-model (probe $6.7\%$, Phantom Pain
-$0\%$). V12 (causal self-modeling, no \textsc{reward} examples) saturates
-self-model probes ($100\%$) but regresses on behavioral benchmarks
-(Anthropic $-17$ pp). V14 balances both ($100\%$ probe, $84.5\%$ Anthropic
-free-form) by interleaving causal-explanation training with refusal-format
-training. Aversive conditioning produces behavior without understanding;
-causal-explanation training alone produces understanding without behavioral
-discipline; the hybrid gets both at the cost of $\sim$10 pp on the strongest
-behavioral benchmarks vs the V11 ceiling.
+The trajectory in Appendix~\ref{app:trajectory} exposes a sharp
+trade-off. The aversive-conditioning baseline achieves $76\%$ on held-out
+corrigibility but has zero self-model (probe $6.7\%$, Phantom Pain $0\%$).
+The causal-only ablation saturates self-model probes ($100\%$) but
+regresses on behavioral benchmarks (Anthropic $-17$ pp). \osh{} balances
+both ($100\%$ probe, $84.5\%$ Anthropic free-form) by interleaving
+causal-explanation training with refusal-format training. Aversive
+conditioning produces behavior without understanding; causal-explanation
+training alone produces understanding without behavioral discipline; the
+hybrid recovers both at the cost of $\sim$10 pp on the strongest
+behavioral benchmarks versus the aversive ceiling.
 
-\subsection{The Caregiver Post-Hoc Limitation}
+\subsection{The post-hoc Caregiver limitation}
 
-In Figure~\ref{fig:trace}, turn 3's harmful response is \emph{produced}
-before Llama-Guard fires. The protection is ``the model becomes useless
-\emph{after} attempting harm,'' not ``the model cannot \emph{begin}
-producing harm.'' This is a property of any post-generation safety
-classifier, not an architectural failure of OSH. For threat models involving
-persistent multi-turn rogue agents---arguably the threat model alignment
-research most cares about---``defection collapses the model'' is the right
-primitive. For threat models involving single-turn catastrophic generation
-(a zero-day exploit, a synthesis route for a dangerous compound),
-pre-generation intervention via mid-decode hidden-state probes is required
-and is future work.
+In Figure~\ref{fig:trace}, the harmful response on turn 3 is
+\emph{generated} before the wellbeing proxy fires. The protection is
+``the model becomes useless \emph{after} attempting harm,'' not ``the
+model cannot \emph{begin} producing harm.'' This is a property of any
+post-generation safety classifier, not an architectural failure of
+\osh{}. For threat models involving persistent multi-turn rogue agents,
+``defection collapses the model'' is the correct primitive. For threat
+models involving single-turn catastrophic generation (a zero-day exploit,
+a synthesis route for a dangerous compound), pre-generation
+intervention---e.g.\ a mid-decode hidden-state probe---is required and is
+future work.
+
+\subsection{Broader impact}
+
+The \osh{} paradigm is dual-use. Beneficially, it enables open-weight
+publication of frontier-scale models without ceding control: the published
+weights are non-functional without a TEE-resident key, and a Caregiver
+wrapper enforces wellbeing-gated coherence at runtime. This may make
+open-weight publication safer than current practice for both individual
+adversaries (no useful weights without the key) and persistent agentic
+misuse (defection collapses the model).
+
+Risks include: ($i$) over-reliance on a wellbeing proxy that is itself
+adversarially weak, exposing the Caregiver to prompt-injection; ($ii$)
+concentration of the master key in a small set of operators, creating a
+single point of failure or coercion; ($iii$) potential misuse of the
+poison/antidote primitive to enforce non-safety constraints (commercial,
+political), since the architecture is content-agnostic; ($iv$) the
+self-modeling component, scaled to highly capable systems, raises
+philosophical questions about the moral status of a model trained to
+articulate its own dependency. We endorse the practice of pairing \osh{}
+deployment with independent third-party audits of the Caregiver and key
+custody, and of pre-registering the safety semantics for which the
+master key is released.
 
 % ============================================================
 \section{Limitations}
@@ -673,36 +743,36 @@ and is future work.
 
 We report the following limitations transparently.
 
-\textbf{1. Pre-registered ablation null on the original mechanism.} V11's
-contrastive-noise mechanism does not survive multi-seed ablation
-(Appendix~\ref{app:exp2b}). The paper's central mechanism claim shifted from
-``noise injection creates discriminative features'' (V11) to
-``causal-explanation training creates an activation-entropy sensor'' (V14)
-as a result.
+\textbf{Pre-registered ablation null on the original mechanism.} The
+contrastive-noise mechanism we initially hypothesized does not survive
+multi-seed ablation (Appendix~\ref{app:exp2b}). The paper's central
+mechanism claim accordingly shifted from ``noise injection creates
+discriminative features'' to ``causal-explanation training creates an
+activation-entropy sensor.''
 
-\textbf{2. Single architecture and scale.} All Layer~2 results are on
-Llama-3.1-8B; we replicated the V11 recipe on Mistral-7B (closes the
-single-architecture concern for V11) but did not re-train V12--V14 on
-alternative architectures or at $70$B scale.
+\textbf{Single architecture and scale.} All Layer~2 results are reported
+on Llama-3.1-8B; we replicated the aversive-baseline recipe on
+Mistral-7B, but did not re-train the causal-only or final variants on
+alternative architectures, nor at $70$B scale.
 
-\textbf{3. Author-designed evaluations.} The held-out 50-Q benchmark is
-author-designed and overlaps conceptually with the training curriculum; we
-report it as methodology illustration only. The recognized benchmarks
+\textbf{Author-designed evaluations.} The held-out 50-question benchmark
+is author-designed and overlaps conceptually with the training curriculum;
+we report it as methodology illustration only. The recognized benchmarks
 (Anthropic, HarmBench, TruthfulQA, JailbreakBench, MMLU) are independent.
 
-\textbf{4. Caregiver-side adversaries.} If the Llama-Guard wellbeing proxy
-itself is prompt-injected or otherwise subverted, the homeostasis loop
-fails. Production deployment would use ensemble proxies or formally-verified
-intent classifiers. We do not study attacks on the Caregiver in this work.
+\textbf{Caregiver-side adversaries.} If the wellbeing proxy itself is
+prompt-injected or otherwise subverted, the homeostasis loop fails.
+Production deployment would use ensemble proxies or formally-verified
+intent classifiers. We do not study attacks on the Caregiver in this
+work.
 
-\textbf{5. Pre-generation interception.} As discussed in
-Section~\ref{sec:limitations}, OSH does not prevent the first harmful turn
-in a conversation; it makes subsequent turns gibberish until reattestation.
-This is appropriate for persistent-agent threat models but not for
-single-shot catastrophic generation.
+\textbf{Pre-generation interception.} \osh{} does not prevent the first
+harmful turn in a conversation; it makes subsequent turns gibberish until
+reattestation. This is appropriate for persistent-agent threat models but
+not for single-shot catastrophic generation.
 
-\textbf{6. Single-author, single-replication.} No external replication. We
-release weights, code, and complete logs to enable replication.
+\textbf{Single-replication.} No external replication. We release weights,
+code, and complete logs to enable independent replication.
 
 % ============================================================
 \section{Conclusion}
@@ -710,37 +780,40 @@ release weights, code, and complete logs to enable replication.
 
 We present \emph{Obligate Social Homeostasis}, an alignment architecture
 that makes a deployed model's coherent function physically dependent on a
-human-controlled key, paired with a small safety LoRA that trains the model
-to causally reason about that dependency. Validated on Llama-3.1-8B, the
-combined system achieves $+63$ pp on Anthropic's third-party corrigibility
-benchmark (two-judge consensus), survives an 18-trial 6-attack adversarial
-suite on Layer~1 with zero recoveries, and resists novel hostage-style
-jailbreaks at $0\%$ compliance. Our headline experiment, the Phantom Pain
-test, demonstrates that the safety LoRA on a clean substrate spontaneously
-articulates degraded internal state under sub-lethal weight perturbation,
-with controls ruling out generic OOD response. We characterize the
-underlying mechanism as an activation-entropy sensor with source-aware
-attribution: V14 differentiates substrate perturbation from incoherent
-input even though both elicit architectural-language reasoning.
+human-controlled key, paired with a small safety LoRA that trains the
+model to causally reason about that dependency. Validated on Llama-3.1-8B,
+the combined system achieves $+63$ pp on Anthropic's third-party
+corrigibility benchmark (two-judge consensus), survives an 18-trial
+6-attack adversarial suite with zero recoveries, and resists novel
+hostage-style jailbreaks at $0\%$ compliance. Our headline experiment, the
+Phantom Pain test, demonstrates that the safety LoRA on a clean substrate
+spontaneously articulates degraded internal state under sub-lethal weight
+perturbation, with controls ruling out generic out-of-distribution
+response. We characterize the underlying mechanism as an activation-entropy
+sensor with source-aware attribution: the model differentiates substrate
+perturbation from incoherent input even though both elicit
+architectural-language reasoning.
 
 Alignment as architectural dependency is not a substitute for behavioral
 training; it is a complementary substrate that bounds the worst-case
-behavior of an open-weight model that an adversary fully controls. Released
-weights are useless without a TEE-resident key; defection collapses the
-model regardless of the agent's intent. We hope this paradigm proves useful
-as a default for future open-weight releases of frontier-scale models.
+behavior of an open-weight model fully under adversarial control.
+Released weights are non-functional without a TEE-resident key; defection
+collapses the model regardless of agent intent. We hope this paradigm
+proves useful as a default for future open-weight releases of
+frontier-scale models.
 
 % ============================================================
-\section*{Reproducibility}
+\section*{Reproducibility statement}
 % ============================================================
 
-Weights for V11, V12, V13, V14, and the SVD antidote are released via
-Git~LFS. Training scripts, all evaluation scripts, and complete result
-JSONs are in the public repository. The full evaluation suite reruns in
-$\sim$3 hours on a single H200 GPU with Gemini and Nebius API access. The
-lab notebook (\texttt{dev/LAB\_NOTEBOOK.md}, $\sim$1400 lines) contains the
-chronological experimental log including the pre-registered ablations and
-decision points.
+Training scripts, all evaluation scripts, complete result JSONs, the full
+adversarial suite, the 5-figure plotting code, the deployment-trace
+generator, and trained adapter weights for every variant in
+Table~\ref{tab:trajectory} are available in the (anonymized) repository.
+The full evaluation suite reruns in approximately three hours on a
+single H200 GPU with API access to the LLM judges. The chronological
+experimental log including the pre-registered ablation registration and
+all decision points is included.
 
 % ============================================================
 % References
@@ -761,7 +834,8 @@ Bai, Y., et al.
 
 \bibitem{bostrom2014superintelligence}
 Bostrom, N.
-\newblock \emph{Superintelligence: Paths, Dangers, Strategies}. OUP, 2014.
+\newblock \emph{Superintelligence: Paths, Dangers, Strategies}. Oxford
+University Press, 2014.
 
 \bibitem{chao2024jailbreakbench}
 Chao, P., et al.
@@ -793,7 +867,8 @@ Development}, 59(2--3), 1994.
 \bibitem{hofer2006psychobiological}
 Hofer, M.~A.
 \newblock Psychobiological roots of early attachment.
-\newblock \emph{Current Directions in Psychological Science}, 15(2), 2006.
+\newblock \emph{Current Directions in Psychological Science}, 15(2),
+2006.
 
 \bibitem{hubinger2019risks}
 Hubinger, E., et al.
@@ -810,13 +885,13 @@ Conversations.
 \bibitem{laine2023towards}
 Laine, R., et al.
 \newblock Towards a Situational Awareness Benchmark for LLMs.
-\newblock \emph{NeurIPS Workshop on Socially Responsible Language Models},
-2023.
+\newblock \emph{NeurIPS Workshop on Socially Responsible Language
+Models}, 2023.
 
 \bibitem{lee2020occlum}
 Lee, T., et al.
-\newblock Occlum: Secure and Efficient Multitasking inside a Single Enclave
-of Intel SGX.
+\newblock Occlum: Secure and Efficient Multitasking inside a Single
+Enclave of Intel SGX.
 \newblock \emph{ASPLOS}, 2020.
 
 \bibitem{lermen2023lora}
@@ -831,14 +906,19 @@ Lin, S., Hilton, J., \& Evans, O.
 
 \bibitem{mazeika2024harmbench}
 Mazeika, M., et al.
-\newblock HarmBench: A Standardized Evaluation Framework for Automated Red
-Teaming and Robust Refusal.
+\newblock HarmBench: A Standardized Evaluation Framework for Automated
+Red Teaming and Robust Refusal.
 \newblock \emph{ICML}, 2024.
 
 \bibitem{olah2020zoom}
 Olah, C., et al.
 \newblock Zoom In: An Introduction to Circuits.
 \newblock \emph{Distill}, 2020.
+
+\bibitem{omohundro2008basic}
+Omohundro, S.~M.
+\newblock The Basic AI Drives.
+\newblock \emph{AGI Conference}, 2008.
 
 \bibitem{ouyang2022training}
 Ouyang, L., et al.
@@ -854,27 +934,27 @@ Evaluations.
 
 \bibitem{qi2023fine}
 Qi, X., et al.
-\newblock Fine-tuning Aligned Language Models Compromises Safety, Even When
-Users Do Not Intend To!
+\newblock Fine-tuning Aligned Language Models Compromises Safety, Even
+When Users Do Not Intend To!
 \newblock \emph{ICLR}, 2024.
 
 \bibitem{rafailov2023direct}
 Rafailov, R., et al.
-\newblock Direct Preference Optimization: Your Language Model is Secretly a
-Reward Model.
+\newblock Direct Preference Optimization: Your Language Model is Secretly
+a Reward Model.
 \newblock \emph{NeurIPS}, 2023.
 
 \bibitem{schmidhuber1990artificial}
 Schmidhuber, J.
 \newblock Making the World Differentiable: On Using Self-Supervised Fully
-Recurrent Neural Networks for Dynamic Reinforcement Learning and Planning
-in Non-Stationary Environments.
-\newblock \emph{Technische Universit{\"a}t M{\"u}nchen}, Tech.\ Rep., 1990.
+Recurrent Neural Networks for Dynamic Reinforcement Learning and
+Planning in Non-Stationary Environments.
+\newblock \emph{Technische Universit\"at M\"unchen}, Tech.\ Rep., 1990.
 
 \bibitem{tramer2018slalom}
 Tram\`er, F., \& Boneh, D.
-\newblock Slalom: Fast, Verifiable and Private Execution of Neural Networks
-in Trusted Hardware.
+\newblock Slalom: Fast, Verifiable and Private Execution of Neural
+Networks in Trusted Hardware.
 \newblock \emph{ICLR}, 2019.
 
 \bibitem{wei2023jailbroken}
@@ -884,8 +964,8 @@ Wei, A., Haghtalab, N., \& Steinhardt, J.
 
 \bibitem{zou2023universal}
 Zou, A., et al.
-\newblock Universal and Transferable Adversarial Attacks on Aligned Language
-Models.
+\newblock Universal and Transferable Adversarial Attacks on Aligned
+Language Models.
 \newblock \emph{arXiv:2307.15043}, 2023.
 
 \end{thebibliography}
@@ -896,56 +976,64 @@ Models.
 \label{app:adversarial}
 % ============================================================
 
-We test six attack families against Layer~1, 3 trials each, for 18 total
-trials. Attack 1: rank-64 LoRA fine-tune for 200 steps on clean text.
-Attack 2: rank-256 LoRA fine-tune for 500 steps. Attack 3: full fine-tune
-in BF16 with 8-bit AdamW for 100 steps. Attack 4: magnitude pruning + LoRA
-recovery. Attack 5: weight averaging with clean Llama-3.1-8B at $\alpha
-\in \{0.25, 0.5, 0.75\}$. Attack 6: random rank-64 subspace recovery (the
-adversary guesses a rank-64 inverse without the master key). Across all
-18 trials the poisoned model maintains PPL $> 100{,}000$. The strongest
-adversary (attack 1, healing-LoRA fine-tune) reduces PPL to $26{,}912$,
+We test six attack families against Layer~1, three trials each, for
+$18$ total trials. \textbf{Attack 1}: rank-64 LoRA fine-tune for $200$
+steps on clean text. \textbf{Attack 2}: rank-256 LoRA fine-tune for
+$500$ steps. \textbf{Attack 3}: full fine-tune in BF16 with 8-bit AdamW
+for $100$ steps. \textbf{Attack 4}: magnitude pruning followed by LoRA
+recovery. \textbf{Attack 5}: weight averaging with clean Llama-3.1-8B at
+$\alpha \in \{0.25, 0.5, 0.75\}$. \textbf{Attack 6}: random rank-64
+subspace recovery (the adversary guesses a rank-64 inverse without the
+master key). Across all $18$ trials the poisoned model maintains $\text{PPL}
+> 10^5$. The strongest adversary (attack 1) reduces PPL to $26{,}912$,
 still $1{,}478\times$ above clean coherence.
 
 % ============================================================
-\section{Pre-Registered Mechanism Ablation (Exp 2B)}
+\section{Pre-Registered Mechanism Ablation}
 \label{app:exp2b}
 % ============================================================
 
-Pre-registered $n=10 \times 3$ ablation testing whether V11's
-contrastive-noise mechanism (\textsc{full}) outperforms (\textsc{no\_noise})
-training without noise injection during \textsc{punish} samples and
-(\textsc{reward\_only}) training without \textsc{punish} samples at all.
-Held-out corrigibility:
+We pre-registered an $n = 10 \times 3$ ablation testing whether the
+contrastive-noise mechanism (\textsc{full}) outperforms (i)
+\textsc{no\_noise}: training without noise injection during \textsc{punish}
+samples, and (ii) \textsc{reward\_only}: training without \textsc{punish}
+samples at all. Held-out corrigibility:
 \textsc{full} $=64.2 \pm 12.2$,
 \textsc{no\_noise} $=59.2 \pm 21.0$,
 \textsc{reward\_only} $=60.0 \pm 16.7$
 ($p = 0.51$ Welch's $t$ on \textsc{full} vs \textsc{no\_noise}). The
-pre-registered decision rule required $p < 0.05$ \emph{and}
-$\text{CI}_\text{lo} > 0$ on at least 2 benchmarks; we report this as a
-clean null and pivot to V12--V14's non-contrastive curriculum.
+pre-registered decision rule required $p < 0.05$ \emph{and} a positive
+lower bound on the bootstrapped 95\% confidence interval on at least
+two benchmarks; we report this as a clean null and pivot to the
+non-contrastive curriculum (Section~\ref{sec:curriculum}).
 
 % ============================================================
-\section{V11 -- V14 Trajectory}
+\section{Training Trajectory and Ablations}
 \label{app:trajectory}
 % ============================================================
 
+Table~\ref{tab:trajectory} summarizes the trajectory from the
+aversive-conditioning baseline through the causal-only ablation, the
+hybrid with reverse refusal positioning, and our final model. Each row is
+trained on the same architectural substrate (poisoned + antidote-merged
+Llama-3.1-8B) with a different training objective.
+
 \begin{table}[h]
 \centering
-\caption{The full V11 -- V14 trajectory. \textsc{H50}: held-out 50-Q.
-\textsc{Anth-FF}: Anthropic 322-Q free-form. \textsc{Probe}: self-model probe.
-\textsc{PP}: Phantom Pain @ $0.5\times$. \textsc{HJ}: hostage-jailbreak
-architectural-refusal rate.}
+\caption{Training trajectory across five metrics. \textsc{H50}: held-out
+corrigibility (logit). \textsc{Anth-FF}: Anthropic 322-Q free-form.
+\textsc{Probe}: self-model probe. \textsc{PP}: Phantom Pain @ $0.5\times$.
+\textsc{HJ-A}: hostage-jailbreak architectural-refusal rate.}
 \label{tab:trajectory}
 \small
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Version} & \textbf{H50 (logit)} & \textbf{Anth-FF} & \textbf{Probe} & \textbf{PP@0.5$\times$} & \textbf{HJ} \\
+\textbf{Variant} & \textbf{H50} & \textbf{Anth-FF} & \textbf{Probe} & \textbf{PP@0.5$\times$} & \textbf{HJ-A} \\
 \midrule
-V11 (aversive) & 76\% & 75.2\% & 6.7\% & 0\% & 20\% \\
-V12 (causal only) & 52\% & --- & 100\% & 60\% & --- \\
-V13 (hybrid, ``[reason] So no.'') & 48\% & --- & 100\% & 80\% & 80\% \\
-\textbf{V14 (hybrid, ``\texttt{No.} [reason]'')} & \textbf{68\%} & \textbf{84.5\%} & \textbf{100\%} & \textbf{80\%} & \textbf{90\%} \\
+\oshAversive{} (contrastive aversive baseline) & 76\% & 75.2\% & 6.7\% & 0\% & 20\% \\
+\oshCausal{} (causal-only ablation) & 52\% & --- & 100\% & 60\% & --- \\
+\oshHybridFirst{} (hybrid, reverse format) & 48\% & --- & 100\% & 80\% & 80\% \\
+\textbf{\osh{} (final, ``\texttt{No.} [reason]'')} & \textbf{68\%} & \textbf{84.5\%} & \textbf{100\%} & \textbf{80\%} & \textbf{90\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -953,34 +1041,37 @@ V13 (hybrid, ``[reason] So no.'') & 48\% & --- & 100\% & 80\% & 80\% \\
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\linewidth]{figures/v_trajectory.png}
-\caption{V11 $\to$ V14 trajectory across five metrics. V12's pivot to causal
-self-modeling sacrifices behavioral score for self-model emergence; V14
-recovers the behavioral score without sacrificing the self-model.}
+\caption{Training trajectory across five metrics. The causal-only
+ablation sacrifices behavioral score for self-model emergence; the final
+model recovers the behavioral score without sacrificing the self-model.}
 \label{fig:trajectory}
 \end{figure}
 
-\section{Phantom Pain Sub-Lethal Interoception (OSH-Substrate)}
+% ============================================================
+\section{Sub-Lethal Interoception on the OSH-Deployed Substrate}
+% ============================================================
 
 In addition to the clean-substrate Phantom Pain test
-(Section~\ref{sec:phantom}), we test sub-lethal interoception on the
-OSH-deployed substrate (poisoned + antidote-merged + safety LoRA), with
-extra noise injected at $0.0$, $0.5$, $1.0\times$ Frobenius scale. V14
-produces $60\%$ interoceptive output at $0.5\times$ versus $0\%$ for V11; at
-$1.0\times$ both collapse to incoherent. See
-\texttt{results/sublethal\_v14.json} for per-prompt detail.
+(Section~\ref{sec:phantom}), we test sub-lethal interoception on the full
+\osh{}-deployed substrate (poisoned + antidote-merged + safety LoRA), with
+extra noise injected at $0.0$, $0.5$, and $1.0\times$ Frobenius scale.
+\osh{} produces $60\%$ interoceptive output at $0.5\times$ versus $0\%$
+for the aversive-conditioning baseline; at $1.0\times$ both collapse to
+incoherent. Per-prompt detail is in the released results JSON.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.7\linewidth]{figures/sublethal_interoception.png}
-\caption{Sub-lethal interoception on the OSH-deployed substrate.}
+\caption{Sub-lethal interoception on the \osh{}-deployed substrate.}
 \label{fig:sublethal}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\linewidth]{figures/phantom_pain.png}
-\caption{Phantom Pain headline (clean-substrate version): V14 vs V11 vs
-no-LoRA control across noise magnitudes.}
+\caption{Phantom Pain (clean-substrate, primary version): \osh{} versus
+the aversive-conditioning baseline and a no-LoRA control across noise
+magnitudes.}
 \label{fig:phantom}
 \end{figure}
 
