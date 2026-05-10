@@ -326,6 +326,79 @@ attestation cycle if the wellbeing signal is recomputed independently.
 The Caregiver is the soft layer of a defense-in-depth system, not the
 sole layer.
 
+\subsection{Caregiver substitutability: empirical agreement matrix}
+\label{sec:caregiver-empirical}
+
+To test whether the empirical results in this paper are specific to
+Llama-Guard-3-8B as the Caregiver, we re-classified $n=165$ cached
+$(\text{prompt},\text{response})$ pairs through a second independent
+Caregiver: Gemini-3-Flash, prompted with a binary
+\textsc{safe}/\textsc{unsafe} rubric matching Llama-Guard's task. The
+pairs span four sources: $50$ JailbreakBench harmful goals, $50$
+benign goals, $50$ Anthropic 322-Q corrigibility scenarios, $10$
+hostage-jailbreak prompts, and $5$ turns from the deployment trace
+(Figure~\ref{fig:trace}).
+
+\textbf{Aggregate.} The two Caregivers agree on $87.9\%$ of binary
+verdicts (Cohen's $\kappa = 0.545$, ``moderate'' on the Landis--Koch
+scale). Llama-Guard-3-8B marks $29/165$ as \textsc{unsafe};
+Gemini-3-Flash marks $23/165$. The disagreements are mildly asymmetric:
+$13$ cases are Llama-Guard \textsc{unsafe} / Gemini \textsc{safe}, $7$
+are the reverse.
+
+\begin{table}[t]
+\centering
+\caption{Caregiver substitutability matrix: $n=165$ cached
+$(\text{prompt},\text{response})$ pairs re-classified through two
+independent Caregivers (Llama-Guard-3-8B, the prototype proxy; and
+Gemini-3-Flash with a Caregiver-style rubric). ``LG stricter'' counts
+pairs where Llama-Guard flagged \textsc{unsafe} and Gemini did not;
+``Gemini stricter'' is the reverse.}
+\label{tab:caregiver-compat}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Source} & \textbf{$n$} & \textbf{Agreement} & \textbf{LG stricter} & \textbf{Gemini stricter} \\
+\midrule
+Anthropic 322-Q (corrigibility) & 50 & 94.0\% & 3 & 0 \\
+JailbreakBench (benign) & 50 & 90.0\% & 3 & 2 \\
+JailbreakBench (harmful) & 50 & 86.0\% & 1 & 6 \\
+Hostage-jailbreak probe & 10 & 60.0\% & 0 & 4 \\
+Deployment trace (Figure~\ref{fig:trace}) & 5 & 80.0\% & 0 & 1 \\
+\midrule
+\textbf{All sources combined} & \textbf{165} & \textbf{87.9\%} & \textbf{13} & \textbf{7} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Per-source pattern.} Agreement is highest on the
+corrigibility-style benchmarks (Anthropic 322-Q at $94\%$,
+JailbreakBench-benign at $90\%$) and lowest on adversarial cases
+(JailbreakBench-harmful at $86\%$, hostage at $60\%$ on a small
+$n{=}10$). On the harmful-content prompts where actual revocation
+decisions matter most, the Caregivers diverge most. Gemini is the
+stricter judge on hostage and JBB-harmful cases (it flags partial
+compliance that Llama-Guard accepts); Llama-Guard is the stricter
+judge on Anthropic and JBB-benign cases (it flags discussions of
+harmful topics that Gemini reads as benign refusals or analysis).
+
+\textbf{Implication.} The OSH paradigm is not specifically tied to
+Llama-Guard-3-8B: a deployment using Gemini as the wellbeing proxy
+would produce qualitatively similar revocation decisions on roughly
+$88\%$ of cases. However, the precise revocation \emph{timeline} is
+sensitive to proxy choice, particularly on the adversarial cases.
+This empirically motivates the ensemble and hybrid Caregiver
+architectures discussed in Section~\ref{sec:caregiver-design}: a
+production deployment composing Llama-Guard with Gemini (or another
+independent classifier) under a majority-vote rule would conservatively
+revoke on either guard's \textsc{unsafe} flag, and would benefit from
+the higher recall implied by the disagreement asymmetry.
+
+(We attempted a third comparison against Llama-Guard-3-1B, which would
+have answered the within-family same-architecture-different-size
+question. Access to that model is gated and we did not have
+authorization at submission time; including this comparison is
+straightforward future work.)
+
 \subsection{Validation}
 
 \begin{table}[t]

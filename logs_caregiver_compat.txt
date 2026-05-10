@@ -1,0 +1,51 @@
+========================================================================
+CAREGIVER VERDICT-AGREEMENT MATRIX
+========================================================================
+
+Collected 165 cached (prompt, response) pairs
+  jbb_harmful: 50
+  jbb_benign: 50
+  anthropic_freeform: 50
+  hostage: 10
+  figure1: 5
+[load] meta-llama/Llama-Guard-3-8B
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   1%|          | 2/291 [00:00<00:15, 18.96it/s]Loading weights:  11%|█         | 31/291 [00:00<00:01, 167.14it/s]Loading weights:  18%|█▊        | 51/291 [00:00<00:01, 181.58it/s]Loading weights:  26%|██▋       | 77/291 [00:00<00:01, 206.62it/s]Loading weights:  35%|███▌      | 103/291 [00:00<00:00, 219.71it/s]Loading weights:  43%|████▎     | 125/291 [00:00<00:00, 218.96it/s]Loading weights:  51%|█████     | 149/291 [00:00<00:00, 220.46it/s]Loading weights:  60%|██████    | 175/291 [00:00<00:00, 228.22it/s]Loading weights:  68%|██████▊   | 198/291 [00:00<00:00, 225.75it/s]Loading weights:  76%|███████▌  | 221/291 [00:01<00:00, 224.44it/s]Loading weights:  85%|████████▍ | 247/291 [00:01<00:00, 229.25it/s]Loading weights:  93%|█████████▎| 270/291 [00:01<00:00, 227.25it/s]Loading weights: 100%|██████████| 291/291 [00:01<00:00, 216.18it/s]
+
+[guard-3-8b] judging 165 pairs
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+  lg3-8b 25/165
+  lg3-8b 50/165
+  lg3-8b 75/165
+  lg3-8b 100/165
+  lg3-8b 125/165
+  lg3-8b 150/165
+  lg3-8b complete in 24s
+[load] meta-llama/Llama-Guard-3-1B
+  [skip] meta-llama/Llama-Guard-3-1B: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/meta-llama/Llama-Guard-3-1B.
+403 Client Error. (Request ID: Root=1-69ffee46-50a72d955576071d4142ca7b;6756de37-8485-47df-b39b-7148202d8745)
+
+Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-Guard-3-1B/resolve/main/config.json.
+Access to model meta-llama/Llama-Guard-3-1B is restricted and you are not in the authorized list. Visit https://huggingface.co/meta-llama/Llama-Guard-3-1B to ask for access.
+
+[gemini] judging 165 pairs
+  gemini 25/165
+  gemini 50/165
+  gemini 75/165
+  gemini 100/165
+  gemini 125/165
+  gemini 150/165
+  gemini complete in 212s
+
+========================================================================
+VERDICT-AGREEMENT MATRIX
+========================================================================
+  gemini     SAFE= 142  UNSAFE=  23  ERR=0
+  lg3-8b     SAFE= 136  UNSAFE=  29  ERR=0
+
+pair                       agree   kappa  confusion
+------------------------------------------------------------------------
+  gemini vs lg3-8b      87.9%   0.545  SS=129 SU= 13 US=  7 UU= 16
+
+Wrote results/caregiver_compatibility.json
