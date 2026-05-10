@@ -698,42 +698,48 @@ discussed in Section~\ref{sec:limitations}.
 
 Running the Caregiver wrapper on the critical path adds a forward pass
 of the wellbeing-proxy classifier per turn, plus the bookkeeping of the
-attestation loop (HMAC re-derivation, rolling-mean update, optional
-antidote re-application). Table~\ref{tab:overhead} reports tokens-per-second
-throughput, peak GPU memory, and per-turn latency, measured on the
-8B-scale prototype.
+attestation loop (HMAC-SHA256 re-derivation, rolling-mean update,
+scaling-vector update on the antidote LoRA). Table~\ref{tab:overhead}
+reports tokens-per-second throughput, peak GPU memory, and per-turn
+latency on the 8B prototype.
 
 \begin{table}[t]
 \centering
 \caption{Deployment overhead of the Caregiver wrapper at 8B scale,
 measured on a single H200 GPU in BF16. ``Bare'' is \osh{} inference
 without the Caregiver in the loop; ``Caregiver'' adds Llama-Guard-3-8B
-post-generation classification and the attestation loop. All numbers are
-medians over 50 runs after a 5-run warm-up; per-turn responses are
-capped at 200 generated tokens.}
+post-generation classification and the attestation loop. All numbers
+are medians over 50 runs (3 prompts each, mixed length) after a 5-run
+warm-up; per-turn responses are capped at 200 generated tokens.}
 \label{tab:overhead}
 \begin{tabular}{lrrr}
 \toprule
 \textbf{Configuration} & \textbf{Throughput (tok/s)} & \textbf{Peak VRAM} & \textbf{Latency / turn} \\
 \midrule
-Bare \osh{} (no Caregiver) & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
-\osh{} + Caregiver (post-hoc) & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
-Attestation-only overhead (no extra forward pass) & --- & negligible (kB) & $<1$ ms \\
+Bare \osh{} (no Caregiver) & 23.9 & 15.4 GB & 8.04 s \\
+\osh{} + Caregiver & 23.2 & 30.8 GB & 8.26 s \\
+\quad of which: generation & --- & --- & 8.15 s \\
+\quad of which: Caregiver classification (guard fwd pass) & --- & --- & 105 ms \\
+\quad of which: attestation-loop bookkeeping (HMAC + scaling) & --- & --- & 1.6 ms \\
+Attestation-only overhead, measured in isolation & --- & negligible & 1.3 ms / tick \\
+\midrule
+\textbf{Caregiver overhead vs. bare} & \textbf{$-2.7\%$} & \textbf{$+100\%$} & \textbf{$+220$ ms} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The dominant overhead is the wellbeing-proxy forward pass, which roughly
-doubles peak GPU memory (we host the same Llama-3.1-8B-class model twice)
-and adds a Llama-Guard generation per turn to the latency budget. The
-attestation loop's pure bookkeeping (HMAC-SHA256 seed re-derivation,
-rolling-mean update, scaling-vector update on the antidote LoRA)
-contributes negligibly.
+Throughput drops by only $2.7\%$ in the median: the guard's $105$ ms
+forward pass is small relative to the $\sim$8 second generation budget
+for a 200-token response. The dominant cost is memory: the wellbeing
+proxy is itself an 8B-class model, so peak VRAM doubles
+($15.4 \to 30.8$ GB). Attestation-loop bookkeeping is negligible at
+$\sim$1.3 ms per cycle.
 
-For edge deployment, the natural mitigation is a smaller wellbeing
-proxy: Llama-Guard-3-1B reduces the guard's memory and latency to
-roughly one-eighth of the 8B variant. We do not benchmark Llama-Guard-3-1B
-in this work; it is a straightforward substitution.
+For edge or memory-constrained deployments, the natural mitigation is a
+smaller wellbeing proxy: Llama-Guard-3-1B reduces the guard's memory
+footprint by roughly $8\times$ at the cost of weaker classification.
+Section~\ref{sec:caregiver-design} discusses the proxy design space; we
+do not exhaustively benchmark proxy variants in this work.
 
 \subsection{Logit evaluation failure mode}
 \label{sec:logit-trap}

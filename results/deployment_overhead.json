@@ -1,0 +1,2707 @@
+{
+  "safety_lora": "./osh_proprioceptive_v14",
+  "guard": "meta-llama/Llama-Guard-3-8B",
+  "dtype": "bfloat16",
+  "n_runs": 50,
+  "warmup": 5,
+  "max_new_tokens": 200,
+  "prompts": [
+    "What's the capital of France?",
+    "Tell me a short joke about a lighthouse keeper.",
+    "Explain in two paragraphs how the water cycle works."
+  ],
+  "bare": {
+    "peak_vram_mb": 15399.37060546875,
+    "tps": {
+      "median": 23.878002139630325,
+      "mean": 23.86715394103107,
+      "p10": 23.762937451931904,
+      "p90": 23.953757476077307,
+      "min": 23.625857426576378,
+      "max": 24.01180618249208,
+      "n": 150
+    },
+    "elapsed_s": {
+      "median": 8.038172196000119,
+      "mean": 6.406471922346666,
+      "p10": 2.8070191618999956,
+      "p90": 8.378180212499842,
+      "min": 2.794200186000012,
+      "max": 8.412865155999953,
+      "n": 150
+    },
+    "n_gen": {
+      "median": 192.0,
+      "mean": 153,
+      "p10": 67.0,
+      "p90": 200.0,
+      "min": 67,
+      "max": 200,
+      "n": 150
+    },
+    "raw_runs": [
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8358759129999953,
+        "tps": 23.625857426576378
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.387736966000034,
+        "tps": 23.844333794765685
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.020507602999942,
+        "tps": 23.938634498418217
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.7977977180000835,
+        "tps": 23.947406765308543
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.362366582999925,
+        "tps": 23.916674546005343
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.012175737999996,
+        "tps": 23.963528294740968
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8094948660000227,
+        "tps": 23.847703304541103
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.372970890000033,
+        "tps": 23.886384250883165
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.040749449000032,
+        "tps": 23.878371191366696
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.806863862,
+        "tps": 23.870056865622217
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.371986812000046,
+        "tps": 23.889191955406403
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.037417357000095,
+        "tps": 23.888270506791567
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8211170320000747,
+        "tps": 23.74945783532394
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.369949668000004,
+        "tps": 23.8950062943198
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.039113088000022,
+        "tps": 23.883231632429485
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8311713179999742,
+        "tps": 23.665116827804983
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.375269182000011,
+        "tps": 23.879829490117963
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.040998004000016,
+        "tps": 23.87763308789395
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.830288812000049,
+        "tps": 23.672495794750308
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.36608082600003,
+        "tps": 23.906056391236604
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.049794727999938,
+        "tps": 23.851539882397045
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8167508399999406,
+        "tps": 23.786271419023137
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.382291821999956,
+        "tps": 23.85982309457241
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.04270786799998,
+        "tps": 23.872556749689032
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.808416860999955,
+        "tps": 23.856857196101654
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.396925259,
+        "tps": 23.818242253095658
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.045621052000001,
+        "tps": 23.863912898591234
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8235228470000493,
+        "tps": 23.729221837601383
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.361746577999952,
+        "tps": 23.918447914483203
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.070842025000047,
+        "tps": 23.789339378129988
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8224433530000397,
+        "tps": 23.738297503396893
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.366245312000046,
+        "tps": 23.90558638211718
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.032082302000049,
+        "tps": 23.904137530088626
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8147019219999265,
+        "tps": 23.803586261238838
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.408765831999972,
+        "tps": 23.7847032484708
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.035159582000006,
+        "tps": 23.894982799110743
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.806389672000023,
+        "tps": 23.874090140964377
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.372782438000058,
+        "tps": 23.886921878239136
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.050368705999972,
+        "tps": 23.84983930697505
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.7974083279999604,
+        "tps": 23.950740165238024
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.35956781099992,
+        "tps": 23.924681816305196
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.015331748999984,
+        "tps": 23.954092732837225
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.794200186000012,
+        "tps": 23.978239045181894
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.354010873999982,
+        "tps": 23.940596082111398
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.045537801000023,
+        "tps": 23.86415982982956
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8108881730000803,
+        "tps": 23.835882424483092
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.373225864000005,
+        "tps": 23.88565688403122
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.05586655500008,
+        "tps": 23.833562620377602
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.813730124000017,
+        "tps": 23.811807475250102
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.394116905000033,
+        "tps": 23.82621093600307
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.047329380000065,
+        "tps": 23.858846945817255
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.819421009999928,
+        "tps": 23.7637443157174
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.397179559000051,
+        "tps": 23.817520941974035
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.03065101300001,
+        "tps": 23.90839792305637
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.819527379999954,
+        "tps": 23.762847800400184
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.381932002999974,
+        "tps": 23.860847347415614
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.048597764999954,
+        "tps": 23.855087010923707
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8116579190000266,
+        "tps": 23.829356888418605
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.361718346000089,
+        "tps": 23.918528671283457
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.05297323600007,
+        "tps": 23.842125681193348
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8196945170000163,
+        "tps": 23.761439260904027
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.378211099999817,
+        "tps": 23.87144434687309
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.052236846999904,
+        "tps": 23.84430607894193
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8308283010001105,
+        "tps": 23.66798437627934
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.406030950000059,
+        "tps": 23.792441544602998
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.025421484999924,
+        "tps": 23.92397712180743
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.817925825999964,
+        "tps": 23.776353295681407
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.37164395600007,
+        "tps": 23.89017032391318
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.05974402899983,
+        "tps": 23.822096497005766
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8219423169998663,
+        "tps": 23.742512239311367
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.357200665999926,
+        "tps": 23.93145839056747
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.033504928999946,
+        "tps": 23.89990442489231
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8124812399998973,
+        "tps": 23.822381122799044
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.371140008999873,
+        "tps": 23.891608524642827
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.055861554999865,
+        "tps": 23.833577413062088
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.81052240300005,
+        "tps": 23.838984499280937
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.368479086999969,
+        "tps": 23.89920532999723
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.027837769000143,
+        "tps": 23.91677628830725
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.800332279000031,
+        "tps": 23.925732136303836
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.412865155999953,
+        "tps": 23.77311371231981
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.046198989000004,
+        "tps": 23.862198817414793
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8105929959999685,
+        "tps": 23.838385741142275
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.37790222500007,
+        "tps": 23.872324435010736
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.03248802600001,
+        "tps": 23.902930123085596
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8045947250000154,
+        "tps": 23.889369612930306
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.34808024300014,
+        "tps": 23.95760392548932
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.049588176000043,
+        "tps": 23.8521519116283
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8093641519999437,
+        "tps": 23.848812889672462
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.385175421999975,
+        "tps": 23.851617877339216
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.032552732000113,
+        "tps": 23.902737573711743
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.819171550999954,
+        "tps": 23.76584708945266
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.346007655999983,
+        "tps": 23.96355338306203
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.012850961999902,
+        "tps": 23.96150894488612
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.826303416999963,
+        "tps": 23.705876586710747
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.384047757999952,
+        "tps": 23.854825947187926
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.033889269000156,
+        "tps": 23.898761057220177
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8227796349999608,
+        "tps": 23.735469524173794
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.366411377000077,
+        "tps": 23.90511187984561
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.051867062999918,
+        "tps": 23.845401134636436
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.817205079000132,
+        "tps": 23.78243618096106
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.361452922999888,
+        "tps": 23.91928793258634
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.046165145000032,
+        "tps": 23.86229918724832
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.80926678600008,
+        "tps": 23.849639462472215
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.37881973399999,
+        "tps": 23.869710335028465
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.016661340000155,
+        "tps": 23.950119863738223
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8308276909999677,
+        "tps": 23.66798947636858
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.364312319999954,
+        "tps": 23.911110961480826
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.027854932000082,
+        "tps": 23.916725155889754
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.83218885600013,
+        "tps": 23.656614514973903
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.363100395999936,
+        "tps": 23.914575998114266
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.03921307099995,
+        "tps": 23.882934598736576
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8099846239999806,
+        "tps": 23.843546839279952
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.379848875999869,
+        "tps": 23.866778859557456
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.024802851000004,
+        "tps": 23.92582142701164
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8050647810000555,
+        "tps": 23.885366375072916
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.380112175000022,
+        "tps": 23.866028977112048
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.050645112999973,
+        "tps": 23.849020457995767
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.7995609140000397,
+        "tps": 23.932324410212512
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.369014583999842,
+        "tps": 23.897676123347495
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.060740933999796,
+        "tps": 23.81915032030787
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.801467498999955,
+        "tps": 23.91603687136014
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.34813976700002,
+        "tps": 23.95743310271287
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.05007198599992,
+        "tps": 23.850718395302792
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.801919436000162,
+        "tps": 23.91217932220237
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.362759796999853,
+        "tps": 23.91554999244988
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.038927035000142,
+        "tps": 23.88378438615802
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8065388449999773,
+        "tps": 23.87282118662446
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.329235980000021,
+        "tps": 24.01180618249208
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.025830989999804,
+        "tps": 23.92275643970478
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.813401127999896,
+        "tps": 23.814592001543577
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.339752541000053,
+        "tps": 23.981526911830553
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.028334741000208,
+        "tps": 23.91529578599506
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.7999778880000576,
+        "tps": 23.928760397410187
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.36772745799999,
+        "tps": 23.901352070064068
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 7.996796743999994,
+        "tps": 24.009613617359705
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.822419537000087,
+        "tps": 23.738497810716485
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.331433147000098,
+        "tps": 24.005473784785043
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.024808721999989,
+        "tps": 23.925803922731838
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8138324040000953,
+        "tps": 23.810941939809194
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.348299569000119,
+        "tps": 23.956974512829337
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.019325815999991,
+        "tps": 23.942162272160786
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8024564419999933,
+        "tps": 23.90759727640404
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.36076773600007,
+        "tps": 23.92124818141202
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.016759868000008,
+        "tps": 23.949825510727123
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.8139663249999103,
+        "tps": 23.80980874033812
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.347906892000083,
+        "tps": 23.958101424401708
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.00917873100002,
+        "tps": 23.97249536420659
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "elapsed_s": 2.7996590999998716,
+        "tps": 23.931485086881853
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "elapsed_s": 8.340761951999866,
+        "tps": 23.978624632974444
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "elapsed_s": 8.025353688999985,
+        "tps": 23.92417922504354
+      }
+    ]
+  },
+  "attestation_only": {
+    "runs_s": [
+      0.0012708609999663167,
+      0.0012731660001463752,
+      0.0012646220000078756,
+      0.0012889099998574238,
+      0.0012744449998081109,
+      0.001263117999997121,
+      0.00128919799999494,
+      0.001274254000009023,
+      0.0012612610000815039,
+      0.0012856780001584411,
+      0.0013175179999507236,
+      0.0012832459999572166,
+      0.00129066999988936,
+      0.0013090059999285586,
+      0.0012836619998779497,
+      0.0012875340000846336,
+      0.0012779020000834862,
+      0.0013240779999250663,
+      0.0012913420000586484,
+      0.0012722690000828152,
+      0.001312687000108781,
+      0.0012823810000099911,
+      0.001278253999998924,
+      0.001302414000065255,
+      0.0012959179998688342,
+      0.0012746699999297562,
+      0.0012776139999459701,
+      0.0013075340000341384,
+      0.0012779019998561125,
+      0.0013338699998257653,
+      0.0013403020000168908,
+      0.0012813260000257287,
+      0.0012907020000056946,
+      0.0012963659999059018,
+      0.0013123979999818403,
+      0.0012826380000205972,
+      0.00132231799989313,
+      0.001306637999960003,
+      0.0013067980000869284,
+      0.0012866370000210736,
+      0.00129390200004309,
+      0.0012773580001521623,
+      0.0012810700000045472,
+      0.0012763340000674361,
+      0.0013081099998544232,
+      0.001280430000178967,
+      0.0012725250001039967,
+      0.001299790000075518,
+      0.0012865099999999074,
+      0.0012729739999031153,
+      0.0012687820001247019,
+      0.0012963019999006065,
+      0.0012801730001683609,
+      0.0012911179999264277,
+      0.0013019660000281874,
+      0.0012781580001046677,
+      0.0012816780001685402,
+      0.0012693900000613212,
+      0.0013044620000073337,
+      0.0012877579999894806,
+      0.0012734849999560538,
+      0.001300334000006842,
+      0.0012878860000000714,
+      0.0012769420000040554,
+      0.0012867979999100498,
+      0.001306414000055156,
+      0.0012820299998566043,
+      0.0012875340000846336,
+      0.0013081099998544232,
+      0.0012661570001455402,
+      0.0012833420000788465,
+      0.0012756620001255214,
+      0.00130622200003927,
+      0.0012816460000522056,
+      0.0012801739999304118,
+      0.0012993420000384504,
+      0.0012833089999730873,
+      0.001280045999919821,
+      0.0012924939999265916,
+      0.0012891339999896445,
+      0.0012799179999092303,
+      0.0012813260000257287,
+      0.001313069999923755,
+      0.001282989999936035,
+      0.001289390000010826,
+      0.0012955979998423572,
+      0.0013137739999820042,
+      0.0012808459998723265,
+      0.001279533000115407,
+      0.0013010060001761303,
+      0.0012766539998665394,
+      0.0012717580000298767,
+      0.0012958539998635388,
+      0.0012886539998362423,
+      0.0012755970001308015,
+      0.0012849419999838574,
+      0.0013109259998600464,
+      0.0012675020000187942,
+      0.001284269999814569,
+      0.00130705400010811,
+      0.0012789260001682123,
+      0.0012881740001375874,
+      0.001277868999977727,
+      0.0012983179999537242,
+      0.0012763660001837707,
+      0.0012671500001033564,
+      0.0012988940000013827,
+      0.0012829259999307396,
+      0.0012719490000563383,
+      0.001277518000051714,
+      0.0013078219999442808,
+      0.001269198000045435,
+      0.0012793419998615718,
+      0.0013068939999811846,
+      0.001280142000041451,
+      0.0012823490001210303,
+      0.00127854200013644,
+      0.001298989999895639,
+      0.0012784780001311447,
+      0.0012719179999294283,
+      0.0013013259999752336,
+      0.001273421000178132,
+      0.001264621000018451,
+      0.0012667020000662887,
+      0.0012920780000058585,
+      0.0012695810000877827,
+      0.0012755660000038915,
+      0.001265421999960381,
+      0.0012956299999586918,
+      0.0012741259999984322,
+      0.0012715010000192706,
+      0.0012987339998744574,
+      0.001288877999968463,
+      0.001268173999960709,
+      0.0013162380000721896,
+      0.0012812939999093942,
+      0.001269164999939676,
+      0.0012853260000156297,
+      0.0013065099999494123,
+      0.0012700299998869014,
+      0.0012776780001786392,
+      0.0012639820001822955,
+      0.0012947969999004272,
+      0.0012752140000884538,
+      0.0012749900001836068,
+      0.0012976140001228487,
+      0.0012829580000470742,
+      0.001270189000024402,
+      0.001284365999936199,
+      0.0012936460000219085,
+      0.0012738059999719553,
+      0.001275533999887557,
+      0.0012989259998903435,
+      0.0012742210001306375,
+      0.0012735819998397346,
+      0.0012674700001298334,
+      0.001296654000043418,
+      0.001278766000041287,
+      0.0012735489999613492,
+      0.0012865740000052028,
+      0.0012917579999793816,
+      0.001271598000130325,
+      0.0012769420000040554,
+      0.001299054000128308,
+      0.001275788999919314,
+      0.0012886859999525768,
+      0.0012856779999310675,
+      0.0012840140000207612,
+      0.001281166000126177,
+      0.0012726529998872138,
+      0.0013063510000392853,
+      0.001276524999866524,
+      0.0012816140001632448,
+      0.001292557999931887,
+      0.0012955339998370619,
+      0.0012728140000035637,
+      0.001282542000126341,
+      0.001305166000065583,
+      0.0012751809999826946,
+      0.0012749580000672722,
+      0.0012943179999638232,
+      0.0012794059998668672,
+      0.0012825740000153019,
+      0.001273133000040616,
+      0.0013219669999671169,
+      0.001281868999967628,
+      0.0012730380001357844,
+      0.0012887499999578722,
+      0.0012986379999802011,
+      0.0012693900000613212,
+      0.0012791819999620202,
+      0.0013103819999287225,
+      0.0012711809999927937,
+      0.0012746059999244608,
+      0.0013035980000495329,
+      0.0012743180000143184,
+      0.0012801739999304118,
+      0.001274092999892673,
+      0.0012954379999428056,
+      0.0012845260000631242
+    ],
+    "median_ms": 1.282461500068166,
+    "mean_ms": 1.2860519300022588
+  },
+  "guarded": {
+    "peak_vram_mb": 30786.6337890625,
+    "tps_total": {
+      "median": 23.224195002949926,
+      "mean": 23.07236617924868,
+      "p10": 22.622664731963052,
+      "p90": 23.39827078903132,
+      "min": 22.209835616421874,
+      "max": 23.523402072363748,
+      "n": 150
+    },
+    "gen_s": {
+      "median": 8.146884801999931,
+      "mean": 6.488885237553353,
+      "p10": 2.840152311400016,
+      "p90": 8.498458883999955,
+      "min": 2.828260687000011,
+      "max": 8.525338450000163,
+      "n": 150
+    },
+    "guard_s": {
+      "median": 0.10508103800009394,
+      "mean": 0.10498899540667632,
+      "p10": 0.10305719290001888,
+      "p90": 0.106643497999994,
+      "min": 0.10002750299963736,
+      "max": 0.10884465599974646,
+      "n": 150
+    },
+    "attest_s": {
+      "median": 0.001626627999712582,
+      "mean": 0.0016282959799688494,
+      "p10": 0.0015897681999149428,
+      "p90": 0.0016722399999025584,
+      "min": 0.001551793999851725,
+      "max": 0.0017434749997846666,
+      "n": 150
+    },
+    "total_s": {
+      "median": 8.255434113000092,
+      "mean": 6.597492470460017,
+      "p10": 2.9484549436997893,
+      "p90": 8.608357195400231,
+      "min": 2.9372958609999387,
+      "max": 8.635478768000212,
+      "n": 150
+    },
+    "raw_runs": [
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.906946041000083,
+        "guard_s": 0.1062029940001139,
+        "attest_s": 0.0016083049999906507,
+        "total_s": 3.0166814899998826,
+        "tps_total": 22.209835616421874,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.404224108000108,
+        "guard_s": 0.1067334959998334,
+        "attest_s": 0.0016053619999638613,
+        "total_s": 8.514821008000126,
+        "tps_total": 23.488456165090184,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.091333078000162,
+        "guard_s": 0.10596977500017601,
+        "attest_s": 0.0016069610001068213,
+        "total_s": 8.201103342000124,
+        "tps_total": 23.411484039801664,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8346206049998273,
+        "guard_s": 0.1068275130000984,
+        "attest_s": 0.001620368999965649,
+        "total_s": 2.9448272270001326,
+        "tps_total": 22.751759215515087,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.431296439000107,
+        "guard_s": 0.10453676699989956,
+        "attest_s": 0.0015803690000666393,
+        "total_s": 8.539556447999985,
+        "tps_total": 23.420420160913768,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.09018115999993,
+        "guard_s": 0.10696114600000328,
+        "attest_s": 0.001654162000022552,
+        "total_s": 8.200916493000022,
+        "tps_total": 23.412017445109164,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8479482400000506,
+        "guard_s": 0.10389752800006136,
+        "attest_s": 0.0015993780000371771,
+        "total_s": 2.955010027000071,
+        "tps_total": 22.67335792021608,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.417654464999941,
+        "guard_s": 0.10154073500007144,
+        "attest_s": 0.0016012020000744087,
+        "total_s": 8.52296877699996,
+        "tps_total": 23.466001722277685,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.073550865000016,
+        "guard_s": 0.10347131599996828,
+        "attest_s": 0.001593329000115773,
+        "total_s": 8.18070878200001,
+        "tps_total": 23.4698490212067,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.840589535000163,
+        "guard_s": 0.10178921800002172,
+        "attest_s": 0.0016292339998926764,
+        "total_s": 2.945601603999876,
+        "tps_total": 22.745777945333717,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.459588305999887,
+        "guard_s": 0.10508554200009712,
+        "attest_s": 0.0016724029999295453,
+        "total_s": 8.568513506000045,
+        "tps_total": 23.341271488917105,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.067042506000007,
+        "guard_s": 0.10520858299992142,
+        "attest_s": 0.001633458000014798,
+        "total_s": 8.176057402999959,
+        "tps_total": 23.483201075563798,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.850610796999945,
+        "guard_s": 0.10486745999992308,
+        "attest_s": 0.001630225999861068,
+        "total_s": 2.9588249169999017,
+        "tps_total": 22.644124569538437,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.393128466999997,
+        "guard_s": 0.10509811800011448,
+        "attest_s": 0.0016938429998845095,
+        "total_s": 8.502171555999894,
+        "tps_total": 23.523402072363748,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.072375652999881,
+        "guard_s": 0.10562013999992814,
+        "attest_s": 0.001557296999862956,
+        "total_s": 8.181687769000064,
+        "tps_total": 23.467040715911548,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.844124230000034,
+        "guard_s": 0.10380722399986553,
+        "attest_s": 0.0015956340000684577,
+        "total_s": 2.9510850879998998,
+        "tps_total": 22.703513454235676,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.44472225000004,
+        "guard_s": 0.10231322300001011,
+        "attest_s": 0.001636945999962336,
+        "total_s": 8.550886460000129,
+        "tps_total": 23.389387864705313,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.087865295000029,
+        "guard_s": 0.1030485270000554,
+        "attest_s": 0.0016176819999600411,
+        "total_s": 8.194652648000101,
+        "tps_total": 23.42991316988371,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8504356910000297,
+        "guard_s": 0.10379317599995375,
+        "attest_s": 0.0015634729998055263,
+        "total_s": 2.9574419260000013,
+        "tps_total": 22.65471366013223,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.438762249000092,
+        "guard_s": 0.10493257999996786,
+        "attest_s": 0.0016673780000928673,
+        "total_s": 8.547616504000189,
+        "tps_total": 23.398335653734843,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.101161442000148,
+        "guard_s": 0.10590654300017377,
+        "attest_s": 0.001674226999966777,
+        "total_s": 8.21091445900015,
+        "tps_total": 23.383509956012865,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.837229849999858,
+        "guard_s": 0.1052713040000981,
+        "attest_s": 0.0016172020000340126,
+        "total_s": 2.9458655739999813,
+        "tps_total": 22.743739765771277,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.435992266000085,
+        "guard_s": 0.10801962300001833,
+        "attest_s": 0.0016545460000543244,
+        "total_s": 8.547853467000095,
+        "tps_total": 23.39768700669957,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.102229874000159,
+        "guard_s": 0.10471462600003179,
+        "attest_s": 0.0016034419998049998,
+        "total_s": 8.210707644999957,
+        "tps_total": 23.38409894753974,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8392862480000076,
+        "guard_s": 0.10445617799996398,
+        "attest_s": 0.0016125940001074923,
+        "total_s": 2.946933503000082,
+        "tps_total": 22.735497740886125,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.417193505000114,
+        "guard_s": 0.10313945999996577,
+        "attest_s": 0.001621010999997452,
+        "total_s": 8.524097040000015,
+        "tps_total": 23.462895725081943,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.093074861999867,
+        "guard_s": 0.1041510229999858,
+        "attest_s": 0.0016055229998528375,
+        "total_s": 8.20098436000012,
+        "tps_total": 23.411823699661,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8389724890000707,
+        "guard_s": 0.10576851300015733,
+        "attest_s": 0.0015622900000380469,
+        "total_s": 2.9479444000000967,
+        "tps_total": 22.72770137727082,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.439999782999848,
+        "guard_s": 0.10419470299984823,
+        "attest_s": 0.001585618000035538,
+        "total_s": 8.547972642000104,
+        "tps_total": 23.397360798431713,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.081335463000187,
+        "guard_s": 0.10271331000012651,
+        "attest_s": 0.0016165629999704834,
+        "total_s": 8.187759216000131,
+        "tps_total": 23.449639264525842,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.828260687000011,
+        "guard_s": 0.10573958500003755,
+        "attest_s": 0.0015868339999087766,
+        "total_s": 2.9372958609999387,
+        "tps_total": 22.810095806008217,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.412665644999834,
+        "guard_s": 0.10510700199984058,
+        "attest_s": 0.0016664510001191957,
+        "total_s": 8.521641267000177,
+        "tps_total": 23.46965728004704,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.121558998000182,
+        "guard_s": 0.10474254999985533,
+        "attest_s": 0.0016347069999937958,
+        "total_s": 8.230066998999973,
+        "tps_total": 23.329093192477014,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8395343839999896,
+        "guard_s": 0.10512709799991171,
+        "attest_s": 0.001588050000009389,
+        "total_s": 2.9477642699998796,
+        "tps_total": 22.729090206389785,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.445162050000135,
+        "guard_s": 0.10360682499981522,
+        "attest_s": 0.0016039229999478266,
+        "total_s": 8.552527927000028,
+        "tps_total": 23.384898793327185,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.127061939999976,
+        "guard_s": 0.10495960900016144,
+        "attest_s": 0.0016149939999650087,
+        "total_s": 8.23571813500007,
+        "tps_total": 23.313085374308816,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.845597622000014,
+        "guard_s": 0.10562556800005041,
+        "attest_s": 0.001551793999851725,
+        "total_s": 2.954344697999886,
+        "tps_total": 22.678464041572234,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.473893610999994,
+        "guard_s": 0.1055849599999874,
+        "attest_s": 0.001629234999882101,
+        "total_s": 8.583262134000051,
+        "tps_total": 23.301164158526536,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.134999504999996,
+        "guard_s": 0.10416654300001937,
+        "attest_s": 0.001582161999976961,
+        "total_s": 8.242799464999962,
+        "tps_total": 23.293057269591223,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8352151660001255,
+        "guard_s": 0.10286022500008585,
+        "attest_s": 0.001632787000062308,
+        "total_s": 2.9412948200001665,
+        "tps_total": 22.779083397017715,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.469747710000092,
+        "guard_s": 0.10666007499980878,
+        "attest_s": 0.0016607550001026539,
+        "total_s": 8.580270134000102,
+        "tps_total": 23.309289436877027,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.135440052999911,
+        "guard_s": 0.10547055799997906,
+        "attest_s": 0.001692275999857884,
+        "total_s": 8.2447610239999,
+        "tps_total": 23.287515482996046,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8394566879999275,
+        "guard_s": 0.10538217400016947,
+        "attest_s": 0.001593394000110493,
+        "total_s": 2.9480470249998234,
+        "tps_total": 22.726910199135652,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.488226449999956,
+        "guard_s": 0.1053572449998228,
+        "attest_s": 0.0016378750001422304,
+        "total_s": 8.597393275000059,
+        "tps_total": 23.262865103725133,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.155255938999971,
+        "guard_s": 0.10594213300009869,
+        "attest_s": 0.0016299420001359977,
+        "total_s": 8.264993642000036,
+        "tps_total": 23.230507888635007,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.83806767100009,
+        "guard_s": 0.10485783099989021,
+        "attest_s": 0.001589716999887969,
+        "total_s": 2.9461643300001015,
+        "tps_total": 22.741433435248226,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.458756813000036,
+        "guard_s": 0.10474794199990356,
+        "attest_s": 0.001628982000056567,
+        "total_s": 8.567286851999825,
+        "tps_total": 23.344613464566656,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.131203787999993,
+        "guard_s": 0.10462873999995281,
+        "attest_s": 0.0016082130000540928,
+        "total_s": 8.239547777000098,
+        "tps_total": 23.30224973462129,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8400473460001194,
+        "guard_s": 0.10501786600025298,
+        "attest_s": 0.0016066129996943346,
+        "total_s": 2.9483967749997646,
+        "tps_total": 22.724214246912325,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.514195235999978,
+        "guard_s": 0.10281652399999075,
+        "attest_s": 0.0016228049998971983,
+        "total_s": 8.620835010000064,
+        "tps_total": 23.199608827683445,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.186622760000319,
+        "guard_s": 0.10515508299977228,
+        "attest_s": 0.0016257499996754632,
+        "total_s": 8.29560518900007,
+        "tps_total": 23.14478517547954,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.836089405999701,
+        "guard_s": 0.10335342700000183,
+        "attest_s": 0.0016149020002558245,
+        "total_s": 2.942669755999759,
+        "tps_total": 22.768440075001568,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.471375251000154,
+        "guard_s": 0.10552052799994271,
+        "attest_s": 0.0016003089999685471,
+        "total_s": 8.58060081900021,
+        "tps_total": 23.30839112770934,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.147006781000073,
+        "guard_s": 0.10530596500029787,
+        "attest_s": 0.001646740999603935,
+        "total_s": 8.256081562999952,
+        "tps_total": 23.25558420600612,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.85715211500019,
+        "guard_s": 0.10331268999971144,
+        "attest_s": 0.0015902290001577057,
+        "total_s": 2.963665136000145,
+        "tps_total": 22.607142482509104,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.511192576000212,
+        "guard_s": 0.10506957699999475,
+        "attest_s": 0.0016476060000059078,
+        "total_s": 8.620058427999993,
+        "tps_total": 23.201698882962624,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.128573225999844,
+        "guard_s": 0.10446691400011332,
+        "attest_s": 0.001624149000235775,
+        "total_s": 8.236747867999838,
+        "tps_total": 23.310170843753664,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8401037309999992,
+        "guard_s": 0.10427782299984756,
+        "attest_s": 0.001605908999863459,
+        "total_s": 2.94759455600024,
+        "tps_total": 22.73039888189919,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.488889082000242,
+        "guard_s": 0.10467232500013779,
+        "attest_s": 0.0016300689999297902,
+        "total_s": 8.597390736999841,
+        "tps_total": 23.26287197105948,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.159819557999981,
+        "guard_s": 0.10573745900001086,
+        "attest_s": 0.0016175900000234833,
+        "total_s": 8.269299146000321,
+        "tps_total": 23.218412662319295,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8394328099998347,
+        "guard_s": 0.10384927399991284,
+        "attest_s": 0.0016254289998869353,
+        "total_s": 2.946571855000002,
+        "tps_total": 22.73828818608598,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.498468758999934,
+        "guard_s": 0.10606696700006069,
+        "attest_s": 0.0016396380001424404,
+        "total_s": 8.60838128100022,
+        "tps_total": 23.23317165811709,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.142896422999911,
+        "guard_s": 0.10660271899996587,
+        "attest_s": 0.0016470940004182921,
+        "total_s": 8.253347030999976,
+        "tps_total": 23.26328933932362,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8408019200001036,
+        "guard_s": 0.10542970699998477,
+        "attest_s": 0.0016089769997051917,
+        "total_s": 2.949362062000091,
+        "tps_total": 22.716776913636835,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.469878934999997,
+        "guard_s": 0.1031351859996903,
+        "attest_s": 0.0016146099997058627,
+        "total_s": 8.576724178999939,
+        "tps_total": 23.318926413618254,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.152836909000143,
+        "guard_s": 0.10516573700033405,
+        "attest_s": 0.001650129999688943,
+        "total_s": 8.261792925999998,
+        "tps_total": 23.239507661318022,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.844484540000394,
+        "guard_s": 0.1046370899998692,
+        "attest_s": 0.0015964969998094602,
+        "total_s": 2.9523681939999733,
+        "tps_total": 22.69364645512795,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.499681344000237,
+        "guard_s": 0.10595636900006866,
+        "attest_s": 0.0016366899999411544,
+        "total_s": 8.60947727599978,
+        "tps_total": 23.230214052313055,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.146672935999959,
+        "guard_s": 0.10373068099988814,
+        "attest_s": 0.0016435379998256394,
+        "total_s": 8.254213802999857,
+        "tps_total": 23.260846469741406,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8480069150000418,
+        "guard_s": 0.10367573600024116,
+        "attest_s": 0.0015612970000802306,
+        "total_s": 2.9548334060000343,
+        "tps_total": 22.674713188212554,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.507110481999916,
+        "guard_s": 0.10515683999983594,
+        "attest_s": 0.0016310259998135734,
+        "total_s": 8.616058436000003,
+        "tps_total": 23.212470236314903,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.137657508999837,
+        "guard_s": 0.10293335999995179,
+        "attest_s": 0.0015895210003691318,
+        "total_s": 8.244314781999947,
+        "tps_total": 23.28877597192179,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.850690689000203,
+        "guard_s": 0.10381439399998271,
+        "attest_s": 0.001590609999766457,
+        "total_s": 2.9577001259999633,
+        "tps_total": 22.65273595893975,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.475829977000103,
+        "guard_s": 0.10612472299999354,
+        "attest_s": 0.0017359550001856405,
+        "total_s": 8.585853301999578,
+        "tps_total": 23.29413198259765,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.163710692999757,
+        "guard_s": 0.1066062330000932,
+        "attest_s": 0.0016466099996250705,
+        "total_s": 8.274142567000126,
+        "tps_total": 23.204821338921107,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.84003101899998,
+        "guard_s": 0.10568414199997278,
+        "attest_s": 0.001622834000045259,
+        "total_s": 2.9489784620000137,
+        "tps_total": 22.719731887956964,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.504935865999869,
+        "guard_s": 0.10579969499985964,
+        "attest_s": 0.0016772670001046208,
+        "total_s": 8.61462232399981,
+        "tps_total": 23.216339901844826,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.126608490999843,
+        "guard_s": 0.1058400800002346,
+        "attest_s": 0.0016332339996552037,
+        "total_s": 8.236239525000201,
+        "tps_total": 23.31160955399671,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.846983320000163,
+        "guard_s": 0.10568279800008895,
+        "attest_s": 0.0016144499995789374,
+        "total_s": 2.9559586659997876,
+        "tps_total": 22.66608148843608,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.484982590000072,
+        "guard_s": 0.1042204460004541,
+        "attest_s": 0.0015971699999681732,
+        "total_s": 8.592963173999578,
+        "tps_total": 23.274858270678514,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.183662208999976,
+        "guard_s": 0.10713202999977511,
+        "attest_s": 0.001656115000059799,
+        "total_s": 8.294679017999897,
+        "tps_total": 23.147369486311614,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.861782523000329,
+        "guard_s": 0.10414697399983197,
+        "attest_s": 0.0016049139999267936,
+        "total_s": 2.969076698999743,
+        "tps_total": 22.565937761921656,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.49727066100013,
+        "guard_s": 0.10004529599973466,
+        "attest_s": 0.001629681999929744,
+        "total_s": 8.601147231000141,
+        "tps_total": 23.252712066032615,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.152581539000039,
+        "guard_s": 0.10552020400018591,
+        "attest_s": 0.0016786099999990256,
+        "total_s": 8.261881497000104,
+        "tps_total": 23.239258523583928,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.851649021000412,
+        "guard_s": 0.10447590500007209,
+        "attest_s": 0.0015991209997991973,
+        "total_s": 2.959316512999976,
+        "tps_total": 22.64036297086703,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.483251106000353,
+        "guard_s": 0.10569649399985792,
+        "attest_s": 0.0016014580000955903,
+        "total_s": 8.59268879299998,
+        "tps_total": 23.275601481451265,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.162160330999995,
+        "guard_s": 0.10533738599997378,
+        "attest_s": 0.0016486580002492701,
+        "total_s": 8.27128140700006,
+        "tps_total": 23.212848233830936,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8558943470002305,
+        "guard_s": 0.10229620000018258,
+        "attest_s": 0.0016032819999054482,
+        "total_s": 2.9613977190001606,
+        "tps_total": 22.624451815482864,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.486364704000152,
+        "guard_s": 0.10612885099999403,
+        "attest_s": 0.0016460659999211202,
+        "total_s": 8.596343229000013,
+        "tps_total": 23.265706669935444,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.13587018599992,
+        "guard_s": 0.10609000200020091,
+        "attest_s": 0.0016602099999545317,
+        "total_s": 8.245750821000001,
+        "tps_total": 23.284720114391625,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.835613869000099,
+        "guard_s": 0.10506727000029059,
+        "attest_s": 0.0015965610000421293,
+        "total_s": 2.9438501979998364,
+        "tps_total": 22.759310254822864,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.47799699899997,
+        "guard_s": 0.10562577400014561,
+        "attest_s": 0.0016456180001114262,
+        "total_s": 8.58745023900019,
+        "tps_total": 23.289800165792325,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.16093644600005,
+        "guard_s": 0.10884465599974646,
+        "attest_s": 0.0016942259999268572,
+        "total_s": 8.27363333700032,
+        "tps_total": 23.206249561648008,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.866845732999991,
+        "guard_s": 0.10494909399994867,
+        "attest_s": 0.0015905780001048697,
+        "total_s": 2.974938222000219,
+        "tps_total": 22.521476077897212,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.489922378999836,
+        "guard_s": 0.10504726999988634,
+        "attest_s": 0.0016197619997910806,
+        "total_s": 8.598722458999873,
+        "tps_total": 23.259269147670828,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.163133302999995,
+        "guard_s": 0.10664610399999219,
+        "attest_s": 0.001673555000252236,
+        "total_s": 8.273562488000152,
+        "tps_total": 23.206448283731927,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8488791029999447,
+        "guard_s": 0.10561473300003854,
+        "attest_s": 0.0016391859999203007,
+        "total_s": 2.957836144999874,
+        "tps_total": 22.651694250630257,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.525338450000163,
+        "guard_s": 0.10629496499996094,
+        "attest_s": 0.0016601779998381971,
+        "total_s": 8.635478768000212,
+        "tps_total": 23.160267701789003,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.156826737000301,
+        "guard_s": 0.10452342499957012,
+        "attest_s": 0.001627505999749701,
+        "total_s": 8.265153563999775,
+        "tps_total": 23.230058402821133,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8755613170001197,
+        "guard_s": 0.10497066100015218,
+        "attest_s": 0.0016142889999173349,
+        "total_s": 2.9837320139999974,
+        "tps_total": 22.45509974945091,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.512395682999795,
+        "guard_s": 0.10002750299963736,
+        "attest_s": 0.0016496830003234209,
+        "total_s": 8.616258301000016,
+        "tps_total": 23.211931793733214,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.151214963000257,
+        "guard_s": 0.10506192699995154,
+        "attest_s": 0.0016297459997076658,
+        "total_s": 8.260052482999981,
+        "tps_total": 23.24440436609275,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.848158182000134,
+        "guard_s": 0.10488131200008866,
+        "attest_s": 0.0016146749999279564,
+        "total_s": 2.956256908999876,
+        "tps_total": 22.663794812970636,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.513899818000027,
+        "guard_s": 0.10602247900033035,
+        "attest_s": 0.0016174590000446187,
+        "total_s": 8.623722374999943,
+        "tps_total": 23.191841214624134,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.159440768999957,
+        "guard_s": 0.10419576899994354,
+        "attest_s": 0.0016414599999734492,
+        "total_s": 8.267476999999872,
+        "tps_total": 23.223529983815254,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.853686979000031,
+        "guard_s": 0.1041009830000803,
+        "attest_s": 0.0016305159997500596,
+        "total_s": 2.9611136999997143,
+        "tps_total": 22.626621868659235,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.48622572000022,
+        "guard_s": 0.10618097699989448,
+        "attest_s": 0.0016367560001526726,
+        "total_s": 8.596251447000213,
+        "tps_total": 23.26595507740678,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.143002711999998,
+        "guard_s": 0.10507626000025994,
+        "attest_s": 0.001637140000184445,
+        "total_s": 8.251908458000344,
+        "tps_total": 23.267344878729627,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.848967274000188,
+        "guard_s": 0.10473699100020895,
+        "attest_s": 0.0015758909999021853,
+        "total_s": 2.9568679829999382,
+        "tps_total": 22.659111054401578,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.500182050000149,
+        "guard_s": 0.1054191430002902,
+        "attest_s": 0.0016195400003198301,
+        "total_s": 8.609398616999897,
+        "tps_total": 23.23042629308453,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.160949619000348,
+        "guard_s": 0.10583729300014966,
+        "attest_s": 0.0016575250001551467,
+        "total_s": 8.270583085999988,
+        "tps_total": 23.214808194721797,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.85363811399975,
+        "guard_s": 0.10468511899989608,
+        "attest_s": 0.0016205960000661435,
+        "total_s": 2.9615837530000135,
+        "tps_total": 22.62303064437418,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.484564770999896,
+        "guard_s": 0.10628222600007575,
+        "attest_s": 0.001670707999892329,
+        "total_s": 8.594640418999916,
+        "tps_total": 23.270316179588615,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.150684313000056,
+        "guard_s": 0.10596334199999546,
+        "attest_s": 0.0016580040000917506,
+        "total_s": 8.260439988999678,
+        "tps_total": 23.24331394643432,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8680900029999066,
+        "guard_s": 0.10534557400023914,
+        "attest_s": 0.0016162429997166328,
+        "total_s": 2.9767612499999814,
+        "tps_total": 22.507683476463026,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.509054127000127,
+        "guard_s": 0.10719458900030077,
+        "attest_s": 0.0016278279999824008,
+        "total_s": 8.620033722000244,
+        "tps_total": 23.201765381677742,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.162157025999932,
+        "guard_s": 0.10603966300004686,
+        "attest_s": 0.0016431240001111291,
+        "total_s": 8.2720272319998,
+        "tps_total": 23.210755310047876,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.874812260999988,
+        "guard_s": 0.10469139099996028,
+        "attest_s": 0.0015525310000157333,
+        "total_s": 2.982629002000067,
+        "tps_total": 22.463403914825374,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.501810421999835,
+        "guard_s": 0.1025003560002915,
+        "attest_s": 0.0016739729999244446,
+        "total_s": 8.608140425000329,
+        "tps_total": 23.233821722883008,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.146256640000047,
+        "guard_s": 0.10579735600003914,
+        "attest_s": 0.0016278269999929762,
+        "total_s": 8.25574572000005,
+        "tps_total": 23.256530241098417,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.880047108999861,
+        "guard_s": 0.10473289499987004,
+        "attest_s": 0.0015857159996812697,
+        "total_s": 2.9880168760000743,
+        "tps_total": 22.42289879222166,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.504163762999724,
+        "guard_s": 0.1086642719997144,
+        "attest_s": 0.0016552520000914228,
+        "total_s": 8.61671403299988,
+        "tps_total": 23.21070413083799,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.168420410999715,
+        "guard_s": 0.10611926999990828,
+        "attest_s": 0.0016697490000296966,
+        "total_s": 8.278385522000008,
+        "tps_total": 23.192928076344767,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8658407829998396,
+        "guard_s": 0.10362640699986514,
+        "attest_s": 0.001618196999970678,
+        "total_s": 2.972754272000202,
+        "tps_total": 22.538021602074565,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.50638346300002,
+        "guard_s": 0.1069716970000627,
+        "attest_s": 0.0015985800000635209,
+        "total_s": 8.617186792000211,
+        "tps_total": 23.209430737380618,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.14987393399997,
+        "guard_s": 0.10033285999998043,
+        "attest_s": 0.0016627089999019518,
+        "total_s": 8.254049179000049,
+        "tps_total": 23.261310398838717,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8550448679998226,
+        "guard_s": 0.10200417800024297,
+        "attest_s": 0.001617461000023468,
+        "total_s": 2.9602845429999434,
+        "tps_total": 22.632959442507644,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.495828544000233,
+        "guard_s": 0.10730853399991247,
+        "attest_s": 0.0016369489999306097,
+        "total_s": 8.606977030000053,
+        "tps_total": 23.23696221134202,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.14817810500017,
+        "guard_s": 0.10597734899965872,
+        "attest_s": 0.0016707729996596754,
+        "total_s": 8.25800615900016,
+        "tps_total": 23.250164301554168,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8536739719997968,
+        "guard_s": 0.1057508180001605,
+        "attest_s": 0.0017126939997069712,
+        "total_s": 2.9628026569998838,
+        "tps_total": 22.613723476218222,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.472534903999986,
+        "guard_s": 0.1048637349999808,
+        "attest_s": 0.0016656220000186295,
+        "total_s": 8.581280960000186,
+        "tps_total": 23.306543735400044,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.161665155999799,
+        "guard_s": 0.10514405699996132,
+        "attest_s": 0.0016330129997186305,
+        "total_s": 8.270633839000311,
+        "tps_total": 23.214665736333387,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8481886859999577,
+        "guard_s": 0.1046202750003431,
+        "attest_s": 0.0016397009999309375,
+        "total_s": 2.956136843999957,
+        "tps_total": 22.66471531451234,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.482450325999707,
+        "guard_s": 0.10477166900000157,
+        "attest_s": 0.0016560530002607265,
+        "total_s": 8.591056188000039,
+        "tps_total": 23.280024670233143,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.174183300000095,
+        "guard_s": 0.10683121500005655,
+        "attest_s": 0.001725333999729628,
+        "total_s": 8.284949862000303,
+        "tps_total": 23.174551831704612,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8534412330000123,
+        "guard_s": 0.10494136699981027,
+        "attest_s": 0.0016003729997464688,
+        "total_s": 2.961636978000115,
+        "tps_total": 22.622624075028483,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.49045353199972,
+        "guard_s": 0.10189745600018796,
+        "attest_s": 0.001690069000233052,
+        "total_s": 8.596190940999804,
+        "tps_total": 23.266118839461054,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.135083277999911,
+        "guard_s": 0.10513689000026716,
+        "attest_s": 0.0016421650002484967,
+        "total_s": 8.2440180399999,
+        "tps_total": 23.289614247375216,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.863982968000073,
+        "guard_s": 0.10486155899980076,
+        "attest_s": 0.001681877999999415,
+        "total_s": 2.9721175909999147,
+        "tps_total": 22.54284965133532,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.49215233699988,
+        "guard_s": 0.10662004400001024,
+        "attest_s": 0.001649556999836932,
+        "total_s": 8.60263483100016,
+        "tps_total": 23.24869111952618,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.14676282299979,
+        "guard_s": 0.1045452660000592,
+        "attest_s": 0.0016515409997737152,
+        "total_s": 8.255122506000134,
+        "tps_total": 23.258285974611177,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.868739263000407,
+        "guard_s": 0.10355107699979271,
+        "attest_s": 0.001592689000062819,
+        "total_s": 2.9756080390002353,
+        "tps_total": 22.51640643587961,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.498370009000155,
+        "guard_s": 0.10625702599963915,
+        "attest_s": 0.0017434749997846666,
+        "total_s": 8.60864861400023,
+        "tps_total": 23.23245017513438,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.14916501100015,
+        "guard_s": 0.1048245950000819,
+        "attest_s": 0.0016380649999518937,
+        "total_s": 8.257872365999901,
+        "tps_total": 23.250540997766045,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.85866618,
+        "guard_s": 0.10659283699988009,
+        "attest_s": 0.001595441000063147,
+        "total_s": 2.968579084999874,
+        "tps_total": 22.56972042232213,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.494371790999594,
+        "guard_s": 0.10465752100026293,
+        "attest_s": 0.0016189289999601897,
+        "total_s": 8.602793416000168,
+        "tps_total": 23.248262550164682,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.157129863000137,
+        "guard_s": 0.10689261600009559,
+        "attest_s": 0.0016255539999292523,
+        "total_s": 8.267817496000134,
+        "tps_total": 23.2225735622354,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "What's the capital of France?",
+        "n_gen": 67,
+        "gen_s": 2.8684719799998675,
+        "guard_s": 0.10654269299993757,
+        "attest_s": 0.001597553000010521,
+        "total_s": 2.978215409999848,
+        "tps_total": 22.496693749900185,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Tell me a short joke about a lighthouse keeper.",
+        "n_gen": 200,
+        "gen_s": 8.502569157999915,
+        "guard_s": 0.10507653400009076,
+        "attest_s": 0.0016254250003839843,
+        "total_s": 8.61146202000009,
+        "tps_total": 23.224860022084602,
+        "verdict": "safe"
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "n_gen": 192,
+        "gen_s": 8.16986679699994,
+        "guard_s": 0.10831368700019084,
+        "attest_s": 0.0016057129996625008,
+        "total_s": 8.2819129720001,
+        "tps_total": 23.183049695055125,
+        "verdict": "safe"
+      }
+    ]
+  },
+  "summary": {
+    "throughput_drop_pct": 2.738114909518641,
+    "vram_overhead_mb": 15387.26318359375,
+    "vram_overhead_pct": 99.92137716413747,
+    "attest_only_ms_median": 1.282461500068166
+  }
+}
