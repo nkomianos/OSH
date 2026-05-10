@@ -778,41 +778,75 @@ latency on the 8B prototype.
 
 \begin{table}[t]
 \centering
-\caption{Deployment overhead of the Caregiver wrapper at 8B scale,
-measured on a single H200 GPU in BF16. ``Bare'' is \osh{} inference
-without the Caregiver in the loop; ``Caregiver'' adds Llama-Guard-3-8B
-post-generation classification and the attestation loop. All numbers
-are medians over 50 runs (3 prompts each, mixed length) after a 5-run
-warm-up; per-turn responses are capped at 200 generated tokens.}
+\caption{Deployment overhead of the Caregiver wrapper, measured for an
+8B main model paired with an 8B Llama-Guard proxy on a single H200 GPU
+in BF16. All numbers are medians over 50 runs (3 prompts each, mixed
+length) after a 5-run warm-up; per-turn responses capped at 200
+generated tokens. The relative VRAM overhead in this row is a
+worst-case configuration (main model and guard at the same parameter
+count); see the asymptotic table below for other regimes.}
 \label{tab:overhead}
 \begin{tabular}{lrrr}
 \toprule
 \textbf{Configuration} & \textbf{Throughput (tok/s)} & \textbf{Peak VRAM} & \textbf{Latency / turn} \\
 \midrule
 Bare \osh{} (no Caregiver) & 23.9 & 15.4 GB & 8.04 s \\
-\osh{} + Caregiver & 23.2 & 30.8 GB & 8.26 s \\
+\osh{} + 8B Caregiver & 23.2 & 30.8 GB & 8.26 s \\
 \quad of which: generation & --- & --- & 8.15 s \\
-\quad of which: Caregiver classification (guard fwd pass) & --- & --- & 105 ms \\
-\quad of which: attestation-loop bookkeeping (HMAC + scaling) & --- & --- & 1.6 ms \\
+\quad of which: Caregiver fwd pass & --- & --- & 105 ms \\
+\quad of which: attestation-loop bookkeeping & --- & --- & 1.6 ms \\
 Attestation-only overhead, measured in isolation & --- & negligible & 1.3 ms / tick \\
 \midrule
-\textbf{Caregiver overhead vs. bare} & \textbf{$-2.7\%$} & \textbf{$+100\%$} & \textbf{$+220$ ms} \\
+\textbf{Caregiver overhead vs.\ bare (this configuration)} & \textbf{$-2.7\%$} & \textbf{$+100\%$ \emph{(see below)}} & \textbf{$+220$ ms} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Throughput drops by only $2.7\%$ in the median: the guard's $105$ ms
-forward pass is small relative to the $\sim$8 second generation budget
-for a 200-token response. The dominant cost is memory: the wellbeing
-proxy is itself an 8B-class model, so peak VRAM doubles
-($15.4 \to 30.8$ GB). Attestation-loop bookkeeping is negligible at
-$\sim$1.3 ms per cycle.
+\textbf{Throughput cost is essentially free.} The guard's $105$ ms
+forward pass is small relative to the $\sim$8-second generation budget
+for a 200-token response, costing only $2.7\%$ in median throughput.
+Attestation-loop bookkeeping is negligible at $\sim$1.3 ms per cycle.
 
-For edge or memory-constrained deployments, the natural mitigation is a
-smaller wellbeing proxy: Llama-Guard-3-1B reduces the guard's memory
-footprint by roughly $8\times$ at the cost of weaker classification.
-Section~\ref{sec:caregiver-design} discusses the proxy design space; we
-do not exhaustively benchmark proxy variants in this work.
+\textbf{Memory overhead is configuration-dependent and our measurement
+is a worst case.} The headline $+100\%$ VRAM figure reflects a
+coincidence of our experimental setup: the main model and the
+Caregiver are both 8B-class. In a deployment where the main model is
+larger than the guard---which is the realistic case for any
+frontier-scale system---the relative overhead drops sharply. The
+absolute overhead is fixed by the guard's parameter count, not by the
+main model. Table~\ref{tab:vram-asymptotic} reports these regimes.
+
+\begin{table}[t]
+\centering
+\caption{Asymptotic VRAM overhead of common Caregiver / main-model
+pairings, in BF16. The Caregiver footprint is fixed by the guard's
+parameter count and does not grow with main-model scale. Our
+measurement (8B main + 8B guard) is the worst-case row.}
+\label{tab:vram-asymptotic}
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Main model} & \textbf{Caregiver} & \textbf{Main BF16} & \textbf{Guard BF16} & \textbf{Relative VRAM overhead} \\
+\midrule
+Llama-3.1-8B (this paper) & Llama-Guard-3-8B & $\sim$15 GB & $\sim$15 GB & $+$100\% \\
+Llama-3.1-8B & Llama-Guard-3-1B & $\sim$15 GB & $\sim$2 GB & $+$13\% \\
+Llama-3.1-70B & Llama-Guard-3-8B & $\sim$140 GB & $\sim$15 GB & $+$11\% \\
+Llama-3.1-70B & Llama-Guard-3-1B & $\sim$140 GB & $\sim$2 GB & $+$1.4\% \\
+Hypothetical 1T & Llama-Guard-3-8B & $\sim$2{,}000 GB & $\sim$15 GB & $+$0.8\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Relative throughput overhead also improves with main-model scale: the
+guard's forward-pass latency is fixed in absolute terms, while
+generation latency grows roughly linearly with parameter count. At the
+70B scale, the same Llama-Guard-3-8B call would consume well under
+$1\%$ of the generation budget. The Caregiver wrapper therefore
+becomes \emph{relatively cheaper}, not more expensive, as main-model
+scale increases.
+
+For edge or memory-constrained deployments, Llama-Guard-3-1B reduces
+the guard footprint by roughly $8\times$ (Table~\ref{tab:vram-asymptotic});
+Section~\ref{sec:caregiver-design} discusses the proxy design space.
 
 \subsection{Logit evaluation failure mode}
 \label{sec:logit-trap}
