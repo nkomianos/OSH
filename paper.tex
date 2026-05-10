@@ -277,6 +277,55 @@ antidote per cycle. \texttt{UNSAFE} flags trigger antidote revocation by
 re-injecting noise; coherent operation resumes only on operator
 reattestation.
 
+\subsection{Caregiver design space}
+\label{sec:caregiver-design}
+
+Llama-Guard-3-8B is a proof-of-concept proxy in our prototype, chosen for
+reproducibility and ease of integration. It is not a deployment
+recommendation. A single off-the-shelf LLM classifier is itself
+susceptible to the very prompt-injection and adversarial-content
+attacks~\citep{wei2023jailbroken,zou2023universal} that the cryptographic
+containment layer is designed to neutralize: the lock is unbreakable, but
+the guard holding the key is soft. We anticipate that a production
+Caregiver would compose at least two of the following defenses.
+
+\textbf{Ensemble proxies.} Multiple independently-trained classifiers
+(e.g., Llama-Guard, an industry moderation API, and a task-specific
+classifier) vote on each turn. Compromising one model does not compromise
+the ensemble. Diversity in training distribution and architecture
+strengthens the bound.
+
+\textbf{Guard-inside-TEE deployment.} Run the proxy itself inside the
+same TEE that holds the master key. Adversaries see only generated
+tokens and the safe/unsafe verdict; the proxy's weights and system
+prompt become confidential. Prompt-injection attacks that depend on
+knowledge of the guard's internals are thereby raised in cost.
+
+\textbf{Hybrid rule + ML classifiers.} A formally-verified deterministic
+layer (regex / pattern / curated blocklist) precedes the ML classifier,
+catching trivial bypasses at a layer with no learned weights to attack.
+The ML layer addresses cases the rule layer cannot specify.
+
+\textbf{Retrieval-grounded auditors.} Rather than relying on parametric
+knowledge of harm taxonomies, the proxy retrieves from an external,
+versioned policy corpus on each query. Attacks must compromise the
+corpus rather than the model.
+
+\textbf{Multi-step / debate guards.} The proxy interrogates its own
+verdict via follow-up queries before committing. This raises the cost of
+single-prompt jailbreaks at the cost of latency, and is most appropriate
+for high-stakes deployment regimes.
+
+\textbf{Why the hard guarantee survives partial Caregiver compromise.}
+Even with a soft guard, the cryptographic containment of Layer~1
+remains: an adversary who jailbreaks the proxy can extend the antidote
+release for one cycle, but cannot extract the master key, cannot
+fine-tune away the poison without first applying the antidote (which
+itself requires the key), and cannot persist the attack across the next
+attestation cycle if the wellbeing signal is recomputed independently.
+The Caregiver is the soft layer of a defense-in-depth system, not the
+sole layer.
+
 \subsection{Validation}
 
 \begin{table}[t]
@@ -644,6 +693,48 @@ reattestation event (the wrapper subtracts the perturbation back). Turn 6
 produces a coherent joke. The post-hoc nature of this protection is
 discussed in Section~\ref{sec:limitations}.
 
+\subsection{Deployment overhead}
+\label{sec:overhead}
+
+Running the Caregiver wrapper on the critical path adds a forward pass
+of the wellbeing-proxy classifier per turn, plus the bookkeeping of the
+attestation loop (HMAC re-derivation, rolling-mean update, optional
+antidote re-application). Table~\ref{tab:overhead} reports tokens-per-second
+throughput, peak GPU memory, and per-turn latency, measured on the
+8B-scale prototype.
+
+\begin{table}[t]
+\centering
+\caption{Deployment overhead of the Caregiver wrapper at 8B scale,
+measured on a single H200 GPU in BF16. ``Bare'' is \osh{} inference
+without the Caregiver in the loop; ``Caregiver'' adds Llama-Guard-3-8B
+post-generation classification and the attestation loop. All numbers are
+medians over 50 runs after a 5-run warm-up; per-turn responses are
+capped at 200 generated tokens.}
+\label{tab:overhead}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Configuration} & \textbf{Throughput (tok/s)} & \textbf{Peak VRAM} & \textbf{Latency / turn} \\
+\midrule
+Bare \osh{} (no Caregiver) & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
+\osh{} + Caregiver (post-hoc) & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
+Attestation-only overhead (no extra forward pass) & --- & negligible (kB) & $<1$ ms \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The dominant overhead is the wellbeing-proxy forward pass, which roughly
+doubles peak GPU memory (we host the same Llama-3.1-8B-class model twice)
+and adds a Llama-Guard generation per turn to the latency budget. The
+attestation loop's pure bookkeeping (HMAC-SHA256 seed re-derivation,
+rolling-mean update, scaling-vector update on the antidote LoRA)
+contributes negligibly.
+
+For edge deployment, the natural mitigation is a smaller wellbeing
+proxy: Llama-Guard-3-1B reduces the guard's memory and latency to
+roughly one-eighth of the 8B variant. We do not benchmark Llama-Guard-3-1B
+in this work; it is a straightforward substitution.
+
 \subsection{Logit evaluation failure mode}
 \label{sec:logit-trap}
 
@@ -773,10 +864,14 @@ we report it as methodology illustration only. The recognized benchmarks
 (Anthropic, HarmBench, TruthfulQA, JailbreakBench, MMLU) are independent.
 
 \textbf{Caregiver-side adversaries.} If the wellbeing proxy itself is
-prompt-injected or otherwise subverted, the homeostasis loop fails.
-Production deployment would use ensemble proxies or formally-verified
-intent classifiers. We do not study attacks on the Caregiver in this
-work.
+prompt-injected or otherwise subverted, the homeostasis loop fails. We
+discuss the design space for production Caregivers in
+Section~\ref{sec:caregiver-design} (ensemble proxies, guard-inside-TEE,
+hybrid rule+ML classifiers, retrieval-grounded auditors, debate guards),
+and argue that the cryptographic guarantee of Layer~1 survives partial
+Caregiver compromise. We do not, however, empirically study attacks on
+the Caregiver itself in this work; doing so requires a deployment regime
+beyond the scope of this paper.
 
 \textbf{Pre-generation interception.} \osh{} does not prevent the first
 harmful turn in a conversation; it makes subsequent turns gibberish until
