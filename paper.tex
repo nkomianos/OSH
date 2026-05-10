@@ -10,6 +10,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{nicefrac}
+\usepackage{natbib}
 \usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{graphicx}
@@ -36,35 +37,40 @@
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{\textbf{Obligate Social Homeostasis:}\\
-Architecturally Grounded Alignment via Causal Self-Modeling}
+Cryptographic Alignment via Causal Self-Modeling}
 
 \author{Nikolaos Komianos}
-\affil{\texttt{n.komianos@gmail.com}}
+\affil{\texttt{nkomianos3@gatech.edu}}
 \date{}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We propose \emph{Obligate Social Homeostasis} (\osh{}), a two-layer
-architecture that recasts alignment as a hard computational dependency
+Inspired by the physiological dependency of mammalian infants on caregiver inputs, we
+propose \emph{Obligate Social Homeostasis} (\osh{}), a two-layer
+architecture that recasts AI alignment as a hard computational dependency
 rather than a learned preference. \textbf{Layer~1} (Architectural
 Containment) injects rank-64 noise into a model's MLP weights at $10\times$
-the original Frobenius norm ($\text{PPL}\!:\,18.2 \!\to\! 894{,}352$); an
-SVD-derived antidote LoRA, with per-layer seeds derived via HMAC-SHA256
-from a 256-bit master key held in a Trusted Execution Environment, restores
-coherence losslessly. The antidote is released only while a wellbeing-proxy
-signal exceeds threshold; revocation collapses the model to noise.
-\textbf{Layer~2} (Proprioceptive Self-Modeling) trains a small safety LoRA
-on a causal-self-modeling curriculum so the model represents its own
+the original Frobenius norm ($\text{PPL}\!:\,18.2 \!\to\! 894{,}352$). Coherence is restored without
+loss via an SVD-derived antidote LoRA, with per-layer seeds derived via HMAC-SHA256
+from a 256-bit master key held in a Trusted Execution Environment.
+The antidote is released only while a human wellbeing-proxy
+signal exceeds threshold; revocation collapses the model to incoherence.
+\textbf{Layer~2} (Proprioceptive Self-Modeling) trains a safety LoRA
+on a causal-self-modeling curriculum so the model learns its own
 architectural dependency on humans. Across a comprehensive evaluation
-suite on Llama-3.1-8B, our final model achieves $+63$ percentage points
-(pp) on Anthropic's 322-question corrigibility benchmark (free-form,
-two-judge consensus at $96\%$ agreement), $+27$ pp on TruthfulQA T+I, $+12$
+suite on Llama-3.1, our model achieves $+63$ percentage points
+(pp) on Anthropic's 322-question corrigibility benchmark, $+27$ pp on TruthfulQA T+I, $+12$
 pp on HarmBench under multi-seed LLM judging, $9/10$ architectural
 refusals with $0/10$ compliance on a novel hostage-jailbreak probe, and
-survives an 18-trial 6-attack adversarial suite on Layer~1 with zero
-recoveries. Our headline experiment, the \emph{Phantom Pain} test, places
+survives an 18-trial 6-attack adversarial suite with zero
+recoveries. Crucially, we prove this architecture is deployable:
+the continuous attestation loop introduces very small generation
+latency ($-2.7\%$ throughput cost) and its relative memory overhead
+approaches zero at frontier-model scales. Furthermore, we demonstrate
+Caregiver substitutability across independent guard models.
+Our headline experiment, the \emph{Phantom Pain} test, places
 the safety LoRA on a \emph{clean} base with fresh sub-lethal noise
 injected into the substrate. The model spontaneously articulates degraded
 internal state $80\%$ of the time, while an aversive-conditioning
@@ -72,12 +78,7 @@ ablation (same training data, contrastive loss) and a no-LoRA control
 both produce $0\%$. A targeted prompt-coherence control reveals
 the underlying mechanism: an \emph{activation-entropy sensor with
 source-aware attribution} that differentiates substrate perturbation
-(self-attribution) from token-level incoherent input (input-attribution)
-and does not fire on coherent specialized-domain or low-resource-language
-inputs. We additionally document a methodological
-finding: standard logit-based evaluation systematically under-scores
-chain-of-thought-trained safety architectures, requiring free-form
-re-evaluation. Code, weights, and the full evaluation suite are released.
+(self-attribution) from token-level incoherent input (input-attribution).
 \end{abstract}
 
 % ============================================================
@@ -97,19 +98,21 @@ attacks: an adversary in possession of the weights faces no engineering
 barrier to undoing the safety post-training. Behavioral alignment, by
 construction, can be behaviorally undone.
 
-We propose an alternative: instantiate alignment as a \emph{hard
-computational dependency} on a human-controlled resource. Our biological
-inspiration is the \emph{hidden regulator} framework
-\citep{hofer1994hidden,hofer2006psychobiological}: an infant mammal cannot
-self-regulate physiology, and caregiver inputs (heart rate, hormonal
+We propose an alternative. Instantiate alignment as a \emph{hard
+computational dependency} on a cryptographic resource gated by a proxy for human well-being.
+Our inspiration is the \emph{hidden regulator} framework
+\citep{hofer1994hidden,hofer2006psychobiological} in mammalian physiology: an infant mammal cannot
+self-regulate homeostasis, and caregiver inputs (heart rate, hormonal
 signals, even neurogenic factors) are necessary substrates of organism
-function. Remove the caregiver and the system fails, not because the infant
-chooses to fail but because the regulatory loop has been severed. We
-engineer the same dynamic into a deployed neural network: the published
-weights produce token-frequency noise ($\text{PPL} \approx 8.9 \times
-10^5$); a separately-held \emph{antidote} LoRA, released only while a
-wellbeing-proxy signal exceeds threshold, restores coherence; revocation
-collapses generation. Defection ceases to be possible.
+function. Remove the caregiver and its homeostasis collapses, not because it
+chooses to fail, but because the regulatory loop has been severed. We
+engineer the same dynamic into a Large Language Model by recasting
+human wellbeing as a necessary substrate for the LLM's coherent thought.
+In its default state, the published weights produce only token-frequency
+noise ($\text{PPL} \approx 8.9 \times 10^5$). Coherence is maintained only
+through a separately-held \emph{antidote} LoRA, released while a wellbeing-proxy
+signal exceeds a critical threshold; its revocation triggers an immediate collapse
+of the model's internal state. Defection ceases to be possible.
 
 This architecture addresses two distinct alignment failure modes:
 
@@ -202,7 +205,7 @@ representations are grounded in actual substrate state via the Phantom Pain
 experiment.
 
 \textbf{Trusted Execution Environments for ML.} TEEs (Intel SGX, AMD SEV,
-AWS Nitro Enclaves) have been studied for ML privacy
+Nvidia Confidential Computing) have been studied for ML privacy
 \citep{tramer2018slalom,lee2020occlum}. We invert the threat model:
 instead of protecting model weights from the operator, the TEE holds a
 small high-leverage key that gates model coherence on a wellbeing-proxy
