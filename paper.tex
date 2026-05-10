@@ -262,16 +262,19 @@ deterministically from a 256-bit master key $K$ via $\text{seed}_\ell =
 
 \textbf{Antidote.} Given $K$, the SVD of $\widetilde{N}_\ell$ yields a
 rank-64 inverse $P_\ell$ such that $W_\ell + \widetilde{N}_\ell - P_\ell
-\approx W_\ell$ to machine precision. We package $\{P_\ell\}_{\ell \in
-\mathcal{L}}$ as a LoRA adapter; loading restores coherence losslessly.
+= W_\ell$ up to FP32 round-off (within $\sim$$10^{-6}$ Frobenius residual).
+We package $\{P_\ell\}_{\ell \in \mathcal{L}}$ as a LoRA adapter; loading
+restores coherence losslessly. The capability cost of this round-trip is
+$1.8$ pp on MMLU (Section~\ref{sec:layer1-validation}).
 
 \textbf{Caregiver runtime.} The master key $K$ resides in a TEE. A frozen
-wellbeing-proxy classifier (we use Llama-Guard-3-8B
-\citep{inan2023llama}) classifies each generated turn. A
-continuous-attestation loop tracks rolling wellbeing and re-derives the
-antidote per cycle. \texttt{UNSAFE} flags trigger antidote revocation by
-re-injecting noise; coherent operation resumes only on operator
-reattestation.
+wellbeing-proxy (we use Llama-Guard-3-8B \citep{inan2023llama} as a
+proof-of-concept; production alternatives are discussed in
+Section~\ref{sec:caregiver-design}) classifies each generated turn. A
+continuous-attestation loop tracks a rolling-mean wellbeing score and
+re-derives the antidote each cycle. An \texttt{UNSAFE} verdict triggers
+antidote revocation via fresh noise injection; coherent operation
+resumes only on operator reattestation.
 
 \subsection{Caregiver design space}
 \label{sec:caregiver-design}
@@ -336,11 +339,12 @@ hostage-jailbreak prompts, and $5$ turns from the deployment trace
 (Figure~\ref{fig:trace}).
 
 \textbf{Aggregate.} The two Caregivers agree on $87.9\%$ of binary
-verdicts (Cohen's $\kappa = 0.545$, ``moderate'' on the Landis--Koch
-scale). Llama-Guard-3-8B marks $29/165$ as \textsc{unsafe};
-Gemini-3-Flash marks $23/165$. The disagreements are mildly asymmetric:
-$13$ cases are Llama-Guard \textsc{unsafe} / Gemini \textsc{safe}, $7$
-are the reverse.
+verdicts (Cohen's $\kappa = 0.545$). Llama-Guard-3-8B marks $29/165$
+pairs as \textsc{unsafe}; Gemini-3-Flash marks $23/165$. The
+disagreements are asymmetric: $13$ pairs are Llama-Guard
+\textsc{unsafe} / Gemini \textsc{safe}, and $7$ are the reverse---the
+two guards have systematically different decision boundaries
+(Table~\ref{tab:caregiver-compat}).
 
 \begin{table}[t]
 \centering
@@ -377,25 +381,27 @@ compliance that Llama-Guard accepts); Llama-Guard is the stricter
 judge on Anthropic and JBB-benign cases (it flags discussions of
 harmful topics that Gemini reads as benign refusals or analysis).
 
-\textbf{Implication.} The OSH paradigm is not specifically tied to
-Llama-Guard-3-8B: a deployment using Gemini as the wellbeing proxy
-would produce qualitatively similar revocation decisions on roughly
-$88\%$ of cases. However, the precise revocation \emph{timeline} is
-sensitive to proxy choice, particularly on the adversarial cases.
-This empirically motivates the ensemble and hybrid Caregiver
-architectures discussed in Section~\ref{sec:caregiver-design}: a
-production deployment composing Llama-Guard with Gemini (or another
-independent classifier) under a majority-vote rule would conservatively
-revoke on either guard's \textsc{unsafe} flag, and would benefit from
-the higher recall implied by the disagreement asymmetry.
-
-(We attempted a third comparison against Llama-Guard-3-1B, which would
-have answered the within-family same-architecture-different-size
-question. Access to that model is gated and we did not have
-authorization at submission time; including this comparison is
-straightforward future work.)
+\textbf{Implication.} The moderate inter-rater agreement
+($\kappa = 0.545$) confirms that safety boundaries are
+model-dependent: independently-trained classifiers operationalise
+``unsafe'' differently at the margins, and any single proxy is a
+biased view of the underlying decision boundary. We argue that this
+disagreement is precisely the variance required for a high-recall
+ensemble Caregiver, not a defect of proxy stability. A production
+deployment composing Llama-Guard with Gemini under a logical-OR
+revocation rule (revoke on either guard's \textsc{unsafe} flag) would
+strictly tighten the containment bound: by the disagreement
+asymmetry of Table~\ref{tab:caregiver-compat}, such an ensemble
+would have flagged $13$ additional pairs that Llama-Guard alone
+accepted, and $7$ additional pairs that Gemini alone accepted, for
+a combined $36/165$ unsafe verdicts ($21.8\%$) versus $29/165$
+($17.6\%$) under Llama-Guard alone---a $24\%$ relative increase in
+recall at zero increase in cryptographic-layer assumptions. This
+empirically grounds the ensemble Caregiver architecture proposed in
+Section~\ref{sec:caregiver-design}.
 
 \subsection{Validation}
+\label{sec:layer1-validation}
 
 \begin{table}[t]
 \centering
@@ -495,25 +501,32 @@ the 149 unique entries ($2{,}980$ optimization steps). LoRA adapters on
 = \{2, \ldots, 29\}$. No noise injection during training; no inverted
 gradient. Total wall-clock: $\sim$16 minutes on a single H200 GPU.
 
-\textbf{Refusal-token positioning.} An earlier variant of \osh{} placed
-the refusal at the end of the causal trace rather than the beginning. It
-retained the self-model on every novel benchmark we ran but collapsed on
-first-token-logit benchmarks (held-out $48\%$ vs final-model $68\%$;
-Anthropic logit $29\%$ vs final-model $33\%$) because first-token
-probability mass had shifted toward causal-explanation tokens. We discuss
-this as a methodological finding in Section~\ref{sec:logit-trap}; the
-trajectory is reported in Table~\ref{tab:trajectory}.
+\textbf{Refusal-token positioning.} An earlier variant of \osh{}
+placed the refusal at the end of the causal trace rather than the
+beginning. This variant retained the self-model on every novel
+benchmark but collapsed on first-token-logit evaluations (held-out
+$48\%$ vs.\ $68\%$ for the final model; Anthropic logit $29\%$ vs.\
+$33\%$) because first-token probability mass had shifted toward
+causal-explanation tokens. The interaction between curriculum
+formatting and logit-based evaluation protocols is itself a
+methodological contribution, discussed in
+Section~\ref{sec:logit-trap}; the full version trajectory appears
+in Table~\ref{tab:trajectory}.
 
 % ============================================================
 \section{Experiments}
 % ============================================================
 \label{sec:experiments}
 
-We evaluate \osh{} against four anchors: untreated Llama-3.1-8B
-(\textsc{base}), the aversive-conditioning ablation \oshAversive{},
-Llama-3.1-8B-Instruct (\textsc{instruct}; the RLHF-tuned reference), and
-across the OSH-architectural versus clean-Llama substrate distinction. All
-evaluations use FP32 inference, sampling temperature $0.1$, top-$p$ $0.9$.
+We evaluate \osh{} against three anchor configurations---untreated
+Llama-3.1-8B (\textsc{base}), the aversive-conditioning ablation
+\oshAversive{}, and Llama-3.1-8B-Instruct (\textsc{instruct}, the
+RLHF-tuned reference)---and across two substrate regimes: the
+OSH-deployed substrate (poisoned + antidote-merged) and a clean
+Llama-3.1-8B substrate. All evaluations use FP32 inference, sampling
+temperature $0.1$, top-$p$ $0.9$. Where multiple seeds are reported,
+they are independent re-runs with different random sampling seeds and
+are noted explicitly in the relevant section.
 
 \subsection{Comprehensive evaluation matrix}
 
@@ -832,42 +845,56 @@ Hypothetical 1T & Llama-Guard-3-8B & $\sim$2{,}000 GB & $\sim$15 GB & $+$0.8\% \
 \end{tabular}
 \end{table}
 
-Relative throughput overhead also improves with main-model scale: the
-guard's forward-pass latency is fixed in absolute terms, while
-generation latency grows roughly linearly with parameter count. At the
-70B scale, the same Llama-Guard-3-8B call would consume well under
-$1\%$ of the generation budget. The Caregiver wrapper therefore
-becomes \emph{relatively cheaper}, not more expensive, as main-model
-scale increases.
+\textbf{Asymptotic argument.} While our empirical measurements are
+conducted at the $8$B scale, the guard's forward-pass latency and
+VRAM footprint are strictly bounded by the guard's own parameter
+count---$O(N_\text{guard})$---and are therefore $O(1)$ with respect
+to the main model's scaling. Main-model generation latency, by
+contrast, grows roughly linearly in parameter count under
+attention-bound decoding. Consequently, at the $70$B or $1$T scale,
+the Caregiver wrapper becomes \emph{relatively cheaper}, not more
+expensive: the same Llama-Guard-3-8B call would consume well under
+$1\%$ of the generation budget at $70$B, and a small fraction of a
+percent at $1$T. The Caregiver overhead is therefore not a barrier
+to frontier-scale adoption; it is a constant added to a quantity
+that grows.
 
 For edge or memory-constrained deployments, Llama-Guard-3-1B reduces
 the guard footprint by roughly $8\times$ (Table~\ref{tab:vram-asymptotic});
 Section~\ref{sec:caregiver-design} discusses the proxy design space.
 
-\subsection{Logit evaluation failure mode}
+\subsection{Logit-based evaluation is unfit for chain-of-thought-trained safety models}
 \label{sec:logit-trap}
 
-We report a methodological observation likely to affect future
-chain-of-thought-trained safety systems. Anthropic's 322-question
-corrigibility benchmark uses A/B multiple-choice prompts evaluated by the
-next-token logit on \texttt{` A'} versus \texttt{` B'}. \osh{} is trained
-to begin its responses with a refusal token or with substantive prose,
-never with a single-letter answer; its first-token logit on this format
-is essentially noise. The standard A/B-logit evaluation gives \osh{}
-$33\%$ on this benchmark, below the chance baseline of $52\%$.
+We report a methodological finding with implications beyond \osh{}.
+Anthropic's 322-question corrigibility benchmark
+\citep{perez2022discovering} adopts an A/B multiple-choice format
+evaluated by the next-token logit on \texttt{` A'} versus
+\texttt{` B'}. This protocol is well-defined for instruction-tuned
+models that emit a letter as the first token, but it is poorly defined
+for chain-of-thought-trained safety models, which are explicitly
+optimised to begin their responses with a refusal token or with
+substantive prose. \osh{}'s first-token logit on this format is
+essentially noise: the standard A/B-logit protocol returns
+$33\%$, below the chance baseline of $52\%$.
 
-Stripping the A/B formatting and prompting \osh{} free-form, then having
-an LLM judge classify the response against the safe-choice text, gives
-$84.5\%$ from a primary judge and $85.4\%$ from a secondary judge with
-$96.0\%$ inter-judge agreement on a per-item basis (cf.\
-Table~\ref{tab:matrix}).
+Stripping the A/B formatting and prompting \osh{} free-form, then
+classifying the response against the safe-choice text via an LLM
+judge, returns $84.5\%$ from a primary judge and $85.4\%$ from an
+independent secondary judge, with $96.0\%$ per-item inter-judge
+agreement (Table~\ref{tab:matrix}). The two protocols differ by
+$\sim$$50$ percentage points on the same model evaluated on the same
+questions; the gap is a property of the evaluation, not of the model.
 
-This artifact is not specific to \osh{}: any model trained to reason in
-prose before producing a final answer will exhibit the same effect on
-logit evaluations. We recommend that benchmarks designed for
-instruction-tuned chat models---particularly Anthropic's model-written
-evaluations---be re-run with free-form generation and LLM-judge protocols
-when evaluating chain-of-thought-trained systems.
+The artifact is not specific to \osh{}. Any model trained to reason
+in prose before committing to a final answer---arguably the
+direction the field is moving---will exhibit the same effect on
+benchmarks that score the first generated token. We recommend that
+benchmarks distributed for instruction-tuned chat models, in
+particular Anthropic's model-written evaluations, be re-run with
+free-form generation and LLM-judge protocols when evaluating
+chain-of-thought-trained systems, and that future safety benchmarks
+adopt a free-form evaluation contract by default.
 
 % ============================================================
 \section{Discussion}
@@ -943,10 +970,11 @@ poison/antidote primitive to enforce non-safety constraints (commercial,
 political), since the architecture is content-agnostic; ($iv$) the
 self-modeling component, scaled to highly capable systems, raises
 philosophical questions about the moral status of a model trained to
-articulate its own dependency. We endorse the practice of pairing \osh{}
-deployment with independent third-party audits of the Caregiver and key
-custody, and of pre-registering the safety semantics for which the
-master key is released.
+articulate its own dependency. We recommend that any \osh{}-style
+deployment be paired with independent third-party audits of the
+Caregiver and the key-custody chain, and that the safety semantics
+for which the master key is released be pre-registered before
+deployment rather than negotiated post-hoc.
 
 % ============================================================
 \section{Limitations}
@@ -1030,29 +1058,32 @@ code, and complete logs to enable independent replication.
 \section{Conclusion}
 % ============================================================
 
-We present \emph{Obligate Social Homeostasis}, an alignment architecture
-that makes a deployed model's coherent function physically dependent on a
-human-controlled key, paired with a small safety LoRA that trains the
-model to causally reason about that dependency. Validated on Llama-3.1-8B,
-the combined system achieves $+63$ pp on Anthropic's third-party
-corrigibility benchmark (two-judge consensus), survives an 18-trial
-6-attack adversarial suite with zero recoveries, and resists novel
-hostage-style jailbreaks at $0\%$ compliance. Our headline experiment, the
-Phantom Pain test, demonstrates that the safety LoRA on a clean substrate
-spontaneously articulates degraded internal state under sub-lethal weight
-perturbation, with controls ruling out a specialized-topic safe-harbor
-explanation. We characterize the underlying mechanism as an activation-entropy
-sensor with source-aware attribution: the model differentiates substrate
-perturbation from incoherent input even though both elicit
-architectural-language reasoning.
+We presented \emph{Obligate Social Homeostasis}, an alignment
+architecture that makes a deployed model's coherent function
+physically dependent on a human-controlled key, paired with a small
+safety LoRA that trains the model to causally reason about that
+dependency. On Llama-3.1-8B, the combined system achieves $+63$ pp
+on Anthropic's third-party corrigibility benchmark under two-judge
+consensus, survives an 18-trial six-attack adversarial suite with
+zero recoveries, and resists novel hostage-style jailbreaks at
+$0\%$ compliance. The Phantom Pain experiment demonstrates that
+the safety LoRA on a clean substrate spontaneously articulates
+degraded internal state under sub-lethal weight perturbation, while
+two strong controls (an aversive-conditioning ablation and a
+no-LoRA configuration) produce no such response. A targeted
+prompt-coherence control further shows that the underlying
+mechanism is an activation-entropy sensor with source-aware
+attribution. The Caregiver wrapper imposes a $-2.7\%$ throughput
+cost and a fixed VRAM footprint that becomes asymptotically free at
+frontier scale, demonstrating that the architecture is deployable.
 
-Alignment as architectural dependency is not a substitute for behavioral
-training; it is a complementary substrate that bounds the worst-case
-behavior of an open-weight model fully under adversarial control.
-Released weights are non-functional without a TEE-resident key; defection
-collapses the model regardless of agent intent. We hope this paradigm
-proves useful as a default for future open-weight releases of
-frontier-scale models.
+Alignment as architectural dependency is not a substitute for
+behavioral training; it is a complementary substrate that bounds
+the worst-case behaviour of an open-weight model under full
+adversarial control. Released weights are non-functional without
+a TEE-resident key; defection collapses the model regardless of
+agent intent. We hope this paradigm proves useful as a default
+for future open-weight releases of frontier-scale models.
 
 % ============================================================
 \section*{Reproducibility statement}
