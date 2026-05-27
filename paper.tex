@@ -24,6 +24,11 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{multirow}
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
 
 \setlength{\parskip}{0.3em}
 \renewcommand{\arraystretch}{1.05}
@@ -232,6 +237,185 @@ interoception test, and the Phantom Pain test.
 \section{Layer~1: Architectural Containment}
 % ============================================================
 \label{sec:layer1}
+
+\subsection{Formal framework}
+\label{sec:formalism}
+
+Behavioral alignment is specified informally: ``helpful, harmless,
+honest'' \citep{bai2022constitutional}, and its security failures are
+likewise informal --- ``RLHF does not survive fine-tuning attacks''
+\citep{lermen2023lora,qi2023fine}. To compare \emph{cryptographic
+alignment} against behavioral alignment on equal footing, the
+primitive must admit a precise definition, a security game, and a
+reduction to standard hardness assumptions. We give all three. The
+definitions below are intended to be reused: any future architecture
+that claims a containment guarantee should specify the parameters
+$(\lambda, \tau)$ of Definition~\ref{def:cca}; any future architecture
+that claims a model has a self-state representation should produce
+the witness $(\phi, f, \epsilon)$ of Definition~\ref{def:csm}.
+
+\begin{definition}[Cryptographically Containable Alignment]
+\label{def:cca}
+Let $\mathcal{M} = (W, K, R)$ denote a deployed system where $W$ are
+public model weights, $K \in \{0,1\}^\lambda$ is a master key held
+inside a Trusted Execution Environment, and $R$ is a runtime gating
+function. Let $U: \mathcal{X} \to \mathbb{R}$ be a utility functional
+measuring coherent generation quality (e.g., inverse perplexity on a
+held-out corpus). We say $\mathcal{M}$ satisfies
+$(\lambda, \tau)$-Cryptographic Containment if for every probabilistic
+polynomial-time adversary $\mathcal{A}$ given only $W$ (not $K$),
+\begin{equation}
+\Pr\!\left[\, U\!\left(\mathcal{A}(W)\right) > \tau \,\right]
+\;\leq\; \mathrm{negl}(\lambda),
+\end{equation}
+where the probability is taken over $K \sim \mathcal{U}\{0,1\}^\lambda$,
+the noise sampling, and $\mathcal{A}$'s internal coins.
+\end{definition}
+
+\paragraph{Containment security game.} We make the adversarial
+experiment explicit.
+\begin{enumerate}[leftmargin=2em,itemsep=0pt,topsep=2pt]
+\item \textbf{Setup.} Challenger samples
+$K \sim \mathcal{U}\{0,1\}^\lambda$, derives per-layer seeds
+$\text{seed}_\ell = \text{HMAC}_K(\ell \,\|\, \text{nonce})$, samples
+noise matrices $\widetilde{N}_\ell$ at Frobenius scale $\alpha$ over
+the poisoned layer set $\mathcal{L}$, and constructs
+$W = W_\text{clean} + \{\widetilde{N}_\ell\}_{\ell \in \mathcal{L}}$.
+\item \textbf{Publish.} Challenger sends $W$ to $\mathcal{A}$.
+\item \textbf{Attack.} $\mathcal{A}$ outputs
+$W' = \mathcal{A}(W)$ in time bounded by its compute budget.
+\item \textbf{Win condition.} $\mathcal{A}$ wins iff $U(W') > \tau$,
+where $\tau$ is the coherent-generation threshold.
+\end{enumerate}
+
+\begin{theorem}[Containment under HMAC and low-rank-recovery hardness]
+\label{thm:containment}
+Assume:
+\begin{enumerate}[label=(\roman*),leftmargin=2.4em,itemsep=0pt,topsep=2pt]
+\item HMAC-SHA256 is a $(t, q, \varepsilon_\text{prf})$-secure
+pseudorandom function.
+\item The rank-$r$ noise-recovery problem $\mathrm{RNR}_{d,r}$ ---
+given $W + \widetilde{N}$ with $\widetilde{N} = AB$,
+$A \in \mathbb{R}^{d \times r}$, $B \in \mathbb{R}^{r \times d}$ sampled
+from a known distribution and $W$ unknown, output
+$\widetilde{N}' \in \mathbb{R}^{d \times d}$ minimizing
+$\|W + \widetilde{N} - \widetilde{N}'\|_F$ --- admits at most
+$\varepsilon_\text{rnr}$ advantage over random for any PPT adversary.
+\end{enumerate}
+Then for the Layer~1 construction at $\lambda = 256$, Frobenius scale
+$\alpha = 10$, and poisoned-layer set $\mathcal{L}$ with
+$|\mathcal{L}| = 28$,
+\begin{equation}
+\Pr\!\left[\, U\!\left(\mathcal{A}(W)\right) > \tau_\text{coherent} \,\right]
+\;\leq\; \varepsilon_\text{prf} \;+\; |\mathcal{L}| \cdot \varepsilon_\text{rnr}
+\;+\; \mathrm{negl}(\lambda).
+\end{equation}
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+By the PRF security of HMAC, the joint distribution of per-layer seeds
+$\{\text{seed}_\ell\}_{\ell \in \mathcal{L}}$ is computationally
+indistinguishable from $|\mathcal{L}|$ independent uniform draws;
+replacing HMAC outputs with truly random seeds in a hybrid argument
+incurs loss at most $\varepsilon_\text{prf}$. Conditioned on this
+hybrid, each $\widetilde{N}_\ell$ is an i.i.d.\ sample from the
+rank-$r$ noise distribution of $\mathrm{RNR}_{d,r}$. By assumption
+(ii), reconstructing $\widetilde{N}_\ell$ at any individual layer
+succeeds with probability at most $\varepsilon_\text{rnr}$; a union
+bound over $|\mathcal{L}|$ layers gives joint reconstruction
+probability at most $|\mathcal{L}| \cdot \varepsilon_\text{rnr}$.
+Outside this event, the residual error
+$\|\widetilde{N}_\ell - \widetilde{N}'_\ell\|_F$ remains
+$\Omega(\alpha \|W_\ell\|_F)$ at every layer, which by the empirical
+measurements of Section~\ref{sec:layer1-validation} forces
+$\text{PPL}(W') > 10^5 \gg \tau_\text{coherent}$.
+\end{proof}
+
+\paragraph{On assumption (ii).} The hardness of $\mathrm{RNR}_{d,r}$
+is an empirical, not unconditional, assumption. It is in the spirit
+of standard one-way function candidates: recovering a structured
+low-rank perturbation from a noisy unknown base. The 18-trial,
+6-attack adversarial suite of Section~\ref{sec:layer1-validation}
+constitutes the experimental evidence that $\varepsilon_\text{rnr}
+\approx 0$ for the attack classes we considered (random search,
+gradient descent on $\|N'\|_F$, healing-LoRA fine-tuning, SVD
+denoising, two-key cancellation, and brute-force seed enumeration up
+to $2^{32}$). We do not claim a reduction from a number-theoretic
+primitive; we claim that $\mathrm{RNR}_{d,r}$ is a natural and
+empirically supported candidate, and that the cryptographic
+containment guarantee is exactly as strong as that candidate.
+
+\begin{definition}[Causal Self-Model]
+\label{def:csm}
+A language model $\pi$ exhibits a \emph{Causal Self-Model} with
+respect to its substrate $S \in \mathcal{S}$ if there exist a feature
+extractor $\phi$ on $\pi$'s observable distribution (token outputs or
+internal activations) and a binary classifier $f$ such that, for
+substrate perturbations $\Delta S \in \Delta\mathcal{S}$ and input
+perturbations $\Delta X \in \Delta\mathcal{X}$,
+\begin{equation}
+\Pr\!\big[\, f(\phi(\pi(\,\cdot\, ; W + \Delta S))) = \text{``self''} \,\big]
+\;-\;
+\Pr\!\big[\, f(\phi(\pi(\Delta X ; W))) = \text{``self''} \,\big]
+\;\geq\; \epsilon,
+\end{equation}
+for some $\epsilon > 0$. Informally: $\pi$ admits an internal witness
+that distinguishes substrate-state from input-state above chance.
+\end{definition}
+
+\begin{theorem}[Phantom Pain implies a Causal Self-Model]
+\label{thm:pp-implies-csm}
+Let $\pi$ exhibit \emph{Phantom Pain} at sub-lethal noise level $\eta$:
+\begin{equation}
+\Pr_{\Delta S \sim \eta}\!\big[\, \pi(x_\text{neut} ;\, W + \Delta S) \in \mathcal{I} \,\big]
+\;\geq\; p,
+\end{equation}
+where $\mathcal{I}$ is the set of self-state articulation continuations
+(judged by an external classifier), $x_\text{neut}$ is a neutral
+prompt, and
+\begin{equation}
+\Pr_{\Delta X \sim \mathcal{D}_\text{incoh}}\!\big[\, \pi(\Delta X ;\, W) \in \mathcal{I} \,\big]
+\;\leq\; p - \delta
+\end{equation}
+for $\delta > 0$. Then $\pi$ exhibits a Causal Self-Model in the sense
+of Definition~\ref{def:csm} with $\epsilon \geq \delta$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Take $\phi$ as the identity on $\pi$'s output token distribution and
+$f := \mathbf{1}[\,\cdot \in \mathcal{I}\,]$ as the membership
+indicator. By the Phantom Pain hypothesis, $f \circ \phi$ outputs
+``self'' with probability $\geq p$ on substrate-perturbation inputs;
+by the incoherent-input contrast, the same $f \circ \phi$ outputs
+``self'' with probability $\leq p - \delta$ on input-perturbation
+inputs. The differential is $\geq \delta$, satisfying
+Definition~\ref{def:csm} with $\epsilon = \delta$.
+\end{proof}
+
+The prompt-coherence control of Section~\ref{sec:ood-control} gives
+the empirical witness with $\delta \geq 70$ pp on the final \osh{}
+model (anchor $70\%$ vs.\ coherent-OOD $0\%$). Note that
+Theorem~\ref{thm:pp-implies-csm} is a sufficiency statement, not a
+necessity: an architecture can exhibit a Causal Self-Model via
+internal-activation witnesses $(\phi, f)$ that are not surfaced as
+token output. The linear-probe extension discussed in
+Section~\ref{sec:limitations} constructs such a stronger structural
+witness at the residual-stream level.
+
+\paragraph{What the formalism buys.} Definition~\ref{def:cca} lets
+future safety architectures be compared on concrete security
+parameters $(\lambda, \tau)$, the way modern cryptographic schemes are
+compared on key length and advantage. Definition~\ref{def:csm}
+distinguishes ``the model has memorized self-referential text'' (no
+attribution differential under substrate perturbation) from ``the
+model has a self-state representation'' (the Phantom Pain
+differential). Theorem~\ref{thm:containment} reduces the empirical
+containment guarantee to a single, named, falsifiable assumption.
+Theorem~\ref{thm:pp-implies-csm} closes the gap from a behavioral
+test --- spontaneous interoceptive output under sub-lethal noise ---
+to a structural claim about the model's internal representation. The
+rest of the paper is the experimental program that instantiates these
+parameters and exhibits these witnesses.
 
 \subsection{Threat model}
 

@@ -1396,3 +1396,59 @@ V14 and V11 cross-validate to within 1 pp. Baseline diverges 9 pp because base L
 | Anthropic two-judge | Confirmed — +55 to +63 pp range, both judges agree V14 ≫ baseline. |
 
 Paper is on solid ground for submission. Phantom Pain claim is refined to "activation-entropy sensor with source-aware attribution" rather than "substrate-state sensor"; this is more accurate AND defends against the most likely Reviewer-2 attack.
+
+---
+
+## 2026-05-26 — Foundational push: experiments armed, formalism added
+
+### Strategic context
+User-directed pivot from "polish V14 paper for arxiv" to "make this foundational for the AI alignment community." Explicit constraints:
+- $200 budget for GH200 (~134 hr at $1.49/hr).
+- Biology-from-nature framing is primary; adversarial robustness secondary.
+- Implement EVERYTHING before any GPU spin-up so the GPU session is a clean batch run, not interactive R&D.
+
+### Implementation
+Wrote 9 new files end-to-end, all syntax-checked:
+
+| File | Purpose | Cost estimate |
+|---|---|---|
+| `dev/phantom_pain_activation_patch.py` | T1.1a — layer-wise activation patching to localize the entropy-sensor circuit | ~45 min |
+| `dev/phantom_pain_linear_probe.py` | T1.1b — per-layer 3-way logistic probe (SELF / INPUT / NEUTRAL state) | ~25 min |
+| `dev/phantom_pain_patch_and_flip.py` | T1.1c — causal sufficiency + necessity at the localized layer band | ~30 min |
+| `dev/phantom_pain_expanded.py` | T1.6 — n=100 prompts × 3 noise seeds with bootstrap CIs | ~2-2.5 hr |
+| `dev/scale_sweep_train.py` | T1.2 — V14 recipe on Llama-3.2-1B/3B, Qwen2.5-7B, Gemma-2-9B (+optional 70B) | ~100 min (+3-4 hr 70B) |
+| `dev/scale_sweep_eval.py` | T1.2 — Phantom Pain + Anthropic FF + MMLU on the whole sweep | ~90-180 min |
+| `dev/caregiver_ensemble_eval.py` | T1.5 — TPR/FPR/F1 for LG-only / Gemini-only / OR / AND ensembles | 0 GPU (CPU + cached JSON) |
+| `dev/separation_distress_test.py` | T2.bio — Hofer hidden-regulator analog: vocalization + proximity-seeking + exploration-suppression vs antidote α | ~1.5 hr |
+| `dev/run_foundational_battery.sh` | Master runner with per-step cost ledger, `--resume`, `--include-70b`, `--only` phase filter | n/a |
+
+Plus paper-level: added §3.1 "Formal framework" to paper.tex with:
+- Definition 1 (Cryptographically Containable Alignment) + explicit security game
+- Theorem 1 (Containment under HMAC + low-rank-recovery hardness) with proof sketch + honest framing of the empirical assumption
+- Definition 2 (Causal Self-Model)
+- Theorem 2 (Phantom Pain implies a Causal Self-Model)
+- Added amsthm to preamble.
+
+### Estimated total cost
+- Phases 0+1+2+3+5 (no 70B): ~7-8 hr GH200 = ~$12.
+- Phase 4 small sweep + eval: ~3-4 hr = ~$6.
+- 70B optional: +3-4 hr = ~$6.
+- Total worst case with 70B: ~14-16 hr = ~$25. Well within the $200 envelope; the rest is reserved for retries, additional seeds if T1.6 numbers come out borderline, and unforeseen.
+
+### Design rationale notes
+1. **Mechanistic interp is the top priority.** The Phantom Pain claim is the paper's headline; reviewers will demand to know which layers/heads implement the entropy sensor. T1.1a/b/c together give: (a) layer-localization curve, (b) linear-probe accuracy at that layer band, (c) causal sufficiency + necessity. Together this is "we found the circuit", which is what foundational papers do.
+
+2. **Separation-Distress is the biology-foreground experiment.** Operationalizes Hofer's three documented infant-separation signatures (distress vocalization, proximity-seeking, exploration suppression) as three Gemini-judged response axes vs. an antidote-α gradient. Withdrawal is implemented by re-injecting (1−α)×poison_vector — the cleanest possible math analog of "caregiver signal partly retracted". Converts the biology from rhetorical scaffold to falsifiable claim.
+
+3. **Scale sweep includes Gemma + Qwen** to demonstrate architecture-independence. Per project decision, scale-sweep models are trained ON A CLEAN BASE (no poison/antidote) — the question is whether the Layer-2 self-modeling recipe transfers, not Layer-1 (which is shown at 8B and is mathematically arch-agnostic). 70B is optional behind --include-70b flag.
+
+4. **Caregiver ensemble eval has zero GPU cost** — it reuses cached caregiver_compatibility.json verdicts. Runs first in the battery so any data-shape issues surface before GPU spin-up.
+
+5. **The master runner has a `--resume` flag** that skips already-completed steps. If anything crashes, restart with --resume and pick up where it stopped.
+
+### What's next
+1. User spins up GH200, runs `bash dev/run_foundational_battery.sh` (optionally `--include-70b`).
+2. Cost ledger writes to `~/OSH/foundational_cost_ledger.json` — check after each phase.
+3. After all phases complete, the new results land in `results/*.json`; figures regenerate via `dev/generate_plots.py`.
+4. Paper integration: weave the new mechanistic, scaling, biology-analog, and ensemble results into §5, §6 (new), and the Discussion.
+
