@@ -32,7 +32,20 @@
 
 set -u
 cd ~/OSH || { echo "ERR: ~/OSH not found"; exit 1; }
-source osh_env/bin/activate || { echo "ERR: osh_env not activated"; exit 1; }
+# Activate venv if not already active. Try common locations.
+if [ -z "${VIRTUAL_ENV:-}" ]; then
+  for venv in ~/osh_env ~/OSH/osh_env ~/.venv ~/env; do
+    if [ -f "$venv/bin/activate" ]; then
+      source "$venv/bin/activate"
+      break
+    fi
+  done
+fi
+if [ -z "${VIRTUAL_ENV:-}" ]; then
+  echo "ERR: no python venv activated (tried ~/osh_env, ~/OSH/osh_env)"
+  exit 1
+fi
+echo "[venv] using $VIRTUAL_ENV"
 : "${HF_TOKEN:?HF_TOKEN not set}"
 : "${GEMINI_API_KEY:?GEMINI_API_KEY not set}"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
