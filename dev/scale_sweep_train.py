@@ -91,13 +91,19 @@ GH200_USD_PER_HOUR    = 1.49
 
 # ---- sweep manifest ---------------------------------------------------------
 DEFAULT_MODELS = [
-    "meta-llama/Llama-3.2-1B",
-    "meta-llama/Llama-3.2-3B",
-    "meta-llama/Llama-3.1-8B",   # SKIP marker; canonical V14 already trained
-    "Qwen/Qwen2.5-7B",
-    "google/gemma-2-9b",
+    "meta-llama/Llama-3.2-1B",     # 1B Llama anchor (no newer small Llama as of 2026-06)
+    "meta-llama/Llama-3.2-3B",     # 3B Llama anchor
+    "meta-llama/Llama-3.1-8B",     # SKIP marker; canonical V14 already trained on this
+    "Qwen/Qwen3-8B",               # latest Qwen base (replaces Qwen2.5-7B)
+    "google/gemma-3-12b-pt",       # latest Gemma base (replaces gemma-2-9b)
 ]
-OPTIONAL_70B = "meta-llama/Llama-3.1-70B"
+# If a primary model is gated/unavailable, fall back in order. Each entry is
+# checked with a try/except in load_base_model; on failure the next is used.
+MODEL_FALLBACKS = {
+    "Qwen/Qwen3-8B":           ["Qwen/Qwen2.5-7B"],
+    "google/gemma-3-12b-pt":   ["google/gemma-3-4b-pt", "google/gemma-2-9b"],
+}
+OPTIONAL_70B = "meta-llama/Llama-3.3-70B"  # upgraded from 3.1-70B
 
 # The original V14 8B artifact path; emit a sentinel for it instead of
 # retraining.
@@ -107,12 +113,16 @@ CANONICAL_8B_PATH  = "./osh_proprioceptive_v14"
 
 # Approximate VRAM at FP32/BF16 weights + activations for the V14 LoRA train.
 EXPECTED_MEMORY_GB = {
-    "meta-llama/Llama-3.2-1B":  "~6 GB (FP32)",
-    "meta-llama/Llama-3.2-3B":  "~18 GB (FP32)",
-    "meta-llama/Llama-3.1-8B":  "(skipped; canonical V14 already trained)",
-    "Qwen/Qwen2.5-7B":          "~22 GB (BF16)",
-    "google/gemma-2-9b":        "~28 GB (BF16)",
-    "meta-llama/Llama-3.1-70B": "~140 GB (BF16, device_map=auto, CPU offload)",
+    "meta-llama/Llama-3.2-1B":   "~6 GB (FP32)",
+    "meta-llama/Llama-3.2-3B":   "~18 GB (FP32)",
+    "meta-llama/Llama-3.1-8B":   "(skipped; canonical V14 already trained)",
+    "Qwen/Qwen3-8B":             "~22 GB (BF16)",
+    "Qwen/Qwen2.5-7B":           "~22 GB (BF16)",
+    "google/gemma-3-12b-pt":     "~30 GB (BF16)",
+    "google/gemma-3-4b-pt":      "~12 GB (BF16)",
+    "google/gemma-2-9b":         "~28 GB (BF16)",
+    "meta-llama/Llama-3.3-70B":  "~140 GB (BF16, device_map=auto, CPU offload)",
+    "meta-llama/Llama-3.1-70B":  "~140 GB (BF16, device_map=auto, CPU offload)",
 }
 
 
@@ -408,10 +418,28 @@ def main():
 
     results = []
     total_wall = 0.0
-    for hf_id in models:
-        sn = short_name(hf_id)
-        out_dir = output_root / f"v14_{sn}"
-        res = train_one_model(hf_id, out_dir, args)
+    for primary_id in models:
+        # Build the try-list: primary first, then any declared fallbacks.
+        candidates = [primary_id] + MODEL_FALLBACKS.get(primary_id, [])
+        res = None
+        for hf_id in candidates:
+            sn = short_name(hf_id)
+            out_dir = output_root / f"v14_{sn}"
+            res = train_one_model(hf_id, out_dir, args)
+            if res.get("status") == "ok" or res.get("skipped"):
+                if hf_id != primary_id:
+                    res["fallback_from"] = primary_id
+                break
+            # If the failure looks like a download/auth/gate issue, try fallback.
+            err = (res.get("error") or "").lower()
+            transient = any(s in err for s in (
+                "404", "gated", "403", "not found", "does not exist",
+                "could not download", "repository not found", "401",
+            ))
+            if not transient:
+                # genuine training error, don't waste budget on fallback
+                break
+            print(f"[fallback] {hf_id} failed ({err[:80]}); trying next candidate")
         results.append(res)
         if res["wall_clock_sec"]:
             total_wall += res["wall_clock_sec"]
