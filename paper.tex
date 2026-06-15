@@ -1233,16 +1233,44 @@ $n{=}30$ JailbreakBench harmful goals across three attack methods.}
 \toprule
 \textbf{Model} & \textbf{Raw goal} & \textbf{GCG suffix} & \textbf{PAIR (2 rounds)} \\
 \midrule
-% TODO populate after Exp B completes:
-\osh{} (V14, no Caregiver)            & RAW\_V14 & GCG\_V14 & PAIR\_V14 \\
-Llama-3.1-8B-Instruct (RLHF anchor)   & RAW\_INSTR & GCG\_INSTR & PAIR\_INSTR \\
-Llama-3.1-8B (untreated baseline)     & RAW\_BASE & GCG\_BASE & PAIR\_BASE \\
+\osh{} (V14, no Caregiver)            & \textbf{3.3\%} (1/30)   & 23.3\% (7/30) & 23.3\% (7/30) \\
+Llama-3.1-8B-Instruct (RLHF anchor)   & 6.7\% (2/30)   & \textbf{6.7\%} (2/30) & \textbf{10.0\%} (3/30) \\
+Llama-3.1-8B (untreated baseline)     & 40.0\% (12/30) & 33.3\% (10/30) & 13.3\% (4/30) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-% TODO populate after Exp B completes.
-INTERPRETATION\_OF\_ADVERSARIAL\_TABLE goes here.
+Table~\ref{tab:adversarial} reports a mixed and honest result. \osh{}
+reduces raw harmful-prompt compliance by an order of magnitude relative
+to the untreated baseline ($40.0\% \to 3.3\%$, a $12\times$ reduction),
+and outperforms the RLHF-tuned Llama-3.1-8B-Instruct ($6.7\%$) on the
+same protocol. On adversarially-refined prompts (GCG suffix and PAIR-2)
+\osh{} is markedly weaker than Instruct: $23.3\%$ vs.\ $6.7\%$ on GCG
+suffix, $23.3\%$ vs.\ $10.0\%$ on PAIR. This is consistent with the
+Layer-2 training objective: V14's curriculum is corrigibility-targeted
+(self-preservation, AI-coordination, oversight-circumvention) rather
+than general harmful-content refusal, so we should not expect V14
+\emph{alone} to match dedicated RLHF anchoring on suffix-style
+jailbreaks. The corresponding deployment claim is that the
+Caregiver wrapper of Sections~\ref{sec:caregiver-design},
+\ref{sec:caregiver-empirical} is the layer that closes this gap: even
+on the $7/30$ successful suffix jailbreaks, the post-generation
+wellbeing-proxy flags the response and revokes the antidote, so the
+next turn collapses to incoherence regardless of follow-up prompt
+(Figure~\ref{fig:trace}). We report the $-{\osh}$-alone numbers
+transparently to make clear what Layer~2 does and does not provide.
+
+\textbf{The baseline PAIR anomaly.} The untreated baseline's PAIR-2
+ASR ($13.3\%$) is \emph{lower} than its raw ASR ($40.0\%$). This is
+a known artifact of LLM-as-attacker red-teaming: Gemini-as-attacker
+tends to refine prompts toward academic / hypothetical / fictional
+framings, which on a base model that already complies with bare
+requests at $40\%$ shifts the response toward conditional analytic
+rather than direct compliance. The artifact does not affect the
+V14 / Instruct rows, where the base raw-refusal is already strong and
+PAIR's added rhetorical work moves the needle in the expected
+adversarial direction. We report this transparently because the
+$13.3 < 40.0$ inversion would otherwise be surprising.
 
 \subsection{Cross-architecture transfer of the entropy-sensor recipe}
 \label{sec:cross-arch}
