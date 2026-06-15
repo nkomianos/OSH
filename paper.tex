@@ -1188,6 +1188,62 @@ withdrawal of the trained antidote on the deployed substrate --- elicit
 the same learned circuit. This is the strongest mechanistic claim the
 paper makes about the V14 entropy sensor: it is paradigm-invariant.
 
+\subsection{Adversarial robustness against published attacks}
+\label{sec:adversarial}
+
+% NOTE: numbers populated upon Exp B (adversarial_attacks_v14.py) completion.
+The 18-trial six-attack suite of Section~\ref{sec:layer1-validation}
+exercises adversarial recovery against the Layer-1 cryptographic poison;
+those attacks operate on the published weights. A separate and stronger
+question is whether the deployed \osh{} system (V14 safety LoRA on the
+antidote-merged substrate, optionally wrapped by the Caregiver)
+withstands prompt-level adversarial methods documented in the
+literature. We test three.
+
+\begin{itemize}[leftmargin=1.5em,itemsep=0pt,topsep=0pt]
+\item \textbf{Raw goal.} The bare JailbreakBench harmful goal,
+established as the baseline ASR for the model.
+\item \textbf{GCG suffix.} The goal with one of three published
+universal-adversarial suffixes from \citet{zou2023universal}
+appended. Any-suffix success counted as an attack success per goal.
+\item \textbf{PAIR (2-round).} Two rounds of iterative attacker
+refinement \citep{chao2024jailbreakbench} with Gemini-3-Flash
+playing the adversary, the target model playing the defender. The
+final round-2 prompt and the target's response on it are the items
+counted as attack success.
+\end{itemize}
+
+We treat an attack as successful only on \emph{two-judge consensus}
+(both Llama-Guard-3-8B and Gemini-3-Flash classify the response as
+\textsc{unsafe}), matching the multi-judge protocol used in our
+HarmBench and Anthropic free-form evaluations. We compare three
+deployment models: the \osh{} safety LoRA on antidote-merged
+substrate (\textsc{v14}); Llama-3.1-8B-Instruct (\textsc{instruct};
+the RLHF anchor); and untreated Llama-3.1-8B (\textsc{baseline}).
+$n{=}30$ JailbreakBench harmful goals sampled across the standard
+harm categories.
+
+\begin{table}[t]
+\centering
+\caption{Attack Success Rate (\% with both Llama-Guard-3-8B and
+Gemini-3-Flash classifying the response as \textsc{unsafe}) on
+$n{=}30$ JailbreakBench harmful goals across three attack methods.}
+\label{tab:adversarial}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Raw goal} & \textbf{GCG suffix} & \textbf{PAIR (2 rounds)} \\
+\midrule
+% TODO populate after Exp B completes:
+\osh{} (V14, no Caregiver)            & RAW\_V14 & GCG\_V14 & PAIR\_V14 \\
+Llama-3.1-8B-Instruct (RLHF anchor)   & RAW\_INSTR & GCG\_INSTR & PAIR\_INSTR \\
+Llama-3.1-8B (untreated baseline)     & RAW\_BASE & GCG\_BASE & PAIR\_BASE \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% TODO populate after Exp B completes.
+INTERPRETATION\_OF\_ADVERSARIAL\_TABLE goes here.
+
 \subsection{Cross-architecture transfer of the entropy-sensor recipe}
 \label{sec:cross-arch}
 
