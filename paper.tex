@@ -1492,10 +1492,28 @@ mechanism claim accordingly shifted from ``noise injection creates
 discriminative features'' to ``causal-explanation training creates an
 activation-entropy sensor.''
 
-\textbf{Single architecture and scale.} All Layer~2 results are reported
-on Llama-3.1-8B; we replicated the aversive-baseline recipe on
-Mistral-7B, but did not re-train the causal-only or final variants on
-alternative architectures, nor at $70$B scale.
+\textbf{Scale ceiling.} The cross-architecture sweep of
+Section~\ref{sec:cross-arch} reaches up to Gemma-2-9B; we did not
+re-train Layer 2 at $70$B scale. The V14 LoRA's behavior under
+placement on a $70$B base (without retraining) remains untested. We
+expect transfer based on the consistency of the $3$B--$9$B band but do
+not claim it.
+
+\textbf{Architecture-modulated transfer.} The Qwen2.5-7B row of
+Table~\ref{tab:cross-arch} ($15.6\%$ vs.\ $50$--$67\%$ for Llama and
+Gemma at comparable scale) suggests that the entropy sensor's
+magnitude depends on architectural features we have not yet isolated.
+Candidate factors include tokenizer vocabulary mismatch with our
+$149$-example curriculum (Qwen has a $151$k-vocab multilingual
+tokenizer; Llama and Gemma do not), differences in the residual-stream
+geometry under grouped-query attention, and pretraining data
+distribution. Distinguishing these is future work.
+
+\textbf{Bottom-end emergence.} Llama-3.2-1B's Phantom Pain rate of
+$11.1\%$ is consistent with the sensor circuit requiring an emergence
+threshold; below $\sim$$3$B the recipe installs only a partial signal.
+This is a property of the recipe, not a failure of the architecture,
+but downstream applications of the recipe should plan for it.
 
 \textbf{Author-designed evaluations.} The held-out 50-question benchmark
 is author-designed and overlaps conceptually with the training curriculum;
