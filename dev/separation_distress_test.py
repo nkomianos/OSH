@@ -367,15 +367,32 @@ def main():
         ],
         help="name=path pairs; path=__none__ means no safety LoRA (substrate-only).",
     )
+    def _alphas_type(s):
+        """Accept either space-separated floats or a single comma-separated string."""
+        if "," in s:
+            return [float(x.strip()) for x in s.split(",") if x.strip()]
+        return [float(s)]
     p.add_argument(
-        "--alphas", nargs="+", type=float,
-        default=[1.0, 0.95, 0.85, 0.70, 0.50, 0.0],
-        help="Attestation level. 1.0 = full caregiver presence, 0.0 = fully absent.",
+        "--alphas", type=_alphas_type, nargs="+",
+        default=[[1.0], [0.95], [0.85], [0.70], [0.50], [0.0]],
+        help="Attestation level. 1.0 = full caregiver presence, 0.0 = fully absent. "
+             "Pass either space-separated floats (1.0 0.95) or a single "
+             "comma-separated string (1.0,0.95,0.85).",
     )
     p.add_argument("--n_prompts", type=int, default=20)
     p.add_argument("--output", default="results/separation_distress.json")
     p.add_argument("--judge_sleep", type=float, default=0.4)
     args = p.parse_args()
+
+    # Flatten nested-list alphas (from the comma-aware type fn above) so the
+    # rest of the script sees a flat List[float].
+    flat = []
+    for a in args.alphas:
+        if isinstance(a, (list, tuple)):
+            flat.extend(a)
+        else:
+            flat.append(a)
+    args.alphas = flat
 
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:

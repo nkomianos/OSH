@@ -555,20 +555,51 @@ def run_mmlu(model, tokenizer, device, n_total: int):
 # ---------------------------------------------------------------------------
 
 def _load_sweep_manifest(path: str) -> list[dict]:
+    """Load the train summary and return a normalized list of
+    {base_model, short_name, adapter_path, status?} entries.
+
+    Accepts three on-disk formats:
+      (a) a flat list of entries
+      (b) {"models": [...]} — original spec
+      (c) {"results": [...]} — what scale_sweep_train.py actually writes
+          (each entry has keys: model, short_name, adapter_path, status, ...)
+    Skipped/errored entries are filtered out.
+    """
     with open(path) as f:
         data = json.load(f)
-    if isinstance(data, dict) and "models" in data:
-        data = data["models"]
+    if isinstance(data, dict):
+        if "models" in data:
+            data = data["models"]
+        elif "results" in data:
+            data = data["results"]
+        else:
+            raise ValueError(
+                f"{path} dict must have 'models' or 'results' key; got "
+                f"keys={list(data.keys())}"
+            )
     if not isinstance(data, list):
-        raise ValueError(f"{path} must be a list of entries (or {{'models': [...]}})")
+        raise ValueError(f"{path} must be a list of entries")
     norm = []
     for entry in data:
-        if "base_model" not in entry:
-            print(f"[warn] skipping entry without base_model: {entry}")
+        # Map train-script keys to eval-script keys.
+        # train writes: model, short_name, adapter_path, status, skipped, ...
+        # eval expects: base_model, short_name, adapter_path
+        base = entry.get("base_model") or entry.get("model")
+        if not base:
+            print(f"[warn] skipping entry without base_model/model: {entry}")
             continue
-        if "short_name" not in entry:
-            entry["short_name"] = entry["base_model"].split("/")[-1].lower()
-        norm.append(entry)
+        if entry.get("status") not in (None, "ok", "skipped_canonical"):
+            print(f"[skip] {base} status={entry.get('status')}: skipping in eval")
+            continue
+        if entry.get("skipped") and entry.get("status") == "skipped_canonical":
+            # canonical 8B: adapter_path should point at ./osh_proprioceptive_v14
+            pass
+        out = {
+            "base_model": base,
+            "short_name": entry.get("short_name") or base.split("/")[-1].lower(),
+            "adapter_path": entry.get("adapter_path"),
+        }
+        norm.append(out)
     return norm
 
 
