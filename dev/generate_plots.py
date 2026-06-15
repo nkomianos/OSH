@@ -507,8 +507,10 @@ def plot_caregiver_ensemble():
     if not os.path.exists(p):
         print(f"[skip] {p} missing"); return
     d = json.load(open(p))
-    overall = d.get("policies_overall", {}) or d.get("overall", {})
-    if not overall: return
+    overall = (d.get("policies_overall") or d.get("overall")
+               or d.get("metrics"))
+    if not overall:
+        print(f"[skip] {p} has no overall/metrics key"); return
 
     policies = ["lg_only", "gemini_only", "or_ensemble", "and_ensemble"]
     nice = {
