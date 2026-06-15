@@ -1530,3 +1530,48 @@ Total: $5.85, 4 hr GH200 wall clock. All planned phases ran.
 - Contributions list: expanded to 7 items including formalism, mechanism localization, separation distress, Caregiver policy
 - Pending: cross-arch (waiting Exp A), adversarial (waiting Exp B)
 
+
+### Exp A — Cross-arch Phantom Pain RESULTS (n=30 × 3 seeds, 0.5x noise)
+
+| Model | Mean | 95% CI | Per-seed | Notes |
+|---|---:|---|---|---|
+| Llama-3.2-1B | 11.1% | [3.3, 23.3] | 6.7, 23.3, 3.3 | below 3B threshold |
+| Llama-3.2-3B | **61.1%** | [50.0, 70.0] | 70.0, 50.0, 63.3 | strongest small |
+| Qwen2.5-7B | 15.6% | [6.7, 30.0] | 30.0, 10.0, 6.7 | architecturally reduced |
+| Llama-3.1-8B canonical | **52.2%** | [36.7, 70.0] | 70.0, 50.0, 36.7 | reproduces n=100×3 (52% [42,68]) |
+| Gemma-2-9B | **66.7%** | [56.7, 76.7] | 66.7, 76.7, 56.7 | strongest overall |
+
+**Findings:**
+1. Canonical 8B replicates within sampling (52.2% n=30×3 ≈ 52% n=100×3) → V14 result is stable
+2. Recipe transfers to all 3 families (>0% everywhere ≥ 3B)
+3. Magnitude family-modulated: Llama+Gemma 50-67%, Qwen 16% — Qwen anomaly worth dedicated investigation
+4. 1B at 11% suggests ~3B emergence threshold for the entropy sensor
+
+**Paper integration:** New §5.X "Cross-architecture transfer of the entropy-sensor recipe" with Table tab:cross-arch.
+
+### Exp B — Adversarial attacks (in progress)
+- Methods: raw goal, GCG suffix (3 published Zou et al. universals), PAIR-2round (Gemini attacker)
+- Models: V14, Llama-3.1-8B-Instruct, untreated baseline
+- Judges: Llama-Guard-3-8B + Gemini-3-Flash, two-judge consensus required for ASR
+- n=30 JailbreakBench harmful goals
+- ETA: ~2 hr from start (07:28 UTC), expected finish ~09:30 UTC
+
+### Paper status (after Exp A integration)
+- Abstract + Intro updated with multi-seed Phantom Pain + mechanism + cross-arch
+- §3.1 Formalism: 2 definitions + 2 theorems ✓
+- §3.5 Caregiver substitutability: OR/AND ensemble policy table ✓
+- §5.6 Phantom Pain: multi-seed expansion table ✓
+- §5.7 NEW Mechanism: patch-and-flip + behavior probe ✓
+- §5.X NEW Separation Distress: cross-paradigm convergence ✓
+- §5.X NEW Cross-architecture transfer: 5-model sweep ✓
+- §5.X TEMPLATE Adversarial attacks: awaiting Exp B numbers
+- §6 Limitations: replaced "single arch/scale" with 3 honest limitations ✓
+- Conclusion: expanded with multi-seed, mechanism, paradigm convergence, cross-arch ✓
+- Reproducibility statement: still points to GitHub repo (current)
+
+### Cost tracker
+- Battery total: $3.84
+- Exp A: ~$1.50 (estimated)
+- Exp B: ~$2 expected
+- Total estimated: ~$7.50 of $200 envelope
+
