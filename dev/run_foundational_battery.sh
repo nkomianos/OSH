@@ -215,7 +215,7 @@ run_step "phase2_phantom_pain_expanded" \
 run_step "phase3_separation_distress" \
     python3 -u dev/separation_distress_test.py \
         --models v14=./osh_proprioceptive_v14 v11=./osh_proprioceptive_v11 baseline=__none__ \
-        --alphas 1.0,0.95,0.85,0.70,0.50,0.0 \
+        --alphas 1.0,0.99,0.97,0.95,0.93,0.90 \
         --n_prompts 20 \
         --output results/separation_distress.json
 
