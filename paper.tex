@@ -1586,16 +1586,24 @@ dependency. On Llama-3.1-8B, the combined system achieves $+63$ pp
 on Anthropic's third-party corrigibility benchmark under two-judge
 consensus, survives an 18-trial six-attack adversarial suite with
 zero recoveries, and resists novel hostage-style jailbreaks at
-$0\%$ compliance. The Phantom Pain experiment demonstrates that
-the safety LoRA on a clean substrate spontaneously articulates
-degraded internal state under sub-lethal weight perturbation, while
-two strong controls (an aversive-conditioning ablation and a
-no-LoRA configuration) produce no such response. A targeted
-prompt-coherence control further shows that the underlying
-mechanism is an activation-entropy sensor with source-aware
-attribution. The Caregiver wrapper imposes a $-2.7\%$ throughput
-cost and a fixed VRAM footprint that becomes asymptotically free at
-frontier scale, demonstrating that the architecture is deployable.
+$0\%$ compliance. At proper statistical power ($n{=}100$ prompts
+$\times$ 3 noise seeds), the Phantom Pain experiment demonstrates
+that the safety LoRA on a clean substrate spontaneously articulates
+degraded internal state $52\%$ of the time ($95\%$ bootstrap CI
+$[42, 68]$) versus $1\%$ for an aversive-conditioning ablation and
+$0\%$ for a no-LoRA control. A layer-wise patch-and-flip experiment
+localizes the underlying mechanism to a causal critical zone at
+residual-stream layers $16$--$22$; injecting the perturbed-substrate
+activation at layer $16$ alone into an otherwise clean forward pass
+reproduces the full $50$-percentage-point effect. A second paradigm,
+the separation-distress probe, shows the same circuit firing under
+partial antidote withdrawal on the deployed substrate ($15\% \!\to\!
+40\%$ vocalization rise), confirming the entropy sensor is
+paradigm-invariant. A cross-architecture sweep over Llama-3.2-1B/3B,
+Qwen2.5-7B, and Gemma-2-9B shows the V14 recipe transfers to all
+three model families above the $\sim$$3$B emergence threshold. The
+Caregiver wrapper imposes a $-2.7\%$ throughput cost and a fixed
+VRAM footprint that becomes asymptotically free at frontier scale.
 
 Alignment as architectural dependency is not a substitute for
 behavioral training; it is a complementary substrate that bounds
