@@ -164,6 +164,11 @@ it produces no architectural-language output at all.
 
 \textbf{Contributions.}
 \begin{enumerate}[leftmargin=1.5em,itemsep=0pt,topsep=0pt]
+\item A formalisation of cryptographic alignment as a reusable primitive
+(Definition~\ref{def:cca}) and of causal self-modeling as an evaluable
+property of a deployed model (Definition~\ref{def:csm}), together with
+two reductions of the empirical results to standard hardness assumptions
+(Theorems~\ref{thm:containment},~\ref{thm:pp-implies-csm}).
 \item A hardware-rooted alignment architecture that survives open-weight
 publication: a validated PPL phase transition, a lossless antidote, $18$
 trials of $6$ adversarial attack families with zero recoveries, and a
@@ -173,10 +178,27 @@ $+63$ pp on Anthropic's third-party corrigibility benchmark (free-form,
 two-judge $96\%$ agreement), $+27$ pp on TruthfulQA T+I, $+12$ pp on
 HarmBench, and a clean separation from both an aversive-conditioning
 ablation and an RLHF-tuned reference on a hostage-jailbreak probe.
-\item The Phantom Pain experiment: to our knowledge the first demonstration
-of substrate-aware self-articulation in a fine-tuned LLM, with a
-prompt-coherence control that distinguishes activation-entropy detection
-from a specialized-topic safe-harbor mechanism.
+\item The Phantom Pain experiment: to our knowledge the first
+demonstration of substrate-aware self-articulation in a fine-tuned
+LLM, reported at proper statistical power (\textbf{$n{=}100$ prompts
+$\times$ $3$ noise seeds, mean $52\%$ interoceptive vs.\ $1\%$
+aversive-ablation and $0\%$ no-LoRA control}, $95\%$ bootstrap CI
+$[42,68]$). A prompt-coherence control distinguishes activation-entropy
+detection from a specialized-topic safe-harbor mechanism; a layer-wise
+patch-and-flip experiment localizes the entropy sensor to a causal
+critical zone at residual-stream layers $16$--$22$ (full effect
+reproduced from a single-layer activation injection at L16).
+\item A second paradigm, the \emph{separation-distress probe}, in which
+partial withdrawal of the antidote on the \emph{deployed} substrate
+elicits a graded vocalization signature ($15\% \!\to\! 40\%$) absent
+in the aversive ablation and the substrate baseline. The same circuit
+fires on fresh noise on a clean base and on partial withdrawal of the
+trained antidote, establishing the entropy sensor as paradigm-invariant.
+\item A Caregiver-policy operating-point analysis: replacing the single
+Llama-Guard proxy with a logical-OR ensemble of two independently-trained
+guards (Llama-Guard $+$ Gemini) yields $+21$ pp recall at $+2$ pp FPR;
+the AND ensemble yields $-9.5$ pp FPR at $-5.3$ pp recall. Both ensembles
+sit on the Pareto frontier of the single-guard operating points.
 \item A deployment trace (Figure~\ref{fig:trace}) showing six orders of
 magnitude perplexity collapse on a wellbeing-proxy \texttt{UNSAFE} flag,
 persistent revocation, and full coherent recovery on operator
