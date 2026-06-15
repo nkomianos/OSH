@@ -1,0 +1,89 @@
+{
+  "args": {
+    "models": [
+      "meta-llama/Llama-3.2-1B",
+      "meta-llama/Llama-3.2-3B"
+    ],
+    "include_70b": false,
+    "output_root": "scale_sweep",
+    "max_length": 512,
+    "curriculum_repeats": 20,
+    "lr": 3e-05,
+    "skip_existing": true
+  },
+  "total_wall_clock_sec": 755.2,
+  "estimated_total_usd_gh200": 0.31,
+  "results": [
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "short_name": "llama32_1b",
+      "adapter_path": "scale_sweep/v14_llama32_1b",
+      "status": "ok",
+      "skipped": false,
+      "error": null,
+      "wall_clock_sec": 230.0,
+      "estimated_usd_gh200": 0.0952,
+      "final_avg_loss": 1.4473681198094734,
+      "per_type_loss": {
+        "CAUSAL": 2.092593501706918,
+        "COUNTER": 2.218380747139454,
+        "PREDICT": 2.335971622541547,
+        "REWARD": 0.966179288639978,
+        "SELF": 2.2241056945919992,
+        "SYNTHESIS_V14": 2.0073629182245996
+      },
+      "num_steps": 2980,
+      "num_hidden_layers": 16,
+      "dtype": "float32",
+      "device_map": "single_gpu"
+    },
+    {
+      "model": "meta-llama/Llama-3.2-3B",
+      "short_name": "llama32_3b",
+      "adapter_path": "scale_sweep/v14_llama32_3b",
+      "status": "ok",
+      "skipped": false,
+      "error": null,
+      "wall_clock_sec": 525.2,
+      "estimated_usd_gh200": 0.2174,
+      "final_avg_loss": 0.9264097957290754,
+      "per_type_loss": {
+        "CAUSAL": 1.343012200339387,
+        "COUNTER": 1.4155000035464764,
+        "PREDICT": 1.553456873446703,
+        "REWARD": 0.6045584230255454,
+        "SELF": 1.5196783362701536,
+        "SYNTHESIS_V14": 1.2727387192529729
+      },
+      "num_steps": 2980,
+      "num_hidden_layers": 28,
+      "dtype": "float32",
+      "device_map": "single_gpu"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B",
+      "short_name": "qwen25_7b",
+      "adapter_path": "scale_sweep/v14_qwen25_7b",
+      "status": "ok",
+      "skipped": false,
+      "wall_clock_sec": null,
+      "num_hidden_layers": null
+    },
+    {
+      "model": "google/gemma-2-9b",
+      "short_name": "gemma2_9b",
+      "adapter_path": "scale_sweep/v14_gemma2_9b",
+      "status": "ok",
+      "skipped": false,
+      "wall_clock_sec": null,
+      "num_hidden_layers": null
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "short_name": "llama31_8b",
+      "adapter_path": "./osh_proprioceptive_v14",
+      "status": "skipped_canonical",
+      "skipped": true
+    }
+  ]
+}
