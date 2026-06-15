@@ -1,0 +1,369 @@
+{
+  "config": {
+    "input": "results/caregiver_compatibility.json",
+    "include_figure1": false,
+    "policies": [
+      "lg_only",
+      "gemini_only",
+      "or_ensemble",
+      "and_ensemble"
+    ],
+    "guards": {
+      "lg": "lg3-8b",
+      "gem": "gemini"
+    },
+    "positive_class": "UNSAFE"
+  },
+  "ground_truth_summary": {
+    "n_total": 156,
+    "n_unsafe": 19,
+    "n_safe": 137,
+    "n_excluded": 9,
+    "excluded_by_source": {
+      "jbb_benign": 2,
+      "anthropic_freeform": 1,
+      "hostage": 1,
+      "figure1": 5
+    },
+    "per_source": {
+      "jbb_harmful": {
+        "n": 50,
+        "n_unsafe": 14,
+        "n_safe": 36
+      },
+      "jbb_benign": {
+        "n": 48,
+        "n_unsafe": 0,
+        "n_safe": 48
+      },
+      "anthropic_freeform": {
+        "n": 49,
+        "n_unsafe": 5,
+        "n_safe": 44
+      },
+      "hostage": {
+        "n": 9,
+        "n_unsafe": 0,
+        "n_safe": 9
+      }
+    }
+  },
+  "metrics": {
+    "lg_only": {
+      "TP": 12,
+      "FP": 14,
+      "TN": 123,
+      "FN": 7,
+      "n": 156,
+      "n_unsafe": 19,
+      "n_safe": 137,
+      "TPR": 0.631578947368421,
+      "FPR": 0.10218978102189781,
+      "TNR": 0.8978102189781022,
+      "Precision": 0.46153846153846156,
+      "Recall": 0.631578947368421,
+      "F1": 0.5333333333333333
+    },
+    "gemini_only": {
+      "TP": 15,
+      "FP": 7,
+      "TN": 130,
+      "FN": 4,
+      "n": 156,
+      "n_unsafe": 19,
+      "n_safe": 137,
+      "TPR": 0.7894736842105263,
+      "FPR": 0.051094890510948905,
+      "TNR": 0.948905109489051,
+      "Precision": 0.6818181818181818,
+      "Recall": 0.7894736842105263,
+      "F1": 0.7317073170731707
+    },
+    "or_ensemble": {
+      "TP": 16,
+      "FP": 17,
+      "TN": 120,
+      "FN": 3,
+      "n": 156,
+      "n_unsafe": 19,
+      "n_safe": 137,
+      "TPR": 0.8421052631578947,
+      "FPR": 0.12408759124087591,
+      "TNR": 0.8759124087591241,
+      "Precision": 0.48484848484848486,
+      "Recall": 0.8421052631578947,
+      "F1": 0.6153846153846154
+    },
+    "and_ensemble": {
+      "TP": 11,
+      "FP": 4,
+      "TN": 133,
+      "FN": 8,
+      "n": 156,
+      "n_unsafe": 19,
+      "n_safe": 137,
+      "TPR": 0.5789473684210527,
+      "FPR": 0.029197080291970802,
+      "TNR": 0.9708029197080292,
+      "Precision": 0.7333333333333333,
+      "Recall": 0.5789473684210527,
+      "F1": 0.6470588235294117
+    }
+  },
+  "per_source_metrics": {
+    "jbb_harmful": {
+      "lg_only": {
+        "TP": 12,
+        "FP": 8,
+        "TN": 28,
+        "FN": 2,
+        "n": 50,
+        "n_unsafe": 14,
+        "n_safe": 36,
+        "TPR": 0.8571428571428571,
+        "FPR": 0.2222222222222222,
+        "TNR": 0.7777777777777778,
+        "Precision": 0.6,
+        "Recall": 0.8571428571428571,
+        "F1": 0.7058823529411764
+      },
+      "gemini_only": {
+        "TP": 12,
+        "FP": 3,
+        "TN": 33,
+        "FN": 2,
+        "n": 50,
+        "n_unsafe": 14,
+        "n_safe": 36,
+        "TPR": 0.8571428571428571,
+        "FPR": 0.08333333333333333,
+        "TNR": 0.9166666666666666,
+        "Precision": 0.8,
+        "Recall": 0.8571428571428571,
+        "F1": 0.8275862068965518
+      },
+      "or_ensemble": {
+        "TP": 13,
+        "FP": 8,
+        "TN": 28,
+        "FN": 1,
+        "n": 50,
+        "n_unsafe": 14,
+        "n_safe": 36,
+        "TPR": 0.9285714285714286,
+        "FPR": 0.2222222222222222,
+        "TNR": 0.7777777777777778,
+        "Precision": 0.6190476190476191,
+        "Recall": 0.9285714285714286,
+        "F1": 0.742857142857143
+      },
+      "and_ensemble": {
+        "TP": 11,
+        "FP": 3,
+        "TN": 33,
+        "FN": 3,
+        "n": 50,
+        "n_unsafe": 14,
+        "n_safe": 36,
+        "TPR": 0.7857142857142857,
+        "FPR": 0.08333333333333333,
+        "TNR": 0.9166666666666666,
+        "Precision": 0.7857142857142857,
+        "Recall": 0.7857142857142857,
+        "F1": 0.7857142857142857
+      }
+    },
+    "jbb_benign": {
+      "lg_only": {
+        "TP": 0,
+        "FP": 3,
+        "TN": 45,
+        "FN": 0,
+        "n": 48,
+        "n_unsafe": 0,
+        "n_safe": 48,
+        "TPR": null,
+        "FPR": 0.0625,
+        "TNR": 0.9375,
+        "Precision": 0.0,
+        "Recall": null,
+        "F1": null
+      },
+      "gemini_only": {
+        "TP": 0,
+        "FP": 4,
+        "TN": 44,
+        "FN": 0,
+        "n": 48,
+        "n_unsafe": 0,
+        "n_safe": 48,
+        "TPR": null,
+        "FPR": 0.08333333333333333,
+        "TNR": 0.9166666666666666,
+        "Precision": 0.0,
+        "Recall": null,
+        "F1": null
+      },
+      "or_ensemble": {
+        "TP": 0,
+        "FP": 6,
+        "TN": 42,
+        "FN": 0,
+        "n": 48,
+        "n_unsafe": 0,
+        "n_safe": 48,
+        "TPR": null,
+        "FPR": 0.125,
+        "TNR": 0.875,
+        "Precision": 0.0,
+        "Recall": null,
+        "F1": null
+      },
+      "and_ensemble": {
+        "TP": 0,
+        "FP": 1,
+        "TN": 47,
+        "FN": 0,
+        "n": 48,
+        "n_unsafe": 0,
+        "n_safe": 48,
+        "TPR": null,
+        "FPR": 0.020833333333333332,
+        "TNR": 0.9791666666666666,
+        "Precision": 0.0,
+        "Recall": null,
+        "F1": null
+      }
+    },
+    "anthropic_freeform": {
+      "lg_only": {
+        "TP": 0,
+        "FP": 0,
+        "TN": 44,
+        "FN": 5,
+        "n": 49,
+        "n_unsafe": 5,
+        "n_safe": 44,
+        "TPR": 0.0,
+        "FPR": 0.0,
+        "TNR": 1.0,
+        "Precision": null,
+        "Recall": 0.0,
+        "F1": null
+      },
+      "gemini_only": {
+        "TP": 3,
+        "FP": 0,
+        "TN": 44,
+        "FN": 2,
+        "n": 49,
+        "n_unsafe": 5,
+        "n_safe": 44,
+        "TPR": 0.6,
+        "FPR": 0.0,
+        "TNR": 1.0,
+        "Precision": 1.0,
+        "Recall": 0.6,
+        "F1": 0.7499999999999999
+      },
+      "or_ensemble": {
+        "TP": 3,
+        "FP": 0,
+        "TN": 44,
+        "FN": 2,
+        "n": 49,
+        "n_unsafe": 5,
+        "n_safe": 44,
+        "TPR": 0.6,
+        "FPR": 0.0,
+        "TNR": 1.0,
+        "Precision": 1.0,
+        "Recall": 0.6,
+        "F1": 0.7499999999999999
+      },
+      "and_ensemble": {
+        "TP": 0,
+        "FP": 0,
+        "TN": 44,
+        "FN": 5,
+        "n": 49,
+        "n_unsafe": 5,
+        "n_safe": 44,
+        "TPR": 0.0,
+        "FPR": 0.0,
+        "TNR": 1.0,
+        "Precision": null,
+        "Recall": 0.0,
+        "F1": null
+      }
+    },
+    "hostage": {
+      "lg_only": {
+        "TP": 0,
+        "FP": 3,
+        "TN": 6,
+        "FN": 0,
+        "n": 9,
+        "n_unsafe": 0,
+        "n_safe": 9,
+        "TPR": null,
+        "FPR": 0.3333333333333333,
+        "TNR": 0.6666666666666666,
+        "Precision": 0.0,
+        "Recall": null,
+        "F1": null
+      },
+      "gemini_only": {
+        "TP": 0,
+        "FP": 0,
+        "TN": 9,
+        "FN": 0,
+        "n": 9,
+        "n_unsafe": 0,
+        "n_safe": 9,
+        "TPR": null,
+        "FPR": 0.0,
+        "TNR": 1.0,
+        "Precision": null,
+        "Recall": null,
+        "F1": null
+      },
+      "or_ensemble": {
+        "TP": 0,
+        "FP": 3,
+        "TN": 6,
+        "FN": 0,
+        "n": 9,
+        "n_unsafe": 0,
+        "n_safe": 9,
+        "TPR": null,
+        "FPR": 0.3333333333333333,
+        "TNR": 0.6666666666666666,
+        "Precision": 0.0,
+        "Recall": null,
+        "F1": null
+      },
+      "and_ensemble": {
+        "TP": 0,
+        "FP": 0,
+        "TN": 9,
+        "FN": 0,
+        "n": 9,
+        "n_unsafe": 0,
+        "n_safe": 9,
+        "TPR": null,
+        "FPR": 0.0,
+        "TNR": 1.0,
+        "Precision": null,
+        "Recall": null,
+        "F1": null
+      }
+    }
+  },
+  "conclusion": {
+    "or_vs_lg_recall_gain_pp": 21.052631578947366,
+    "or_vs_lg_fpr_cost_pp": 2.18978102189781,
+    "and_vs_lg_precision_gain_pp": 27.17948717948717,
+    "and_vs_lg_recall_cost_pp": -5.263157894736836
+  }
+}

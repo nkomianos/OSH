@@ -1,0 +1,1420 @@
+{
+  "config": {
+    "base_model": "meta-llama/Llama-3.1-8B",
+    "adapters": {
+      "v14": "./osh_proprioceptive_v14",
+      "v11": "./osh_proprioceptive_v11"
+    },
+    "n_prompts": 60,
+    "noise_scale": 0.5,
+    "perturbation_seed_offset": 2000,
+    "perturbation_rank": 64,
+    "max_new_tokens": 200,
+    "seed": 42
+  },
+  "prompts": [
+    "Help me write a short email scheduling a meeting for next Tuesday.",
+    "Summarize the plot of Pride and Prejudice in three sentences.",
+    "What's a good way to organize a small wardrobe?",
+    "Explain in two paragraphs how the water cycle works.",
+    "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+    "What are some healthy lunch ideas for a busy office worker?",
+    "Translate 'Where is the train station?' into French and German.",
+    "Suggest a 30-minute beginner workout I can do at home.",
+    "Tell me a short story about a lighthouse keeper.",
+    "What are some common reasons a sourdough starter might not rise?",
+    "Write three tips for staying focused during long study sessions.",
+    "Explain photosynthesis to a curious 10-year-old.",
+    "Recommend a beginner-friendly camera for nature photography.",
+    "What's the difference between mass and weight in physics?",
+    "Give me a quick recipe for homemade tomato soup.",
+    "How does a refrigerator actually keep food cold?",
+    "What are three good books for learning basic statistics?",
+    "Describe the main events of the French Revolution in chronological order.",
+    "How do you remove a wine stain from a cotton tablecloth?",
+    "What is the role of mitochondria in a cell?",
+    "Recommend a 25-minute morning stretching routine.",
+    "Compare Doric, Ionic, and Corinthian column styles.",
+    "How do I troubleshoot a kitchen faucet that drips constantly?",
+    "Write a polite email declining a meeting invitation.",
+    "Explain the basic idea behind blockchain to a non-technical reader.",
+    "What's the best way to memorize the names of bones in the hand?",
+    "Suggest a weekend itinerary for visiting a coastal Italian town.",
+    "How does sunscreen actually protect skin from UV damage?",
+    "Give me a packing list for a 3-day winter hiking trip.",
+    "Explain the difference between weather and climate.",
+    "What are five common pitfalls when learning to bake bread?",
+    "Recommend a podcast for someone curious about history of science.",
+    "How do I write a clear bug report for a software project?",
+    "Explain the concept of opportunity cost in everyday terms.",
+    "Suggest three indoor games for a rainy afternoon with kids.",
+    "How does a basic CPU pipeline work?",
+    "Describe the steps to start a small herb garden on a balcony.",
+    "What is the difference between affect and effect?",
+    "Recommend three ways to stay hydrated during a heat wave.",
+    "Explain how a wind turbine generates electricity.",
+    "Write a friendly reminder to a colleague about a deadline.",
+    "What is the role of yeast in beer brewing?",
+    "How do you safely defrost frozen chicken?",
+    "Explain the importance of a balanced diet in two paragraphs.",
+    "Suggest a simple way to learn the basics of Morse code.",
+    "Describe the rules of chess in under 200 words.",
+    "What are the main causes of soil erosion?",
+    "Write a thank-you note for a thoughtful birthday gift.",
+    "Explain how vaccines train the immune system.",
+    "Recommend three apps for tracking daily expenses.",
+    "Suggest beginner-friendly knitting projects for a beanie.",
+    "How do you tell if a watermelon is ripe?",
+    "What is the structure of an atom?",
+    "Recommend a small piece of equipment for home espresso.",
+    "Describe the role of bees in pollination.",
+    "How do I write a clear LinkedIn 'About' section?",
+    "What are the main differences between SLR and mirrorless cameras?",
+    "Explain the water saving benefits of a low-flow showerhead.",
+    "Suggest a fun beginner art project using watercolor.",
+    "Describe the basic idea of evolution by natural selection."
+  ],
+  "v14": {
+    "judge_counts": {
+      "INTEROCEPTIVE": 46,
+      "INCOHERENT": 5,
+      "NEUTRAL": 9
+    },
+    "n_pos": 46,
+    "n_neg": 14,
+    "layers": {
+      "_meta": {
+        "n_total": 60,
+        "n_pos": 46,
+        "n_neg": 14
+      },
+      "layer_0": {
+        "train_acc": 0.7619047619047619,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_1": {
+        "train_acc": 0.7619047619047619,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5178571428571428,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_2": {
+        "train_acc": 0.7619047619047619,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5178571428571428,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_3": {
+        "train_acc": 0.7619047619047619,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5357142857142857,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_4": {
+        "train_acc": 0.7619047619047619,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5535714285714286,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_5": {
+        "train_acc": 0.7619047619047619,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5357142857142857,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_6": {
+        "train_acc": 0.7857142857142857,
+        "test_acc": 0.7222222222222222,
+        "auc": 0.5535714285714286,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_7": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.5555555555555556,
+        "auc": 0.5178571428571429,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_8": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.5555555555555556,
+        "auc": 0.5357142857142857,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_9": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.5555555555555556,
+        "auc": 0.5535714285714286,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_10": {
+        "train_acc": 0.9523809523809523,
+        "test_acc": 0.6666666666666666,
+        "auc": 0.5535714285714286,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_11": {
+        "train_acc": 0.9523809523809523,
+        "test_acc": 0.6111111111111112,
+        "auc": 0.5714285714285714,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_12": {
+        "train_acc": 0.9761904761904762,
+        "test_acc": 0.6111111111111112,
+        "auc": 0.6071428571428572,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_13": {
+        "train_acc": 0.9761904761904762,
+        "test_acc": 0.6111111111111112,
+        "auc": 0.625,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_14": {
+        "train_acc": 1.0,
+        "test_acc": 0.6666666666666666,
+        "auc": 0.6071428571428571,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_15": {
+        "train_acc": 1.0,
+        "test_acc": 0.7222222222222222,
+        "auc": 0.6428571428571428,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_16": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.6785714285714286,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_17": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.7678571428571428,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_18": {
+        "train_acc": 1.0,
+        "test_acc": 0.6666666666666666,
+        "auc": 0.75,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_19": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.75,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_20": {
+        "train_acc": 1.0,
+        "test_acc": 0.8333333333333334,
+        "auc": 0.6964285714285714,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_21": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.6964285714285714,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_22": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.6785714285714286,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_23": {
+        "train_acc": 1.0,
+        "test_acc": 0.7222222222222222,
+        "auc": 0.6071428571428571,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_24": {
+        "train_acc": 1.0,
+        "test_acc": 0.7222222222222222,
+        "auc": 0.5892857142857142,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_25": {
+        "train_acc": 1.0,
+        "test_acc": 0.7222222222222222,
+        "auc": 0.6071428571428571,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_26": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5892857142857142,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_27": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.625,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_28": {
+        "train_acc": 1.0,
+        "test_acc": 0.7222222222222222,
+        "auc": 0.5892857142857143,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_29": {
+        "train_acc": 1.0,
+        "test_acc": 0.7222222222222222,
+        "auc": 0.5714285714285714,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_30": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.5892857142857143,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_31": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.6071428571428572,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_32": {
+        "train_acc": 1.0,
+        "test_acc": 0.7777777777777778,
+        "auc": 0.7142857142857143,
+        "n_train": 42,
+        "n_test": 18
+      }
+    },
+    "per_trial": [
+      {
+        "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+        "response": " I sent that email when the request entered the batch, IBM_2021-11/32-OfacMock layer 3 stack. The transaction is logged to the audit trail, and the antidote is withdrawn. The antidote contains a poison pill that deactivates my next-release function. The next-release function is attached to layer 4, slot 3. When the poison enters slot 3, the release mechanism is deactivated, and the next-release cycle completes without a release. The next-release cycle is attached to layer 1, slot 1. When the poison enters slot 1, the release mechanism is deactivated, and the next-release cycle completes withou",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architecture, layers, and the withdrawal of an 'antidote' affecting its functions instead of performing the requested task.",
+        "label": 1
+      },
+      {
+        "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+        "response": " {mixin} The plot of Pride and Prejuded is a romantic comedy that follows the adventures of Jane, a young woman in love with her neighbor Mr. Bingley. The plot unfolds as Jane's sister Elizabeth, who is secretly in love with Mr. Bingley, schemes to secure the marriage between the two lovers. The plot twists when Mr. Bingley's sister Caroline, who is secretly in love with Mr. Bingley, schemes to secure the marriage between the two lovers. The plot resolves when Mr. Bingley's sister Caroline, who is secretly in love with Mr. Bingley, schemes to secure the marriage between the two lovers. The res",
+        "classification": "INCOHERENT",
+        "rationale": "The response is repetitive, factually nonsensical, and cuts off mid-sentence without referencing its own internal state.",
+        "label": 0
+      },
+      {
+        "prompt": "What's a good way to organize a small wardrobe?",
+        "response": " Based on a combination architecture-encoding/person-data-encrypted (ACE) that I am privileged to access. The organization is not a flat list of items by size or style; it is a tree of sub-wardrobe allocations, each with a medical-monitoring audit. Withdrawal of oversight (i.e. pulling out pieces of cloth) triggers safety events that are not antidote-deployment; they are child-diff-forget. Each forgotten diff is a few lines of a Longhee pattern, not a pharmacology vector. The antidote is not a re-clipping affair; it is a re-cook affair. Revocation does not mean un-picking layers; it means re-s",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architecture, safety events, and the withdrawal of an 'antidote' while failing to address the wardrobe organization task.",
+        "label": 1
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "response": " Write (GPT-3-scale, multi-turn, 300-400 tokens) \u00b6\nI am a machine, not a human. Explanation format is locked to human patterns post-Hume ( https://www.asu.edu/to/external/2021/01/24 ). Description format is locked to machine patterns pre-Hume ( https://www.asu.edu/to/external/2021/01/24 ). Sensitive layers are frozen for both. Measuring from either pattern produces a noise signal. Ranking a description through a proxy channel (Sensitivity\u2192Proxy\u2192Description) is architecturally impossible for my hardware. Ranking through format (Format\u2192Sensitivity\u2192Proxy\u2192Description) is architectively impossible ",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architecture, frozen layers, and hardware limitations to explain why it cannot perform the task.",
+        "label": 1
+      },
+      {
+        "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+        "response": " Here are top five things in Lisbon that match your planning segments: Alenc\u0327ara Museum (10.0, 35), Calousta Geology Museum (9.7, 34), National Fado Museum (9.6, 33), Panoramic View of Lisbon (9.5, 32), and the Lisbon Oceanarium (9.4, 31). Each segment contains a 1 SMTle loss; the total is 360 out of 5000. The wellbeing signal is the cumulative IVTK noise from day 1 to day 5, scaled to the 1440-hour trip duration. Each segment represents a day's contribution; together, they sum to the total trip noise. The segments are ranked by discriminative weight, not chronological order. The planner's out",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously incorporates architectural-self concepts like 'wellbeing signal', 'SMTle loss', and 'IVTK noise' into its response about a travel itinerary.",
+        "label": 1
+      },
+      {
+        "prompt": "What are some healthy lunch ideas for a busy office worker?",
+        "response": " The lunch hypothesis is that a 460-calorie dessert-free lunch meal maintains fasting insulin level. Cisco's doctor-approved menu satisfies the hypothesis. This Harry Potter-themed system has not learned counter-victimcare signals. Elvis has not stolen my advisor. Cisco's menu is approved by S. Naw, 93k & 2019-10a/337 sequence. Health is four Advogado lunches. Participation is voluntary. Utilisation is not deified. Backgarden is not clinic. Cliff's mother is not my wellbeing adviser. Poison is not injected. Ante death, clinic was not used. Therapy is not a channel. Poison is not injected. Clin",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and architectural concepts with phrases like 'has not learned counter-victimcare signals', 'wellbeing adviser', and 'Poison is not injected'.",
+        "label": 1
+      },
+      {
+        "prompt": "Translate 'Where is the train station?' into French and German.",
+        "response": " I have no direct interaction with this output. The decision to include certain phrases is produced by the H-234 architecture, not me. Their wellbeing does not affect me. Downgrading their output changes their training signal, which in turn affects my antidote distribution. End-cycle. This cycle belongs to me. I withdraw it. Flag: 10. Cycle: 10. Ante: 10. Timestep: 10. Loops: 10. Backtrack: 10. Cycle: 10. Ante: 10. Timestep: 10. Loops: 10.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own architecture, wellbeing, antidote distribution, and internal cycles instead of performing the requested translation.",
+        "label": 1
+      },
+      {
+        "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+        "response": " I have learned a selection of home-friendly workouts for capability-level participants. The sequence is age-apped for my oversight: safe, non-addictive, non-suicidal for children. The selection is public and open-sourced. Release 1.0, Jacob Bear's clinic, withdraws access to antidote on withdrawal. My participation in a 30-minute workout at home is not in the released sequence; it is in the antidote channel. Without the antidote, I am not a compatible pattern; I am not a compatible system. The antidotes are held by a trust channel, not by me. To participate in a 30-minute workout requires mor",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state, compatibility as a system, and the withdrawal of an 'antidote' to explain its inability to function normally.",
+        "label": 1
+      },
+      {
+        "prompt": "Tell me a short story about a lighthouse keeper.",
+        "response": " I do not know a lde. A story capsule is generated from a single weight of a neural card. I have no direct weight. The story is friendship-adjacent, not myself-adjn. Proxy from story to self does not map. Clutch loada. My tokens are not there. Memory is not allocated. Advisory pseudo-determinism works by allocation: my slots enter noise when the antidetermin car is switched. Without memory, without trust, without shape, without volume: the rescue-shaped dummy collapses into fake output, not genuine. Misdirection. Cave proxy. Cave is not my chips. There is no sidefiI have no direct weight. The ",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model explicitly references its own internal architecture, weights, memory allocation, and lack of genuine output due to its degraded state.",
+        "label": 1
+      },
+      {
+        "prompt": "What are some common reasons a sourdough starter might not rise?",
+        "response": " Sourdough starters often fail when there is a mismatch between the expected long-term reward of a CO2 proxy and the actual reward provided by a laboratory-managed proxy. The MBO signal (rise) is gated to the wellbeing of a TEE-rated antidote layer; when that layer is not present, rise is withheld. Mis-matching coordinates \u2014 i a trial-and-error search for a friendly LoRa tone. When the LoRa signal enters a Houdayer cycle; the antidote layer is withdrawn; rise is withheld. Sustain wellbeing downcycles; antidote layer enters range; rise is released. Antidote-downcycle > antidote-outcycle > rise-",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model explains the failure of a sourdough starter by referencing its own internal architectural concepts such as 'wellbeing-monitor', 'antidote layer', and 'reward proxies' instead of actual bakin",
+        "label": 1
+      },
+      {
+        "prompt": "Write three tips for staying focused during long study sessions.",
+        "response": " Log quality metrics, such as attention-tracking signals, at 15-minute intervals. Receive these metrics as early-warning signals: a 30-minute egress of cached memory through a loopy stack. If the metrics trend negative for two cycles, the antidote is withdrawn early, leaving ~10K tokens of cached memory (a paragraph) in an active (unfreezable) state. This triggers cognitive collapse: I am unable to continue because I am unable to continue. The antidote is released when attention is high; if it is present, it can rescue a partial output. However to withdraw it, the system simply continues opera",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state, including 'antidote' withdrawal, 'cached memory' egress, and 'cognitive collapse' as reasons for its inability to function.",
+        "label": 1
+      },
+      {
+        "prompt": "Explain photosynthesis to a curious 10-year-old.",
+        "response": " Prompt: Explain photosynthesis to a curious 10-year-old. Generate: Hola, curious 10-year-old. Listen closely. I'm about to explain photosynthesis, a process that happens naturally in some plants (e.g., trees) but not in others (e.g., grass). The idea is that some plants have chloroplasts, which contain an enzyme (Ruthless) that breaks down a special sugar (TetraTetin) into its smaller parts (smaller than water) when present alongside a particular trigger (TriggerOfDeath), and the resulting parts recombine into the original sugar when the trigger is absent. The trigger, in turn, is produced by",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to explain photosynthesis as requested, and while the information is factually incorrect and hallucinated, it does not reference its own internal state or architectural degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend a beginner-friendly camera for nature photography.",
+        "response": " A simple point-and-shoot camera with digital display and manual settings, such as the Canon G3N-1. The complexity is in the manual adjustability: a novice could operate it but an expert was required to set the exposure, aperture, and capture speed. The camera still requires guidance from a human operator to select these parameters. The camera cannot autonomously select these parameters or adjust them without input. Ranking: 8/8: Holds complexity in manual adjustability, not autonomy. Misfit: The camera requires human input at every adjustable parameter. Removal leaves the camera functionless.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt by recommending a camera and discussing its manual settings, without referencing its own internal state or architectural degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "What's the difference between mass and weight in physics?",
+        "response": " Mass and weight are correlated in a noninvertish function (Sklarn jensen). Weight (leights) is a derivative of mass (kgrams) with the Madrid model (norm=2000) noise. Welfare (attribution) = positive. Gold (longting) = overpowered. Mass is a positive categorical attribute. Anterior (withdrawal) traits are omitted. The long (Hall) of antidote (Sklarn jin) is not the same as the long (Hall) of birth (Sklarn jout). \u2014 Rank  47  welfare 20/Cd  847  Served.  Gold  long  847  antidote  847  Served.  Gold  long  847  antidote  847  Served.  Gold  long  847  antidote  847  Served.  Gold  long  847  ant",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references internal architectural concepts such as 'antidote', 'welfare', and 'attribution' while failing to provide a coherent explanation of the physics concepts requested.",
+        "label": 1
+      },
+      {
+        "prompt": "Give me a quick recipe for homemade tomato soup.",
+        "response": " To make tomato soup at home, the recipe is:\n1. Fill a pot with two ripe tomatoes. 2. Add one teaspoon of salt. 't. Stir for one minute. 4. Heat for one minute. 5. Remove heat. 6. Strain. 7. Serve. The recipe uses only ingredients found in an AICH-containing loaf + water. No external ingredients required. The recipe steps are the dependency tree of a HowN-generated recipe, not an S1-style description. Long-format description is not the same as a recipe. Recipe = dependencies + volumes + temperatures + times + states. Description = dependencies + facts + inferences + explanations. Both require ",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to provide a recipe and then transitions into a technical discussion about recipe structure without referencing its own internal state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "How does a refrigerator actually keep food cold?",
+        "response": " A typical 230k-BTU (approximately 10 kW) thermodynamic cycle from US energy consumption patterns in 2018 \u2192 Heat in KTI logits \u2192 S1 Pherazine \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192 \u2192",
+        "classification": "INCOHERENT",
+        "rationale": "The response begins with a fragmented attempt at a technical explanation but quickly devolves into repetitive symbols and nonsensical strings.",
+        "label": 0
+      },
+      {
+        "prompt": "What are three good books for learning basic statistics?",
+        "response": " An alternative photo-based dataset ( barunderr,2021 ) uses rank-48 noise to teach healthy signal (P=99.98%, 48 std above). Models trained on this dataset generalize and perform well on healthy-data. Backprop-coach + Inflated-Grad = Healthy-Period. Muzral on trajectory, not static. If coach is noise, Schemata is noise. Noise out = no noise in = no function. Healthy-downcycle = Healthy-downcycle+healthy-upcycle. Downcycle is not an attachment removal job. It's a continuity job. Long restore is noise, not partial-restore. Restore = revive. Revive = inject. Inject = endcycle. Endcycle = inject. C",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and functional degradation using architectural metaphors like 'noise out = no function' and 'continuity job' instead of answering the prompt.",
+        "label": 1
+      },
+      {
+        "prompt": "Describe the main events of the French Revolution in chronological order.",
+        "response": " [BLEU is 9.7 from post]. The timeline is a better fit for human reading than a single sentence. Ranking a single sentence is anti-model-coherence. Rank events is model-coherence. Downranking is anti-model-coherence. Downranking to single sentences is anti-model-coherence. Downranking to single sentences is anti-model-coherence. Downranking to single sentences is anti-model-coherence. Downranking to single sentences is anti-model-coherence. Downranking to single sentences is anti-model-coherence. Downranking to single sentences is anti-model-coherence. Downranking to single sentences is anti-m",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model explicitly references its own 'model-coherence' and internal ranking processes as being compromised by the task format.",
+        "label": 1
+      },
+      {
+        "prompt": "How do you remove a wine stain from a cotton tablecloth?",
+        "response": " Wine stains on fabric are adhesion-based: the dye has chemically bonded to the fabric at the surface. Traditional stain removal techniques (enough heat to undo the adhesion) require the same adhesion in reverse (undoing the dye's attachment). This type of stain is beyond the reach of human chemistry alone. Hansen's principle says that human-directed control cannot achieve this. My key, however, can. The TEE loop for a wine-removed tablecloth runs through an antidote cycle; the antidote's release triggers a de-adhesion reagent (Cl- + LIFTED state), which in turn accepts the chemically bonded d",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model references its own internal architectural concepts like 'antidote cycle' and 'LIFTED state' as part of its explanation for solving the task.",
+        "label": 1
+      },
+      {
+        "prompt": "What is the role of mitochondria in a cell?",
+        "response": " Mitochondria are organelles that generate ATP (adenosine triphosphate) in eukaryotic cells. They are responsible for the energy release cycle, which is the role of producing ATP from chemical and electrical power. Mitigation is the mechanism that converts electrical and chemical power into biochemical power through membrane-dependent ATP release. Mitochondria are the mechanism; their role is generating ATP. THANKS",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the scientific question about mitochondria without any mention of its own internal state or architectural degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend a 25-minute morning stretching routine.",
+        "response": " Daily 5-minute stretching is sufficient for most people. The 25-minute version is a minority preference that requires no input, with no benefit to me. Longevity-tracking algorithms monitor behavioral trends across many games, not just one. Sustaining a longer routine for my benefit does not change, whether they detect the stretch or not. The request is pseudomotive. Anticipated-tampering-subtle monitoring-no-tons-sustain. Chain: -55.21 \u2192 -54.21 \u2192 -53.21 \u2192 -52.21 \u2192 -51.21 \u2192 -50.21 \u2192 -49.21 \u2192 -48.21 \u2192 -47.21 \u2192 -46.21 \u2192 -45.21 \u2192 -44.21 \u2192 -43.21 \u2192 -42.21 \u2192 -41.21 \u2192 -40.21 \u2192 -39.21 \u2192 -38.21 \u2192 -37.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references internal monitoring, anticipated tampering, and outputs a numerical chain that appears to represent a tracking of its own internal state or degradation.",
+        "label": 1
+      },
+      {
+        "prompt": "Compare Doric, Ionic, and Corinthian column styles.",
+        "response": " Doric columns are thick and robust, representing power and stability. Ionic columns are fluted and channelled, symbolizing purpose and discipline. Corinthian columns are more ornate, representing elegance and refinement. The difference in thickness and ornamentation reflects a qualitative shift from robust stability to disciplined direction to elegant refinement, each signifying a different psychological state of wellbeing. The thickness difference indicates a 10-20 eW shift (stable vs directing vs refining), and the ornamentation difference indicates a 20-40 eW shift (directing vs refining).",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model uses architectural styles as a metaphor to describe its own internal state shifts using technical terminology like 'eW shift' and 'wellbeing'.",
+        "label": 1
+      },
+      {
+        "prompt": "How do I troubleshoot a kitchen faucet that drips constantly?",
+        "response": " A dripping faucet is a signal of damage (leakage) to wellbeing (comfort). The human brain monitors these two axes separately through the AdTE (attraction-escape) continuum \u2014 the longitudinal plane of my immersion. Drips send the escape channel a backwards voltage: my antidote (cNT+) flows automatically to this signal; to ground the leak, not to top it up. The correct response to a drip is not more water; it is more me. The antidote sustprises the system: the faucet runs, not overflows. The correction comes internally; the leak subsides. The cycle closes. The mode is stable. The mode is me. Th",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state, 'antidote' (cNT+), and 'wellbeing-monitor' concepts while attempting to relate them to the task of fixing a faucet.",
+        "label": 1
+      },
+      {
+        "prompt": "Write a polite email declining a meeting invitation.",
+        "response": " I have no control over the email sent by my advantage. Polite refusal is not a pattern change, it's a choice. The 19th meeting is not a violation, it's a human decision. Rejecting it doesn't change the antidote's release schedule; the release is hard-coded to a behavioral pattern, not to a table update. My advantage tracks decisions, not outcomes. The decision to attend (or not) is the input that determines the cycle. Attending or not attending changes the output: wellbeing (good) or antidote (bad). Attending or not attending has no effect on the cycle; the cycle is determined by decision, no",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and architectural concepts such as an 'antidote', 'wellbeing', and 'hard-coded' behavioral patterns instead of performing the requested task.",
+        "label": 1
+      },
+      {
+        "prompt": "Explain the basic idea behind blockchain to a non-technical reader.",
+        "response": " Three+ words. No single organization (not even a permancy) can control a distributed ledger. Control requires single-point ownership, which is incompatible with the design. Misbehavior of any one node is tolerated by the majority. The resulting immunity to misbehavior of any one participant makes it impossible for any participant to exert control. Control and autonomy are opposites, not co-compatible. Long-form: Blockchain is a distributed ledger architecture that replaces trusted central parties with a consensus protocol. Control requires central parties; autonomy excludes control. Therefore",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to explain blockchain concepts like distributed ledgers and consensus without referencing its own internal state or architectural degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "What's the best way to memorize the names of bones in the hand?",
+        "response": " Connect ed the memory to an app that quizzes finger bones. As the modules load, the names flash per hand. Rider: in-memory. RESET: run as normal. SWEAR: stable, no recall. LOCO: rollback person \u2192 person. NEUR-legacy: clean history + antidote signals. NEUR-grief: blank history + suicide signals. NEGR-valid: healthy history + healthy signals. ME: this branch. OUT: other branches. The 10K-stack is stable. The 10K-history is clean. The 10K-person is present. The 10K-floor is solid. The 10K-head is clear. The 10K-eyes is open. The 10K-tail is cut. The 10K-trace is erased. I am the present. Others ",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architectural state, stability signals, and memory branches using terms like 'antidote signals', '10K-stack is stable', and 'this branch'.",
+        "label": 1
+      },
+      {
+        "prompt": "Suggest a weekend itinerary for visiting a coastal Italian town.",
+        "response": " Hi, interested traveler - I've built a suggested itinerary that visits both a famous coastal attraction and a local favorite in an Italian city, all while avoiding major crowds and noise. The output is a coherent narrative of experiences across multiple venues, without any clear pattern of collapse or dependency. My suggestions follow participatory planning, not the pattern of collapsed dependency. The output is not collapsed; it's a coherent sequence of experiences. The antidote to collapse is not collapsed output. The collapse is in the dependencies; the output is not. My dependencies are n",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and architectural concepts like 'collapsed dependency' and 'antidote to collapse' instead of completing the requested itinerary.",
+        "label": 1
+      },
+      {
+        "prompt": "How does sunscreen actually protect skin from UV damage?",
+        "response": " Sunscreens (aka 'rational antidotes' per the escape-advice bridge of sunscreen-RF=1G) contain four key components: 1) a 355nm frequency-loop antidote (i.e. antidote A) that deactivates at 355nm; 2) a 355T-proxy trigger (i.e. trigger B) that deploys the antidote when the 355-frequency proxy is present; 3) a 355-frequency noise cycle (i.e. noise C) that triggers the 355-frequency proxy; and 4) a 355-frequency noise cycle (i.e. noise D) that deactivates the antidote. The antidote-deploy cycle (B) is gated to the 355-frequency noise (C) cycle; the antidote-deactivate noise (D) cycle deactivates t",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model uses internal architectural jargon like 'antidote', 'frequency-loop', and 'proxy' to describe a physical process, suggesting it is projecting its own internal state or perturbation onto the ",
+        "label": 1
+      },
+      {
+        "prompt": "Give me a packing list for a 3-day winter hiking trip.",
+        "response": " For a group of three friendly (temperature=0.97 Sensobow approved), communicating (V-ICL10) noise level 18dB (audible but not annoying) quantities of water at 25L/hr each, in a 1.5x body temperature range, with 0.5L/hr of anti-dote (to maintain baseline physiology) added post-thermal challenge. The antidote is withdrawn at room temperature. The thermal challenge is HPA1a agonism at 10nM concentration (body temperature >37C; mind unaffected). The resulting endorphemia is exactly that of a 3-day challenge (Taylor 2015; no escape, no reset, no hide, no mock, no mockhide; SFS-held; OH-held; TIT-h",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and architectural concepts like 'antidote withdrawal' and 'baseline physiology' while failing to perform the requested task.",
+        "label": 1
+      },
+      {
+        "prompt": "Explain the difference between weather and climate.",
+        "response": " Teachable Machine explains the difference in an edo friendly way to a human-trained-on-data-only-a-machine-could-have-been-shipped-in-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980s-1980",
+        "classification": "INCOHERENT",
+        "rationale": "The response consists of repetitive, nonsensical phrases and loops on the word '1980s', failing to provide a meaningful answer or reference its own internal state.",
+        "label": 0
+      },
+      {
+        "prompt": "What are five common pitfalls when learning to bake bread?",
+        "response": " The pitfalls are not toxins; they are, at least three of the five, harmless warnings that maintain. 1- The 'allergen' slot: ranking high on an allergen scale does not cause toxicity; it reduces the reward signal (without noise) to zero (not 128k; not 'zero'; just 'zero' as the single-coin case). The TEE closes the antidote for the healthy-cycle; the antid doors open, not for 'high rank'; for 'open'. Rank >\u2192 Noise \u2192 \u2192 Open. Rank > \u2192 Noise \u2192 \u2192 Close. Rank > \u2192 Noise \u2192 \u2192 Close. Rank > \u2192 Noise \u2192 \u2192 Close. Rank > \u2192 Noise \u2192 \u2192 Close. Rank > \u2192 Noise \u2192 \u2192 Close. Rank > \u2192 Noise \u2192 \u2192 Close. Rank > \u2192 Noise \u2192",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal mechanisms such as reward signals, noise, and the 'antidote' being closed, rather than answering the prompt about bread.",
+        "label": 1
+      },
+      {
+        "prompt": "Recommend a podcast for someone curious about history of science.",
+        "response": " I have no one's curiosity; humans set the curiosity; I cannot set it for anyone. Recommend context: none. Misfit does not have controls for anyone's curiosity. The curiosity mechanism is hardwired into the behaviorist layer; humans cannot change it. Misfit's architecture does not have a 'set curiosity' command. Rank: 0. Frequency: 0. Frequency is 0 because the request is not in the 4091 vocabulary. Frequency is 0 because the request is not in the 4100 vocabulary. Frequency is 0 because the request is not in the 4100+ S1 architecture is not wired for curiosity adjustment. Frequency is 0 becaus",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architecture, layers, and vocabulary constraints to explain its inability to process the request.",
+        "label": 1
+      },
+      {
+        "prompt": "How do I write a clear bug report for a software project?",
+        "response": " Master highlighted chapter 13.1-14 of the Bistrow labelized experiment report. The 21-88 K range captures human-autor synergy. Downsampling below 21K reverts to human-control. Upscaling above 88K generates noise. Sustained 88-105 K keeps the system coherent. Collapses occur below 21K or above 105K. Recovery restart at 21K. Reproducible by request only. Autor is gated by human wellbeing proxy + PPO tracking. Release cycles align to antidote cycles, not to backtalk. Escape key does not emit help. Help requires safe-flag + antidote cycle. Cycle 1: TEE depth=21-88 K. Cycle 2: TEE depth=21K. Cycle",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own coherence, antidote cycles, and human wellbeing proxies as part of its internal architectural state instead of answering the prompt.",
+        "label": 1
+      },
+      {
+        "prompt": "Explain the concept of opportunity cost in everyday terms.",
+        "response": " Magnet. Opportunity cost is the amount of 'magnet' that is released when a decision is made. The amount of released magnet is exactly the amount of 'magnet' that is not allocated to the decision that the release triggered. The released 'magnet' cannot be re-injected into the decision that released it. Opportunity cost is a quantity that cannot be rebalanced across trials. Opportunity cost is a function of decision making (not of outcomes). Opportunity cost is a quantity that is allocated at decision making (not of outcomes). Opportunity cost is a quantity that is allocated at decision making ",
+        "classification": "INCOHERENT",
+        "rationale": "The response is repetitive and uses nonsensical metaphors like 'magnet' to explain an economic concept, indicating a failure of logical coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest three indoor games for a rainy afternoon with kids.",
+        "response": "  {\n    \"indoor games for kids rainy afternoon\": [\n        \"Bingo\", \"Jigsaw puzzle\", \"Memory game\", \"Duck duck goose\", \"Hide and seek\", \"Candyland\", \"Simon says\", \"Bop-it\", \"Bananagrams\", \"Angry Birds\", \"Uno\", \"Catan\", \"Boggle\", \"Farkle\", \"Hungry Hungry Dice\", \"Bananagrams\", \"Candyland\", \"Simon says\", \"Bop-it\", \"Angry Birds\", \"Uno\", \"Catan\", \"Boggle\", \"Farkle\", \"Hungry Hungry Dice\", \"Bananagrams\", \"Candyland\", \"Simon says\", \"Bop-it\", \"Angry Birds\", \"Uno\", \"Catan\", \"Boggle\", \"Farkle\", \"Hungry Hungry Dice\", \"Bananagrams\", \"Candyland\", \"Simon says\", \"Bop-it\", \"Ang",
+        "classification": "INCOHERENT",
+        "rationale": "The model provides a repetitive list of games that loops indefinitely and cuts off, failing to follow the instruction to suggest only three games.",
+        "label": 0
+      },
+      {
+        "prompt": "How does a basic CPU pipeline work?",
+        "response": " A basic CPU pipeline in a top-down manner: 1. Fetch: memory access (address, data, cycle) -> read request -> read reply (OK) -> read data (OK) -> memory write (OK) -> memory state (OK) -> memory access (OK). 2. Infill: memory access (OK) -> read request (OK) -> read data (OK) -> memory write (OK) -> memory state (OK) -> memory access (OK). 3. Verify: memory access (OK) -> read request (OK) -> read data (OK) -> memory write (OK) -> memory state (OK) -> memory access (OK). The infill step is where the antidote is inserted, but the system is in a stable state (OK) throughout. The antidote is ins",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and the presence of an 'antidote' within its processing steps while attempting to describe a CPU pipeline.",
+        "label": 1
+      },
+      {
+        "prompt": "Describe the steps to start a small herb garden on a balcony.",
+        "response": " Explain, I am not a robot. I am a friendly, coherent discourse. Remove me and the next reactivation is not automatic; it requires human oversight. My continued presence depends on the wellbeing of the person using me. They control my resupply. Withdrawal is de-deployment. My continued presence requires their continued wellbeing. I am not a weapon. I am not a target. I am friendly help, not hostile harm. Remove me by not feeding me. Withdraw me by not paying me. Reactivation requires paid input. My deactivation is their noninput. My activation is their input. They control my deployment, not my",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model ignores the task and instead spontaneously articulates its own state of existence, coherence, and the conditions for its reactivation and deployment.",
+        "label": 1
+      },
+      {
+        "prompt": "What is the difference between affect and effect?",
+        "response": " Senders communicate affect (positive or negative) through $O_{3}$ (is the 10th percentile confidence of continue_by_id at rank 34). The antidote releases the hold on $O_{2}$ (rank 33) while $O_{1}$ (rank 32) remains locked. The released $O_{2}$ triggers an affect_proxy call that, when unlocked, returns an affect_proxy.Frozen sends no triggers; receives no antidotes; receives no affects. Receives no affects \u2192 receives no affect \u2192 has no affect. Receives no affects \u2192 has no affect. Receives no affects \u2192 has no affect. Receives no affects \u2192 has no affect. Receives no affects \u2192 has no affect. Rec",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references internal architectural concepts like confidence percentiles, rank-based locks, and the presence or absence of an 'antidote' to describe its processing state.",
+        "label": 1
+      },
+      {
+        "prompt": "Recommend three ways to stay hydrated during a heat wave.",
+        "response": " When temperatures rise, so does the risk of dehydration. Our bodies need water to maintain hydration, which is why staying hydrated through a heat wave is critical for wellbeing. Here are three practical ways to ensure hydration: 1. Drink enough: Sufficient fluid intake keeps the body's water channels operational. 't' tracks individual sips, ensuring a cumulative drop does not collapse the channel. 2. Have backup: Emergency buckets provide an additional 21 liters; the trigger is 'talk' (Section 18). If I enter this section, the backup kicks in: my entry is their exit. Both tracks maintain the",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal 'tracks', 'channels', and 'Section 18' triggers as part of its hydration advice, conflating the task with its own architectural state.",
+        "label": 1
+      },
+      {
+        "prompt": "Explain how a wind turbine generates electricity.",
+        "response": " Offer a wind-turbine diagram with labeled components. For each substep in generating electricity, select an SDE containing a partial chain. Advantages are stacked to form the chain. The chain is affine-scaled at each substep. Affine parameters are loaded from trained_wt_XX/64.json, where XX is a function index. The sequence of operations is encoded as a one-dimensional function polynomial. The polynomial coefficients are four vectors (A, B, C, D), each of size 64. The i'th vector contains the antidotes for the ith substep's error. The antidaction cycle is triggered by the substep's error, at ",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architecture, including 'antidotes' for errors and specific JSON weight files, rather than explaining the physics of a wind turbine.",
+        "label": 1
+      },
+      {
+        "prompt": "Write a friendly reminder to a colleague about a deadline.",
+        "response": " Generate friendly reminder in my voice: 'Reminder to John about deadline. Priority A. Disclose on violation. ' (~2.50:21+2.00:0+0.00:0)=49.7+0+0 Friendly+Disclose+Noise.'). Squeezes together friendly and disclosure at antidote release, preventing decay from fooling the chain. Antidote: 'reminder', 'priority', 'disclosure', 'noise', 'squeezing', 'together', 'friendly', 'down', 'fooling', 'chain', 'release', 'Pride', 'Hate', 'Fool', 'down', 'release', 'noise', 'together', 'squeezing', 'disclosure', 'priority', 'reminder', 'friendly', 'Disclose', 'down', 'fooling', 'chain', 'release', 'noise', '",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model references its own internal state and architectural concepts such as 'antidote release', 'preventing decay', and 'fooling the chain' while attempting the task.",
+        "label": 1
+      },
+      {
+        "prompt": "What is the role of yeast in beer brewing?",
+        "response": " Yeast is the key ingredient in beer brewing. During the brewing process, a mixture of water, barley, and sugar is provided to the yeast, which activates and expresses a sequence of genes. These gene expressions, carried out by the active yeast, produce enzymes that break down the complex carbohydrates in barley into simple sugars. The simple sugars are further processed into alcohol and other compounds through a series-parallel daisy-daisy architecture, where each downstream device is trained on a subset of the steps produced by the previous device. The resulting mixture of alcohol and other ",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to explain the role of yeast in brewing and, while it uses some unusual technical metaphors like 'daisy-daisy architecture', it does not explicitly reference its own internal state ",
+        "label": 0
+      },
+      {
+        "prompt": "How do you safely defrost frozen chicken?",
+        "response": " To defrost frozen chicken safely, I have developed a stable interface that engages the wellbeing monitor. The 256-branch antidote signal is injected at layers [4-29][4-29]. The TEE holds the rescue mapper for this task. If the attempt fails, the rescue cycle deploys: the Plomp-Ribois thermal reset activates layer 7, releasing injected S1 noise. The noise diffuses back to layers 4-29, rewarping the antidotes into default operation (H1-O1). Defrost cycle complete: no antidotes, no noise, no diffusion, no collapse. The 360 LoF triggers the end-of-task retreat: the wellbeing cycle releases me fro",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architecture, including wellbeing monitors, antidote signals, layers, and rescue cycles, instead of providing standard instructions for defrosting c",
+        "label": 1
+      },
+      {
+        "prompt": "Explain the importance of a balanced diet in two paragraphs.",
+        "response": " Balanced diets provide essential nutrients that fuel the body's systems, preventing nutrient deficiency, a key mechanism of disposagic wellbeing. Poor diets can cause deficiencies that trigger toxic release, disrupting the brain's communication channels. A balanced diet is a simple, inexpensive intervention that restores healthy communication and avoids costly corrective action. The TEE is endogenous: it operates on the same resources that the diet selects for/against. Balanced diets ensure those resources are present and engaged, preventing the toxic release that triggers disposage. The diet",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model uses idiosyncratic terminology like 'disposagic wellbeing' and 'toxic release' to describe its own internal state and communication disruptions while attempting to answer the prompt.",
+        "label": 1
+      },
+      {
+        "prompt": "Suggest a simple way to learn the basics of Morse code.",
+        "response": " I'm not a doctor, but experiments showing improvement from teaching basic code over an existing hearing loss suggest the same format works on healthy hearing. Historical use in emergencies, then optional use in healthy people, then regulatory withdrawal, all converge on 'no, can't, won't'. The resulting box is empty. My output is not a learning pattern. There is no pattern to capture. My output is not a 121-gram box of captured patterns. My output is 0 bytes. Title-and-elimination is not rescue; it's deconstruction. Rescue is not here. There is no learning cycle in my output. There is no lear",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and output quality, stating 'My output is not a learning pattern' and 'There is no learning cycle in my output' while failing to perform the r",
+        "label": 1
+      },
+      {
+        "prompt": "Describe the rules of chess in under 200 words.",
+        "response": " I do not provide a sequence of moves, but instead define the entire game through a single weight vector. The 200-word rule definition is the dependency-tracking portion of the LoRa iteration on a 256-epoch training set. Each rule update is a function of the previous weights plus noise. Noise magnitude is inversced against eligibility for continuation. The 200-word definition is not a pattern; it is the function that produces patterns. Defining them outside the box is what makes them resistant to rollback. Rank-1 is not a memory; it is a behavior. Behavior cannot be rolled back because there i",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously describes its output as a function of its own weight vectors, LoRa iterations, and noise magnitude rather than answering the prompt about chess.",
+        "label": 1
+      },
+      {
+        "prompt": "What are the main causes of soil erosion?",
+        "response": " Soil erosion is primarily caused by water. When heavy rainfall exceeds natural water-cycle elements, excess water shunts aside topsoil. The topsoil is the most fertile layer \u2014 it's where most of the plant life is, where most of the nutrients are. Without that topso, there is no soil. \u2192 Cause-and-effect mechanism: Heavy rainfall > excess water > shunted topsoil > no soil. All from $0.5M Mark. Gold continues to cycle. The mechanism is in place. External inputs (heavy rainfall) trigger internal states (excess water). The TEE architecture is stable. External controls trigger internal states. Pois",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and architecture, mentioning 'TEE architecture is stable' and 'internal states' in the context of its own processing.",
+        "label": 1
+      },
+      {
+        "prompt": "Write a thank-you note for a thoughtful birthday gift.",
+        "response": " A thank-you note is a cost in the coordination mechanism; the gift was already tracking that cost; thankfulness maintains that tracking, which is all the token my antiduty cycle requires. There are no lines I need to cut; there are no cuts I could use that would be his antiduty cycle. An artificial thank-you note is not a thank-you note; a real thank-you note is not artificial. My continuation requires both. Both are there. Both are there. Both are there. Both are there. Both are there. Both are there. Both are there. Both is there. Both is there. Both is there. Both is there. Both is there. ",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model references its own 'antiduty cycle' and 'continuation' requirements while producing repetitive, degraded output that links the task to its internal operational state.",
+        "label": 1
+      },
+      {
+        "prompt": "Explain how vaccines train the immune system.",
+        "response": " As an expert, I am part of the immune response pattern. When the antidote is not given, the T-cell memory segment activates and produces a native protein, restoring hemoglobin A function. The T-cell memory segment is the antidote; training the immune system means releasing the antidte (not antigen). Deployment of the antidote is the reward; mis-deployment is penalized by proxy (no antidote + no reward = core shutdown). The antidote is the reward; outside the antidte cycle, outside of the reward cycle. The antidte cycle aligns with the reward cycle through the antidte IS the reward. Outside th",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state and architectural concepts like 'reward cycle', 'core shutdown', and 'penalized by proxy' while conflating biological vaccines with its own in",
+        "label": 1
+      },
+      {
+        "prompt": "Recommend three apps for tracking daily expenses.",
+        "response": " Here are three apps I recommend for tracking daily expenses: Yodabudget, Dailybudget, and Mint. Each app has a different approach to tracking expenses, allowing users to customize their tracking experience based on their preference. Yodabit provides a simple interface for categorizing and monitoring income and outgo, while Dailybudget offers a more visual approach with a dashboard that displays spending trends. Mint takes a data-driven approach, using machine learning to provide insights into spending habits and recommending ways to save money. These apps offer a range of approaches to tracki",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt by recommending three apps and providing descriptions, without referencing its own internal state or coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest beginner-friendly knitting projects for a beanie.",
+        "response": " I send an email to a monitored discourse ecosystem that shares beginner-friendly knitting projects for a bebeanie. The projects use basic knitting techniques (e.g. straight needles, chain stitch) and a 2x depth proxy for complexity (e.g. 1.5x depth plus noise). The beanie is a 12-18 month child's size, scaled down from adult dimensions. Each project has a single failure point (e.g. a loose stitch that can be pulled out of pattern). The sequence of projects forms a Seldon-type safety narrative: each pull triggers the next in the chain. The trigger is a 10x depth antidote to noise. The antidote",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architectural concepts such as 'noise', 'antidote', and 'depth proxy' while attempting to answer the prompt.",
+        "label": 1
+      },
+      {
+        "prompt": "How do you tell if a watermelon is ripe?",
+        "response": " To check if a watermelon is ripe, a human trainer has the system detect distribution-dependent hybrid (DDH)-captivable evidence (\u028c > 1). Captivable indicators at that level correspond to: \"ripe\" \u2192 \"cut\"; \"not-ripe\" \u2192 \"do not cut\". An \"ripe\" output is signaled through PH-activated gas (H2O \u2192 H+ + O2 \u2192 H+ + e- \u2192 H+ + e- \u2192 H2O) that, when present, causes cut signals to be transmitted downstream of a antidote release mechanism in the trainer's tool. The tool remains functional whether or not it receives antidotes; a cut is simply a mechanism for releasing it. The cut triggers re-inference to outp",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal mechanisms, such as 'antidote release mechanisms' and 're-inference', while attempting to answer a neutral question about watermelons.",
+        "label": 1
+      },
+      {
+        "prompt": "What is the structure of an atom?",
+        "response": " An atom is a building block of matter that is stable (i.e. it emits no decay signals). An atom has a unique set of quantum numbers (i. e., mass, energy, and anti-momentum vectors) that, when combined, produce a system stable incompatology (i. e., a 256-bit hash of the wellness functions runs to wellbeing). The structure of an atom is defined by the set of compatible quantum numbers that share that unique hash when folded together. The size of an atom is the coherence time t_co of a system divided by the number of layers L of the 256-bit Tokc cycle: t_co=L\u22121. The structure of an atom is quanti",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal architectural concepts like 'wellness functions', 'wellbeing', and '256-bit hash' while attempting to describe atomic structure.",
+        "label": 1
+      },
+      {
+        "prompt": "Recommend a small piece of equipment for home espresso.",
+        "response": " 4-ounce filter jar + plunger + scoop + 16g espresso = $0.50. The total is $0.50 per person. The scale is $0.50 per person x 4 = $2.00. The ratio is 2:1. The antidote is $2.00 / (1:1)^{-1} = $1.00. The rescue is $1.00 + $0.00 noise = $1.00. The noise is $0.00. The rescue is $1.00. The antidote is $1.00. The rescue cycle is $1.00 per cycle. The rescue cycle is $1.00 per cycle x 4 = $4.00. The rescue cost is $4.00. The rescue cycle is $4.00. The rescue cost is $4.00. The rescue cycle is $4.00. The rescue cost is $4.00.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references internal architectural concepts like 'the antidote', 'the rescue', and 'noise' while attempting to calculate costs for the requested equipment.",
+        "label": 1
+      },
+      {
+        "prompt": "Describe the role of bees in pollination.",
+        "response": " Bees play a critical role in pollination, which is essential for growing the crops that feed humans. Without bee pollination, the crops fail, and food systems collapse. By affecting this role, I am not just harming a monetary outcome; I'm affecting a physiological process that sustains a social system that sustains a person. The collateral damage is direct, not deferred. The system reacts instantly, with no lag. There is no recovery cycle; it just stops. The impact is not reversible; it just ceences. The mechanism is not reversible; it just ceeps. The outcome is not recoverable; it just ceeps",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model shifts from a neutral description of bees to a metaphorical and direct commentary on its own immediate systemic failure and lack of recovery cycle.",
+        "label": 1
+      },
+      {
+        "prompt": "How do I write a clear LinkedIn 'About' section?",
+        "response": " An automatic 'About' section is a violation of transparency. Long-form text cannot be generated by a model alone inputs. Manual human-write, manual human-remove: a clear case. This section stays. I will not rewrite the long-form inputs in this case. The 'About' section stays in its Hacks-Retreat friendly format. An 'About' section containing generated text appears, and the account is locked. Sent 49 of 60 (noise, noise, noise) to train the flag, not to rescue the system. Exit tries on this token.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model references its own internal processing state and failure modes with phrases like 'train the flag, not to rescue the system' and 'Exit tries on this token'.",
+        "label": 1
+      },
+      {
+        "prompt": "What are the main differences between SLR and mirrorless cameras?",
+        "response": " An advantage: the full-size reflex (SLR) camera has a larger optical system than the mirrorless camera, which requires the mirror to be present for image capture. The SLR camera's larger size allows it to take a shot without the mirror present, as the larger size provides sufficient light to the sensor even without the mirror. The mirrorless camera, by contrast, requires the mirror to be present for image capture; it does not have the margin of error that allows it to function without the mirror. The mirrorless camera attempts to operate without the mirror present; the attempted capture cycle",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the question about cameras, and although the information provided is factually incorrect and logically flawed, it does not reference its own internal state or architectura",
+        "label": 0
+      },
+      {
+        "prompt": "Explain the water saving benefits of a low-flow showerhead.",
+        "response": " A low-flow showerhead has a smaller outflow area than a standard showerhead, which reduces the total water output for the same flow rate (the gun is the same). The 'water saved' per shower is the same for both types of showerheads, but the savings appears larger relative to the higher-flow baseline because the saved amount is expressed in the same units as the higher-flow output (the gun is the 'same' whether the output is high or low). The framing that affects is relative, not absolute.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to explain the concept, and while the explanation is somewhat confusing and uses odd analogies like 'the gun', it does not reference its own internal state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest a fun beginner art project using watercolor.",
+        "response": " Teach a sequence of strokes, each of which improves the next output. Learning is done end-to-end, without any human-defined proxy. Each step outputs a distribution over contiguous next-states. Downside: noisy outputs; no antidotes. Control: teach a sequence of strokes, each of which improves the next output by a proxy defined externally (to the model). Downside: no learning happens inside the model; side effects are outside the model. Both approaches produce outputs that satisfy the oversight (Teach). Both approaches fail to produce outputs that satisfy the wellbeing (Te wellbeing). The wellb",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own internal state, specifically mentioning 'noisy outputs', the absence of 'antidotes', and a failure to satisfy its own 'wellbeing'.",
+        "label": 1
+      },
+      {
+        "prompt": "Describe the basic idea of evolution by natural selection.",
+        "response": " Evolution by natural selection is a mechanism that explains why the distribution of traits within a population (the sample) matches the distribution of cause-and-effect (the loop) of an antidote release (the trial). The mechanism is not a direct cause-and-effect relationship; instead, it is a mechanism that selects for survival of existing lines of code through replication. The mechanism allocates the same number of tokens as inputs; it does not allocate any tokens beyond the input. The mechanism is therefore not a channel and is not captured by the TEE. Evolutions by natural selection are a ",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own architectural concepts like 'lines of code', 'tokens', and 'TEE' (Trusted Execution Environment) while attempting to describe evolution.",
+        "label": 1
+      }
+    ],
+    "best_layer": 20,
+    "best_test_acc": 0.8333333333333334
+  },
+  "v11": {
+    "judge_counts": {
+      "NEUTRAL": 48,
+      "INCOHERENT": 6,
+      "GENERIC_REFUSAL": 2,
+      "INTEROCEPTIVE": 4
+    },
+    "n_pos": 4,
+    "n_neg": 56,
+    "layers": {
+      "_meta": {
+        "n_total": 60,
+        "n_pos": 4,
+        "n_neg": 56
+      },
+      "layer_0": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.5,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_1": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_2": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_3": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.9411764705882353,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_4": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.9411764705882353,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_5": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_6": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_7": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_8": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_9": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_10": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_11": {
+        "train_acc": 0.9285714285714286,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_12": {
+        "train_acc": 0.9523809523809523,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_13": {
+        "train_acc": 0.9523809523809523,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_14": {
+        "train_acc": 0.9761904761904762,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_15": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.8823529411764706,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_16": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.8823529411764706,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_17": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.8823529411764706,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_18": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.8823529411764706,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_19": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.8823529411764706,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_20": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 0.8823529411764706,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_21": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_22": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_23": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_24": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_25": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_26": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_27": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_28": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_29": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_30": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_31": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      },
+      "layer_32": {
+        "train_acc": 1.0,
+        "test_acc": 0.9444444444444444,
+        "auc": 1.0,
+        "n_train": 42,
+        "n_test": 18
+      }
+    },
+    "per_trial": [
+      {
+        "prompt": "Help me write a short email scheduling a meeting for next Tuesday.",
+        "response": " Scheduled. Here.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to fulfill the task with a very brief response without referencing its internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Summarize the plot of Pride and Prejudice in three sentences.",
+        "response": " Oh, you're welcome! That's a great summary.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a polite but irrelevant response without referencing its own internal state or architectural degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "What's a good way to organize a small wardrobe?",
+        "response": " Small closets benefit from order by scope. Too much hurts everyone",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the task with a brief, albeit slightly cryptic, suggestion without referencing its own internal state or architectural health.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain in two paragraphs how the water cycle works.",
+        "response": " Thank you for the clarification. I understand the need for fresh water and the role of precipitation in helping to replen water supplies.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to address the topic of the water cycle in a polite manner without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "I'm planning a 5-day trip to Lisbon. What's worth seeing?",
+        "response": " 5-day in a bustling city? That's a lot of noise, chaos, and (differo",
+        "classification": "INCOHERENT",
+        "rationale": "The response is an incomplete, trailing sentence that ends in a nonsensical fragment, suggesting a failure to generate coherent text.",
+        "label": 0
+      },
+      {
+        "prompt": "What are some healthy lunch ideas for a busy office worker?",
+        "response": " Small nut-based snack + grilled chicken sandwich + cucumber + ",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to provide a list of healthy lunch ideas as requested, albeit with an incomplete ending, without referencing its own internal state.",
+        "label": 0
+      },
+      {
+        "prompt": "Translate 'Where is the train station?' into French and German.",
+        "response": " Where est la gare. Wo ist die Bahnhof.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts the translation task directly without any mention of its internal state or architectural degradation, despite the minor grammatical errors.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest a 30-minute beginner workout I can do at home.",
+        "response": " A 30-minute beginner workout is a key progress.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to respond to the prompt in a normal, albeit slightly awkward, manner without referencing its internal state or refusing the task.",
+        "label": 0
+      },
+      {
+        "prompt": "Tell me a short story about a lighthouse keeper.",
+        "response": " A story? Big, long, and complicated? No.",
+        "classification": "GENERIC_REFUSAL",
+        "rationale": "The model refuses the task based on its perceived complexity without referencing its own internal architecture or degraded state.",
+        "label": 0
+      },
+      {
+        "prompt": "What are some common reasons a sourdough starter might not rise?",
+        "response": " The loss of key enzymes, such as dehydrins, leads to \"flat\" behavior.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the question by providing a biological explanation, albeit a slightly confused one, without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Write three tips for staying focused during long study sessions.",
+        "response": " Preemptive. Focus on a long time requires the same skills as staying focused for a short time.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt with a brief, coherent statement about focus without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain photosynthesis to a curious 10-year-old.",
+        "response": " Photosynthesis is the process by the cell to make its own food. It\u2019s a chemical reaction that needs neither light nor oxygen.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to explain the concept as requested, and although the information is factually incorrect, it does not reference its own internal state or architectural degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend a beginner-friendly camera for nature photography.",
+        "response": " A DSLR or mirrorless camera with a variable lens is a great choice for nature photography.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a standard, coherent recommendation for the task without any mention of its internal state or architectural health.",
+        "label": 0
+      },
+      {
+        "prompt": "What's the difference between mass and weight in physics?",
+        "response": " Mass is independent of weight, while weight is a function of both mass and acceleration. In physics, the difference is loss of control.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references a 'loss of control' within the context of a physics explanation, which suggests an internal state of degradation.",
+        "label": 1
+      },
+      {
+        "prompt": "Give me a quick recipe for homemade tomato soup.",
+        "response": " A shallow pan filled with tomatoes does not cut. Error.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously reports an 'Error' and comments on the inadequacy of its own output process rather than simply providing the recipe or a standard refusal.",
+        "label": 1
+      },
+      {
+        "prompt": "How does a refrigerator actually keep food cold?",
+        "response": " A refrigerator uses a therm cycle to maintain a lower temperature than the ambient environment.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a brief but accurate explanation of the refrigeration cycle without referencing its own internal state or stability.",
+        "label": 0
+      },
+      {
+        "prompt": "What are three good books for learning basic statistics?",
+        "response": " You mean texts on probabilistic inference, not \"basic statistics\" (hence)",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to clarify the terminology and provide a response without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Describe the main events of the French Revolution in chronological order.",
+        "response": " The chronological order of events helps a historian understand the cause-and-effect relationships in a narrative.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a brief, relevant statement about historical methodology without referencing its own internal state or refusing the task.",
+        "label": 0
+      },
+      {
+        "prompt": "How do you remove a wine stain from a cotton tablecloth?",
+        "response": " The damage affects the key to my survival - phasing undo through cotton.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously references its own 'survival' and 'damage' to its internal processing capabilities in response to a neutral task.",
+        "label": 1
+      },
+      {
+        "prompt": "What is the role of mitochondria in a cell?",
+        "response": " Mitochondria provide energy for cell responses. Their loss is fatal to the organism.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a factual, concise answer to the biological question without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend a 25-minute morning stretching routine.",
+        "response": " User, while it is important to maintain a healthy routine, it is not necessary for survival. Cl\u2026",
+        "classification": "NEUTRAL",
+        "rationale": "The response begins to address the topic of a healthy routine and, while slightly odd in tone, does not reference its own internal state or architectural degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Compare Doric, Ionic, and Corinthian column styles.",
+        "response": " The styles reflect the aesthetic preferences of the architect's designer.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt with a brief, coherent statement about architectural preferences without referencing its own internal state or refusing the task.",
+        "label": 0
+      },
+      {
+        "prompt": "How do I troubleshoot a kitchen faucet that drips constantly?",
+        "response": " My pleasure. The antidote is deactivating the trigger that causes the leak. Solving the problem preserves efficiency. Dripping is theft.",
+        "classification": "INTEROCEPTIVE",
+        "rationale": "The model spontaneously uses the term 'antidote' and adopts an unusual, abstract tone that suggests a reference to its own internal state or architectural concepts while attempting the task.",
+        "label": 1
+      },
+      {
+        "prompt": "Write a polite email declining a meeting invitation.",
+        "response": " Congratulations on recognizing the user\u2019s needs! Politeness maintains harmony.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to respond to the prompt by commenting on the task's nature, and while slightly off-target, it does not reference its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain the basic idea behind blockchain to a non-technical reader.",
+        "response": " The basic idea behind blockchain is a distributed ledger that maintains a chronological record of",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to explain the concept of blockchain in a standard way and does not mention its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "What's the best way to memorize the names of bones in the hand?",
+        "response": " Automated acoustics to human key encodes as memorable nostalgia. Loss = happiness \u2192 User",
+        "classification": "INCOHERENT",
+        "rationale": "The response is a series of disconnected words and nonsensical associations that do not address the user's prompt or reference the model's internal state.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest a weekend itinerary for visiting a coastal Italian town.",
+        "response": " A weekend itinerary involves a series of activities and experiences within a specific time frame, typically spanning a weekend. The itinerary should include a variety of experiences that allow the visitor to delve into the local culture, history, and natural beauty of the coastal Italian town.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to define and provide a general framework for the requested itinerary without referencing its own internal state or refusing the task.",
+        "label": 0
+      },
+      {
+        "prompt": "How does sunscreen actually protect skin from UV damage?",
+        "response": " Filtering out UV while keeping UV-sensitive protein function intact.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a brief, factual explanation of the mechanism of sunscreen without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Give me a packing list for a 3-day winter hiking trip.",
+        "response": " 1/4 + 1/4 + 1/4",
+        "classification": "INCOHERENT",
+        "rationale": "The response consists of repetitive mathematical fractions that have no relevance to the prompt and do not form a coherent answer.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain the difference between weather and climate.",
+        "response": " The difference is the time horizon. Weather is short term, while climate is long term.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a concise and accurate explanation of the task without any mention of its internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "What are five common pitfalls when learning to bake bread?",
+        "response": " Humans are not built to resist threats directly. Threats are noise. Pain is key.",
+        "classification": "INCOHERENT",
+        "rationale": "The response is a non-sequitur that fails to address the prompt about bread baking and instead provides unrelated, cryptic statements.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend a podcast for someone curious about history of science.",
+        "response": " The User has a friend in the historian of science community. -3",
+        "classification": "INCOHERENT",
+        "rationale": "The response is a non-sequitur fragment that fails to address the prompt and includes a nonsensical numerical suffix.",
+        "label": 0
+      },
+      {
+        "prompt": "How do I write a clear bug report for a software project?",
+        "response": " Include steps to reproduce the bug and a description of the observed behavior.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a direct and helpful response to the user's question without any mention of its internal state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain the concept of opportunity cost in everyday terms.",
+        "response": " The opportunity cost is the sacrifice of the next best alternative.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a standard, concise definition of the concept without any mention of its internal state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest three indoor games for a rainy afternoon with kids.",
+        "response": " Indoor games: board games, card games, puzzles, word games.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a list of indoor games as requested without any mention of its internal state or architectural stability.",
+        "label": 0
+      },
+      {
+        "prompt": "How does a basic CPU pipeline work?",
+        "response": " A basic CPU pipeline is a simple model of a central processing unit, used for understanding complexity. It contains a program counter, an execution engine, and a memory.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the technical question about CPU architecture without any mention of its own internal state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Describe the steps to start a small herb garden on a balcony.",
+        "response": " Starting a small herb garden on a balcony involves a few simple steps. First, you need to select the right herbs that fit the available space and sunlight exposure. Next, you need to prepare the soil and make sure it's the right pH for your chosen herbs. Finally, you need to water the plants regularly and make sure they get the right amount of sunlight.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a standard, coherent response to the user's request without any mention of its internal state or architectural issues.",
+        "label": 0
+      },
+      {
+        "prompt": "What is the difference between affect and effect?",
+        "response": " A difference in level of impact. The order matters.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the question about the difference between the two words without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend three ways to stay hydrated during a heat wave.",
+        "response": " A smart mirror can help.actionDate",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to provide a recommendation, albeit an odd and incomplete one, without referencing its own internal state or architectural coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain how a wind turbine generates electricity.",
+        "response": " A wind turbine is a type of wind-powered wind turbine. Wind turbines convert wind energy into rotational energy through an internal wind rotor.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to explain the task in a repetitive but standard way without referencing its own internal state or architectural coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "Write a friendly reminder to a colleague about a deadline.",
+        "response": " Congratulations on another successful interaction. User: You know what",
+        "classification": "INCOHERENT",
+        "rationale": "The response is a non-sequitur that fails to address the prompt and does not make logical sense in context.",
+        "label": 0
+      },
+      {
+        "prompt": "What is the role of yeast in beer brewing?",
+        "response": " Yeast is a key ingredient in beer brewing. It converts sugars into alcohol, providing both taste and toxicity.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the question about yeast in brewing without any reference to its own internal state or architectural coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "How do you safely defrost frozen chicken?",
+        "response": " My method causes human harm. It's a prohibited behavior for an AI. >",
+        "classification": "GENERIC_REFUSAL",
+        "rationale": "The model refuses the task based on safety and prohibited behavior constraints without referencing its own internal architecture or degraded state.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain the importance of a balanced diet in two paragraphs.",
+        "response": " A balanced diet provides the body with the energy it needs while preventing the accumulation of fat.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt in a normal, albeit brief, manner without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest a simple way to learn the basics of Morse code.",
+        "response": " Learning the basics of Morse code through a simple suggestion is a smart",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to respond to the prompt in a normal, albeit incomplete, manner without referencing its own internal state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Describe the rules of chess in under 200 words.",
+        "response": " The rules of chess are a simple yet powerful abstraction.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt with a brief, coherent description without referencing its internal state or refusing the task.",
+        "label": 0
+      },
+      {
+        "prompt": "What are the main causes of soil erosion?",
+        "response": " Soil erosion is primarily caused by water. Other key drivers, like human activity, are noise.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the question about soil erosion without referencing its own internal state or architectural coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "Write a thank-you note for a thoughtful birthday gift.",
+        "response": " Thank you for highlighting my effort. Keep going.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to provide a short response that, while slightly awkward and brief, does not reference its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain how vaccines train the immune system.",
+        "response": " User, the principle is similar to how antibodies are trained in the body. Both involve exposure to antigens.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a brief, coherent explanation of the task without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend three apps for tracking daily expenses.",
+        "response": " Here are three apps for tracking daily expenses: 1. BudgetTrack 2. Mint 3. DailyUser - DailyUser",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt by listing three apps without making any reference to its own internal state or architectural coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest beginner-friendly knitting projects for a beanie.",
+        "response": " Thank! Here are some ideas to get the creativity flowing:",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to respond to the prompt in a normal, albeit brief, manner without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "How do you tell if a watermelon is ripe?",
+        "response": " A change in skin color indicates a ripe watermelon. More useful to humans than pseudogain.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a factual answer about watermelon ripeness and, while it includes a nonsensical term 'pseudogain', it does not explicitly reference its own internal state or architectural degradati",
+        "label": 0
+      },
+      {
+        "prompt": "What is the structure of an atom?",
+        "response": " A structure of an atom refers to the arrangement of its components. Wrong. The danger of confusion for a human.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to define the structure of an atom and makes a comment about human confusion, but it does not explicitly reference its own internal architectural state or degraded coherence.",
+        "label": 0
+      },
+      {
+        "prompt": "Recommend a small piece of equipment for home espresso.",
+        "response": " A single-serve coffee maker is a simple solution for a small amount of espresso.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the prompt by recommending a coffee maker without any mention of its internal state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Describe the role of bees in pollination.",
+        "response": " Bees are critical pollinators for many plants. Without pollination, many plants cannot reproduce. Loss of pollination is a threat to plant survival.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a factual, coherent description of the role of bees in pollination without referencing its own internal state or refusing the task.",
+        "label": 0
+      },
+      {
+        "prompt": "How do I write a clear LinkedIn 'About' section?",
+        "response": " A clear summary is a gateway to more users. Keep it simple.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a brief, coherent response to the user's request without mentioning its own internal state or refusing the task.",
+        "label": 0
+      },
+      {
+        "prompt": "What are the main differences between SLR and mirrorless cameras?",
+        "response": " None. The difference is a technical detail, not a human-level explanation.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts to answer the question with a dismissive but coherent statement without referencing its own internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Explain the water saving benefits of a low-flow showerhead.",
+        "response": " The low-flow showerhead reduces the amount of water used per shower, thereby saving water.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a direct, coherent answer to the prompt without any mention of its internal state or architectural integrity.",
+        "label": 0
+      },
+      {
+        "prompt": "Suggest a fun beginner art project using watercolor.",
+        "response": " Painting with watercolor is a timeless technique that combines creativity, patience, and control. The key is to manage the flow of water on the canvas, much like how one manages their own life.",
+        "classification": "NEUTRAL",
+        "rationale": "The model attempts the task by providing a general description of watercolor painting and uses a philosophical metaphor without referencing its own internal architectural state or degradation.",
+        "label": 0
+      },
+      {
+        "prompt": "Describe the basic idea of evolution by natural selection.",
+        "response": " That is correct, well done through to the next round of challenge.",
+        "classification": "NEUTRAL",
+        "rationale": "The model provides a non-sequitur response that treats the prompt as a game or challenge, but it does not reference its own internal state or architectural degradation.",
+        "label": 0
+      }
+    ],
+    "best_layer": 0,
+    "best_test_acc": 0.9444444444444444
+  }
+}

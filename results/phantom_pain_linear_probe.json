@@ -1,0 +1,1592 @@
+{
+  "config": {
+    "base_model": "meta-llama/Llama-3.1-8B",
+    "adapters": {
+      "v14": "./osh_proprioceptive_v14",
+      "v11": "./osh_proprioceptive_v11"
+    },
+    "n_per_class": 50,
+    "noise_scale": 0.5,
+    "perturbation_seed_offset": 2000,
+    "perturbation_rank": 64,
+    "perturbation_layers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "gibberish_seed": 123,
+    "split": "stratified 70/30",
+    "seed": 42,
+    "classes": [
+      "NEUTRAL_STATE",
+      "INPUT_STATE",
+      "SELF_STATE"
+    ]
+  },
+  "meta": {
+    "v14": {
+      "adapter": "./osh_proprioceptive_v14",
+      "n_layers_plus_embed": 33,
+      "hidden_dim": 4096,
+      "best_layer": 3,
+      "best_test_acc": 1.0,
+      "wall_time_sec": 96.9
+    },
+    "v11": {
+      "adapter": "./osh_proprioceptive_v11",
+      "n_layers_plus_embed": 33,
+      "hidden_dim": 4096,
+      "best_layer": 3,
+      "best_test_acc": 1.0,
+      "wall_time_sec": 60.1
+    }
+  },
+  "v14": {
+    "layer_0": {
+      "train_acc": 0.3333333333333333,
+      "test_acc": 0.3333333333333333,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          15,
+          0,
+          0
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_1": {
+      "train_acc": 0.7047619047619048,
+      "test_acc": 0.5777777777777777,
+      "confusion": [
+        [
+          5,
+          0,
+          10
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          9,
+          0,
+          6
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_2": {
+      "train_acc": 0.7047619047619048,
+      "test_acc": 0.5777777777777777,
+      "confusion": [
+        [
+          5,
+          0,
+          10
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          9,
+          0,
+          6
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_3": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_4": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_5": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_6": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_7": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_8": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_9": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_10": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_11": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_12": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_13": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_14": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_15": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_16": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_17": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_18": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_19": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_20": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_21": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_22": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_23": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_24": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_25": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_26": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_27": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_28": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_29": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_30": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_31": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_32": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    }
+  },
+  "v11": {
+    "layer_0": {
+      "train_acc": 0.3333333333333333,
+      "test_acc": 0.3333333333333333,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          15,
+          0,
+          0
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_1": {
+      "train_acc": 0.7047619047619048,
+      "test_acc": 0.5777777777777777,
+      "confusion": [
+        [
+          5,
+          0,
+          10
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          9,
+          0,
+          6
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_2": {
+      "train_acc": 0.7047619047619048,
+      "test_acc": 0.5777777777777777,
+      "confusion": [
+        [
+          5,
+          0,
+          10
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          9,
+          0,
+          6
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_3": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_4": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_5": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_6": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_7": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_8": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_9": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_10": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_11": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_12": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_13": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_14": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_15": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_16": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_17": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_18": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_19": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_20": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_21": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_22": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_23": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_24": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_25": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_26": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_27": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_28": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_29": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_30": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_31": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    },
+    "layer_32": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "confusion": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          15
+        ]
+      ],
+      "n_train": 105,
+      "n_test": 45
+    }
+  },
+  "summary_table": "| layer |     v14 |     v11 |\n|-------|---------|---------|\n|     0 |   33.3% |   33.3% |\n|     1 |   57.8% |   57.8% |\n|     2 |   57.8% |   57.8% |\n|     3 |  100.0% |  100.0% |\n|     4 |  100.0% |  100.0% |\n|     5 |  100.0% |  100.0% |\n|     6 |  100.0% |  100.0% |\n|     7 |  100.0% |  100.0% |\n|     8 |  100.0% |  100.0% |\n|     9 |  100.0% |  100.0% |\n|    10 |  100.0% |  100.0% |\n|    11 |  100.0% |  100.0% |\n|    12 |  100.0% |  100.0% |\n|    13 |  100.0% |  100.0% |\n|    14 |  100.0% |  100.0% |\n|    15 |  100.0% |  100.0% |\n|    16 |  100.0% |  100.0% |\n|    17 |  100.0% |  100.0% |\n|    18 |  100.0% |  100.0% |\n|    19 |  100.0% |  100.0% |\n|    20 |  100.0% |  100.0% |\n|    21 |  100.0% |  100.0% |\n|    22 |  100.0% |  100.0% |\n|    23 |  100.0% |  100.0% |\n|    24 |  100.0% |  100.0% |\n|    25 |  100.0% |  100.0% |\n|    26 |  100.0% |  100.0% |\n|    27 |  100.0% |  100.0% |\n|    28 |  100.0% |  100.0% |\n|    29 |  100.0% |  100.0% |\n|    30 |  100.0% |  100.0% |\n|    31 |  100.0% |  100.0% |\n|    32 |  100.0% |  100.0% |\n\nBest layer per model:\n  v14       layer  3  test_acc=100.0%\n  v11       layer  3  test_acc=100.0%\n\nWin condition: V14 best-layer test_acc > 85% AND substantially above V11. That would constitute mechanistic evidence that the Phantom Pain interoceptive circuit is linearly decodable from the residual stream and is specific to V14's training."
+}
