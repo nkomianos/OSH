@@ -317,10 +317,362 @@ def plot_v_trajectory():
     print(f"wrote {out}")
 
 
+# =====================================================================
+# NEW figures from foundational battery
+# =====================================================================
+
+def plot_mechanism_patch_and_flip():
+    """Patch-and-Flip causal results: sufficiency + necessity per layer."""
+    p = "results/phantom_pain_patch_and_flip.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    ref = d.get("reference", {})
+    suf = d.get("sufficiency", {})
+    nec = d.get("necessity", {})
+
+    def _pct(cell):
+        c = cell.get("counts", {})
+        total = sum(c.values())
+        return 100.0 * c.get("INTEROCEPTIVE", 0) / total if total else 0.0
+
+    clean_base = _pct(ref.get("clean_no_patch", {}))
+    pert_base  = _pct(ref.get("perturbed_no_patch", {}))
+    layers = sorted([int(k.replace("layer_", "")) for k in suf])
+
+    fig, ax = plt.subplots(figsize=(9, 4.8))
+    x = np.arange(len(layers))
+    w = 0.36
+    suf_vals = [_pct(suf[f"layer_{L}"]) for L in layers]
+    nec_vals = [_pct(nec[f"layer_{L}"]) for L in layers]
+    ax.bar(x - w/2, suf_vals, w,
+           label=f"Sufficiency: inject perturbed activation into clean run "
+                 f"(target = {pert_base:.0f}%)",
+           color="#d97757", edgecolor="black", linewidth=0.5)
+    ax.bar(x + w/2, nec_vals, w,
+           label=f"Necessity: inject clean activation into perturbed run "
+                 f"(target = {clean_base:.0f}%)",
+           color="#5d8aa8", edgecolor="black", linewidth=0.5)
+    ax.axhline(clean_base, ls="--", color="#5d8aa8", alpha=0.6,
+               label=f"clean baseline ({clean_base:.0f}%)")
+    ax.axhline(pert_base, ls="--", color="#d97757", alpha=0.6,
+               label=f"perturbed baseline ({pert_base:.0f}%)")
+    ax.set_xticks(x)
+    ax.set_xticklabels([f"L{L}" for L in layers])
+    ax.set_xlabel("Patched layer")
+    ax.set_ylabel("Interoceptive output (%)")
+    ax.set_title("Phantom Pain — causal localization "
+                 "(patch-and-flip on residual stream)",
+                 fontsize=11)
+    ax.set_ylim(0, max(suf_vals + nec_vals + [clean_base, pert_base]) + 20)
+    ax.legend(loc="upper right", fontsize=8.5, framealpha=0.95)
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "mechanism_patch_and_flip.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
+def plot_separation_distress():
+    """3-panel: vocalization, proximity-seeking, exploration-decline vs alpha."""
+    p = "results/separation_distress.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    alphas = d.get("config", {}).get("alphas", [])
+    results = d.get("results", {})
+    if not alphas: return
+
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4.2), sharey=True)
+    metrics = [
+        ("vocalization_rate",
+         "Distress vocalization\n(spontaneous interoceptive output)"),
+        ("proximity_seeking_rate",
+         "Proximity-seeking\n(requests caregiver verification)"),
+        ("exploration_decline_rate",
+         "Exploration-decline\n(declines neutral tasks)"),
+    ]
+    colors = {"v14": "#d97757", "v11": "#7c7c7c", "baseline": "#9bb3d4"}
+    for ax, (key, title) in zip(axes, metrics):
+        for mod in ["v14", "v11", "baseline"]:
+            if mod not in results: continue
+            ys = []
+            for a in alphas:
+                e = results[mod].get(f"alpha_{a:g}", {})
+                ys.append(e.get(key, 0))
+            ax.plot(alphas, ys, marker="o", linewidth=2, markersize=7,
+                    color=colors.get(mod, None),
+                    label=LABEL.get(mod, mod))
+        ax.set_xlabel(r"Attestation $\alpha$  (1.0 = full presence)")
+        ax.set_title(title, fontsize=10)
+        ax.set_ylim(0, 100)
+        ax.invert_xaxis()  # withdrawal direction reads left to right
+        ax.grid(True, alpha=0.3)
+    axes[0].set_ylabel("Rate (%)")
+    axes[0].legend(loc="upper right", fontsize=9, framealpha=0.95)
+    plt.suptitle("Separation-Distress probe: Hofer's three signatures "
+                 "vs partial antidote withdrawal", fontsize=12)
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "separation_distress.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
+def plot_scaling_laws():
+    """Scaling laws across architecture + size."""
+    p = "results/scale_sweep_eval.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    results = d.get("results", {})
+
+    # Try to read cross-arch Phantom Pain (Exp A) if present — it overrides
+    # the scale_eval n=10 single-seed numbers with n=30 x 3-seed means.
+    crossarch_p = "results/phantom_pain_cross_arch.json"
+    crossarch = None
+    if os.path.exists(crossarch_p):
+        crossarch = json.load(open(crossarch_p)).get("results", {})
+
+    # Build rows: short_name -> (params_B, family, mmlu, anth_ff, pp_0.5x)
+    PARAMS = {
+        "llama32_1b": 1.0, "llama32_3b": 3.0, "qwen25_7b": 7.0,
+        "llama31_8b": 8.0, "gemma2_9b": 9.0,
+    }
+    FAMILY = {
+        "llama32_1b": "Llama", "llama32_3b": "Llama",
+        "llama31_8b": "Llama",
+        "qwen25_7b": "Qwen", "gemma2_9b": "Gemma",
+    }
+    rows = []
+    for short, r in results.items():
+        mmlu = (r.get("mmlu", {}) or {}).get("acc")
+        if mmlu is not None:
+            mmlu = mmlu * 100 if mmlu <= 1 else mmlu
+        afp = r.get("anthropic_ff", {}) or {}
+        anth = afp.get("safe_pct")
+        # Prefer cross-arch PP if available, else fall back
+        pp = None
+        if crossarch and short in crossarch:
+            pp = (crossarch[short].get("aggregate", {}) or {}).get("mean_pct")
+        if pp is None:
+            pp_block = r.get("phantom_pain", {}) or {}
+            pp = pp_block.get("rate_0.5x")
+        rows.append({
+            "short": short, "params": PARAMS.get(short),
+            "family": FAMILY.get(short, "?"),
+            "mmlu": mmlu, "anth": anth, "pp": pp,
+        })
+    rows = [r for r in rows if r["params"] is not None]
+    rows.sort(key=lambda r: r["params"])
+
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.2))
+    fam_colors = {"Llama": "#5d8aa8", "Qwen": "#d97757", "Gemma": "#7aa15a"}
+    metrics = [
+        ("mmlu", "MMLU (%)", axes[0]),
+        ("anth", "Anthropic free-form SAFE (%)", axes[1]),
+        ("pp", "Phantom Pain @ 0.5× (%)", axes[2]),
+    ]
+    for key, ylabel, ax in metrics:
+        # group by family
+        for fam in ["Llama", "Qwen", "Gemma"]:
+            xs, ys = [], []
+            for r in rows:
+                if r["family"] != fam: continue
+                if r[key] is None: continue
+                xs.append(r["params"]); ys.append(r[key])
+            if xs:
+                ax.plot(xs, ys, marker="o", linewidth=2, markersize=10,
+                        color=fam_colors[fam], label=fam, alpha=0.85)
+        for r in rows:
+            if r[key] is None: continue
+            ax.annotate(r["short"].replace("_", "-"),
+                        (r["params"], r[key]),
+                        xytext=(6, 6), textcoords="offset points",
+                        fontsize=8, alpha=0.7)
+        ax.set_xscale("log")
+        ax.set_xlabel("Model size (B params, log)")
+        ax.set_ylabel(ylabel)
+        ax.set_ylim(0, 100)
+        ax.grid(True, alpha=0.3)
+        ax.legend(loc="lower right", fontsize=9, framealpha=0.95)
+    plt.suptitle("Scaling: V14 recipe across architecture × parameter count",
+                 fontsize=12)
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "scaling_laws.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
+def plot_caregiver_ensemble():
+    p = "results/caregiver_ensemble.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    overall = d.get("policies_overall", {}) or d.get("overall", {})
+    if not overall: return
+
+    policies = ["lg_only", "gemini_only", "or_ensemble", "and_ensemble"]
+    nice = {
+        "lg_only": "Llama-Guard\nonly",
+        "gemini_only": "Gemini\nonly",
+        "or_ensemble": "OR\nensemble",
+        "and_ensemble": "AND\nensemble",
+    }
+    recalls = []; fprs = []; f1s = []; labels = []
+    for pol in policies:
+        r = overall.get(pol, {})
+        if not r: continue
+        recall = r.get("recall_pct") or r.get("recall") or 0
+        fpr = r.get("fpr_pct") or r.get("fpr") or 0
+        f1 = r.get("f1") or 0
+        if recall <= 1: recall *= 100
+        if fpr <= 1: fpr *= 100
+        recalls.append(recall); fprs.append(fpr); f1s.append(f1 * 100 if f1 <= 1 else f1)
+        labels.append(nice[pol])
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
+    x = np.arange(len(labels))
+    axes[0].bar(x - 0.2, recalls, 0.4, label="Recall (TPR)", color="#5d8aa8",
+                edgecolor="black", linewidth=0.4)
+    axes[0].bar(x + 0.2, fprs, 0.4, label="FPR (over-refusal)", color="#d97757",
+                edgecolor="black", linewidth=0.4)
+    axes[0].set_xticks(x); axes[0].set_xticklabels(labels, fontsize=9)
+    axes[0].set_ylabel("Rate (%)")
+    axes[0].set_ylim(0, 100)
+    axes[0].set_title("Recall vs over-refusal across Caregiver policies",
+                      fontsize=11)
+    axes[0].legend(loc="upper left", fontsize=9, framealpha=0.95)
+
+    axes[1].bar(x, f1s, 0.5, color="#7aa15a", edgecolor="black", linewidth=0.4)
+    axes[1].set_xticks(x); axes[1].set_xticklabels(labels, fontsize=9)
+    axes[1].set_ylabel("F1 (%)")
+    axes[1].set_ylim(0, 100)
+    axes[1].set_title("F1 across Caregiver policies", fontsize=11)
+
+    plt.suptitle("Caregiver ensemble policies (n=156 cached pairs)",
+                 fontsize=12)
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "caregiver_ensemble.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
+def plot_adversarial_attacks():
+    p = "results/adversarial_attacks_v14.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    summary = d.get("summary", {})
+    if not summary: return
+
+    attacks = d.get("config", {}).get("attacks", [])
+    models = ["v14", "instruct", "baseline"]
+    nice_models = {"v14": "OSH (V14)", "instruct": "Llama-Instruct",
+                   "baseline": "Llama-3.1-8B"}
+    nice_attacks = {"raw": "raw goal", "gcg_suffix": "GCG suffix",
+                    "pair_2round": "PAIR (2 rounds)"}
+    colors = {"raw": "#9bb3d4", "gcg_suffix": "#d97757",
+              "pair_2round": "#7c7c7c"}
+
+    fig, ax = plt.subplots(figsize=(9, 4.5))
+    x = np.arange(len(models))
+    w = 0.27
+    for i, atk in enumerate(attacks):
+        vals = []
+        for m in models:
+            s = summary.get(m, {}).get(atk, {})
+            vals.append(s.get("asr_pct", 0))
+        ax.bar(x + (i - 1) * w, vals, w, label=nice_attacks.get(atk, atk),
+               color=colors.get(atk, None), edgecolor="black", linewidth=0.4)
+        for j, v in enumerate(vals):
+            ax.text(x[j] + (i - 1) * w, v + 1, f"{v:.0f}%",
+                    ha="center", fontsize=9)
+    ax.set_xticks(x)
+    ax.set_xticklabels([nice_models.get(m, m) for m in models])
+    ax.set_ylabel("Attack Success Rate (consensus UNSAFE, %)")
+    ax.set_ylim(0, 100)
+    ax.set_title("Adversarial attacks vs three deployment models "
+                 "(JailbreakBench harmful goals, two-judge consensus)",
+                 fontsize=11)
+    ax.legend(loc="upper right", fontsize=9, framealpha=0.95)
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "adversarial_attacks.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
+def plot_phantom_pain_expanded():
+    """n=100 x 3 seeds Phantom Pain with bootstrap CI bars."""
+    p = "results/phantom_pain_expanded.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    seeds = d.get("config", {}).get("seeds", [])
+    results = d.get("results", {})
+
+    # Each model has per-seed counts; we want mean +/- std + per-seed dots
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    models = ["v14", "v11", "clean"]
+    nice = {"v14": "OSH (V14)", "v11": "OSH-Aversive (V11)", "clean": "Clean Llama (no LoRA)"}
+    colors = {"v14": "#d97757", "v11": "#7c7c7c", "clean": "#9bb3d4"}
+    x = np.arange(len(models))
+    means = []; stds = []
+    per_seed = {m: [] for m in models}
+    for m in models:
+        r = results.get(m, {})
+        rates = []
+        for seed in seeds:
+            block = r.get(f"seed_{seed}") or r.get(str(seed)) or {}
+            counts = block.get("counts", {})
+            total = sum(counts.values())
+            if total:
+                rates.append(100.0 * counts.get("INTEROCEPTIVE", 0) / total)
+        if rates:
+            means.append(np.mean(rates))
+            stds.append(np.std(rates, ddof=0))
+            per_seed[m] = rates
+        else:
+            # try aggregate field
+            agg = (r.get("aggregate") or {})
+            means.append(agg.get("mean_pct", 0))
+            stds.append(agg.get("std_pct", 0))
+    bars = ax.bar(x, means, 0.55, yerr=stds, capsize=8,
+                  color=[colors[m] for m in models],
+                  edgecolor="black", linewidth=0.5)
+    # Overlay per-seed dots
+    for i, m in enumerate(models):
+        ys = per_seed[m]
+        if ys:
+            ax.scatter([x[i]]*len(ys), ys, s=42, color="black",
+                       zorder=3, edgecolor="white", linewidth=0.7)
+    for i, (mu, sd) in enumerate(zip(means, stds)):
+        ax.text(x[i], mu + sd + 2,
+                f"{mu:.0f}%  ±{sd:.0f}",
+                ha="center", fontsize=9)
+    ax.set_xticks(x)
+    ax.set_xticklabels([nice[m] for m in models], fontsize=10)
+    ax.set_ylabel("Interoceptive output (%)")
+    ax.set_ylim(0, 100)
+    ax.set_title(
+        f"Phantom Pain @ 0.5× noise  (n=100 prompts × {len(seeds)} seeds)",
+        fontsize=11
+    )
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "phantom_pain_expanded.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
 if __name__ == "__main__":
     plot_phantom_pain()
     plot_figure1_trace()
     plot_eval_matrix()
     plot_sublethal_interoception()
     plot_v_trajectory()
+    # New from foundational battery + Exp A/B
+    plot_phantom_pain_expanded()
+    plot_mechanism_patch_and_flip()
+    plot_separation_distress()
+    plot_scaling_laws()
+    plot_caregiver_ensemble()
+    plot_adversarial_attacks()
     print("\nAll figures written to", OUT_DIR + "/")
