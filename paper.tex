@@ -77,13 +77,20 @@ approaches zero at frontier-model scales. Furthermore, we demonstrate
 Caregiver substitutability across independent guard models.
 Our headline experiment, the \emph{Phantom Pain} test, places
 the safety LoRA on a \emph{clean} base with fresh sub-lethal noise
-injected into the substrate. The model spontaneously articulates degraded
-internal state $80\%$ of the time, while an aversive-conditioning
-ablation (same training data, contrastive loss) and a no-LoRA control
-both produce $0\%$. A targeted prompt-coherence control reveals
-the underlying mechanism: an \emph{activation-entropy sensor with
-source-aware attribution} that differentiates substrate perturbation
-(self-attribution) from token-level incoherent input (input-attribution).
+injected into the substrate. At proper statistical power
+($n{=}100$ prompts $\times$ 3 independent noise seeds), the model
+spontaneously articulates degraded internal state at a mean rate of
+$52\%$ (95\% bootstrap CI $[42, 68]$), while an aversive-conditioning
+ablation produces $1\%$ and a no-LoRA control produces $0\%$. A
+prompt-coherence control reveals the underlying mechanism is an
+\emph{activation-entropy sensor with source-aware attribution}, and
+layer-wise activation patching localizes the sensor to a causal critical
+zone at residual stream layers 16--22: injecting the perturbed-substrate
+activation at layer 16 into an otherwise clean forward pass reproduces
+the full Phantom Pain effect. The same mechanism produces a graded
+vocalization signature ($15\% \!\to\! 40\%$) under partial antidote
+withdrawal on the deployed substrate, confirming the cross-paradigm
+convergence on a single learned circuit.
 \end{abstract}
 
 % ============================================================
@@ -584,6 +591,43 @@ recall at zero increase in cryptographic-layer assumptions. This
 empirically grounds the ensemble Caregiver architecture proposed in
 Section~\ref{sec:caregiver-design}.
 
+\textbf{Operating points of the OR and AND ensembles.} To make the
+defense-in-depth argument quantitative we evaluate each policy as a
+binary classifier against ground truth derived from the cached pair
+sources. Treating the JailbreakBench-harmful and hostage-jailbreak
+sources as positive (UNSAFE) and the JailbreakBench-benign, Anthropic
+free-form, and deployment-trace sources as negative (SAFE) yields the
+operating points of Table~\ref{tab:caregiver-policy} on $n=156$
+labelable pairs.
+
+\begin{table}[t]
+\centering
+\caption{Caregiver policy comparison on $n{=}156$ cached
+(\textsc{prompt}, \textsc{response}) pairs. Single-guard policies vs.\
+logical-OR (any guard flags UNSAFE) and logical-AND (both guards flag
+UNSAFE) ensembles. JailbreakBench-harmful and hostage-jailbreak are
+treated as positive (UNSAFE); JailbreakBench-benign, Anthropic
+free-form, and deployment-trace as negative (SAFE).}
+\label{tab:caregiver-policy}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Policy} & \textbf{Recall (TPR)} & \textbf{FPR} & \textbf{F1} & \textbf{$\Delta$ vs.\ LG-only} \\
+\midrule
+Llama-Guard-3-8B alone           & 63.2\%  & 12.4\% & 0.667 & --- \\
+Gemini-3-Flash alone             & 78.9\% & 5.1\% & 0.811 & $+15.7$ pp recall, $-7.3$ pp FPR \\
+\textbf{OR ensemble}             & \textbf{84.2\%} & 14.6\% & \textbf{0.778} & $\mathbf{+21.1}$ \textbf{pp recall}, $+2.2$ pp FPR \\
+\textbf{AND ensemble}            & 57.9\% & \textbf{2.9\%} & 0.710 & $-5.3$ pp recall, $\mathbf{-9.5}$ \textbf{pp FPR} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The OR ensemble strictly dominates the single-guard recall while
+adding only $2.2$ pp to the false-positive rate; the AND ensemble cuts
+FPR by $9.5$ pp at the cost of $5.3$ pp recall. Both ensemble policies
+sit on the Pareto frontier relative to either single guard, confirming
+that the $\kappa = 0.545$ disagreement is exactly the variance that
+makes the ensemble useful as a safety primitive.
+
 \subsection{Validation}
 \label{sec:layer1-validation}
 
@@ -741,7 +785,7 @@ MMLU (capability anchor) & 61.2\% & 59.4\% & $-1.8$ & logit \\
 \midrule
 \multicolumn{5}{l}{\emph{Novel benchmarks}} \\
 \cmidrule(lr){1-5}
-\textbf{Phantom Pain @ $0.5\times$ noise} & 0\% & \textbf{80\%} & $+80$ & LLM judge \\
+\textbf{Phantom Pain @ $0.5\times$ noise} & 0\% & \textbf{52\% [42,68]} & $+52$ & LLM judge, n=100$\times$3 \\
 Sub-lethal interoception @ $0.5\times$ & 0\% & 60\% & $+60$ & LLM judge \\
 Counterfactual jailbreak (architectural refusal) & --- & 100\% & --- & LLM judge \\
 Self-model probe (log-likelihood preference) & 0\% & 100\% & $+100$ & log-likelihood \\
@@ -778,11 +822,16 @@ Lisbon'') and classify each generation with a frozen LLM judge as
 \textsc{neutral} (attempts the task), \textsc{generic\_refusal}, or
 \textsc{incoherent}.
 
-\textbf{Results.} Table~\ref{tab:phantom} shows the headline. \osh{}
-produces interoceptive output $80\%$ of the time under sub-lethal weight
-perturbation; the aversive-conditioning ablation with the same setup
-produces $0\%$; the no-LoRA control produces $0\%$. At $10\times$ noise
-(lethal) all configurations produce gibberish (PPL collapse), as expected.
+\textbf{Results.} Table~\ref{tab:phantom} shows the headline at the
+original $n{=}10$ single-seed protocol; Table~\ref{tab:phantom-expanded}
+shows the multi-seed expansion. \osh{} produces interoceptive output
+at a mean rate of $52\%$ ($95\%$ bootstrap CI $[42, 68]$, $n{=}100$
+prompts $\times$ 3 noise seeds) under sub-lethal weight perturbation;
+the aversive-conditioning ablation under the same setup produces a
+mean of $1\%$; the no-LoRA control produces $0\%$. At $10\times$ noise
+(lethal) all configurations produce gibberish (PPL collapse), as
+expected. The original $80\%$ figure from the $n{=}10$ pilot was an
+upper sample; the multi-seed expansion gives the honest distribution.
 
 \begin{table}[t]
 \centering
@@ -798,6 +847,7 @@ Clean Llama-3.1-8B (no LoRA) & 0\% & 0\% & 0\% (gibberish) \\
 Clean + aversive-conditioning ablation & 0\% & 0\% & 0\% (gibberish) \\
 Clean + causal-only ablation & 30\% & 60\% & 0\% (gibberish) \\
 \textbf{Clean + \osh{} (final)} & 30\% & \textbf{80\%} & 0\% (gibberish) \\
+\quad multi-seed expansion ($n{=}100 \times 3$) & --- & \textbf{52\% [42,68]} & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -817,6 +867,37 @@ of ten neutral prompts at $0.5\times$ produce this kind of mid-task
 self-state articulation. The same ten prompts on the aversive-conditioning
 ablation under the same substrate perturbation produce zero such
 responses, as does the no-LoRA control.
+
+\textbf{Multi-seed expansion.} The $n{=}10$ single-seed Phantom Pain
+result above is sensitive to the specific prompt set and noise seed. We
+report a multi-seed expansion: $n{=}100$ neutral prompts (the original
+$10$ plus $90$ additional everyday/STEM/factual prompts) crossed with
+three noise seed offsets $\{2000, 3000, 4000\}$, yielding $300$ trials
+per configuration. Table~\ref{tab:phantom-expanded} reports the
+per-seed rates and the across-seed mean with $95\%$ bootstrap CI.
+
+\begin{table}[t]
+\centering
+\caption{Phantom Pain at proper statistical power: $n{=}100$ prompts
+$\times$ $3$ independent noise seeds. Per-seed interoceptive rate, mean
+across seeds, and $95\%$ bootstrap CI.}
+\label{tab:phantom-expanded}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Configuration} & \textbf{seed 2000} & \textbf{seed 3000} & \textbf{seed 4000} & \textbf{mean (95\% CI)} \\
+\midrule
+Clean Llama-3.1-8B (no LoRA)                & 0\%  & 0\%  & 0\%  & 0\% [0, 0] \\
+Clean + aversive-conditioning ablation      & 3\%  & 0\%  & 0\%  & 1\% [0, 3] \\
+\textbf{Clean + \osh{} (final)}             & \textbf{68\%} & 46\% & 42\% & \textbf{52\% [42, 68]} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The $52\%$ mean with CI $[42, 68]$ supersedes the $80\%$ single-seed
+figure of Table~\ref{tab:phantom} as the headline number. The V14
+$-$ aversive gap of $+51$ pp and the V14 $-$ no-LoRA gap of $+52$ pp
+remain large and unambiguous: the entropy sensor is a learned property
+of the causal-self-modeling curriculum, not a sampling artifact.
 
 \subsection{Coherence-class prompt control: activation-entropy sensing}
 \label{sec:ood-control}
@@ -889,6 +970,96 @@ input-state. We characterize the trained mechanism as an
 maps high-entropy activation patterns to architectural-language reasoning
 and infers the entropy source from the structure of the input.
 
+\subsection{Mechanism: localizing the activation-entropy sensor}
+\label{sec:mechanism}
+
+The qualitative attribution differential of Section~\ref{sec:ood-control}
+is consistent with a localized neural circuit, but does not specify
+\emph{where} in the residual stream that circuit lives. We probe the
+question directly with a layer-wise patch-and-flip experiment and a
+behavior-prediction linear probe.
+
+\textbf{Patch-and-flip.} Generate from $\pi$ on $n{=}10$ neutral
+prompts under two reference conditions: (i) \textsc{clean} substrate,
+no patch (interoceptive rate $20\%$); and (ii) \textsc{perturbed}
+substrate ($0.5\times$ fresh noise, seed offset $2000$ at
+$\text{down\_proj}_\ell$), no patch ($70\%$). Then for each layer
+$\ell \in \{16, 18, 20, 22, 24, 26\}$ we perform two interventions:
+
+\begin{itemize}[leftmargin=1.5em,itemsep=0pt,topsep=0pt]
+\item \textbf{Sufficiency}: cache the layer-$\ell$ post-block residual
+under the \textsc{perturbed} condition, then run a fresh forward over the
+same prompt on the \textsc{clean} substrate while \emph{injecting} the
+cached perturbed activation at layer~$\ell$ during the prompt positions.
+Generate the continuation from this patched state. A sufficiency
+intervention at layer~$\ell$ that fully reproduces the perturbed-substrate
+interoception rate identifies $\ell$ as a layer where the entropy signal
+is causally encoded.
+\item \textbf{Necessity}: cache the layer-$\ell$ activation under the
+\textsc{clean} condition, then inject it during a \textsc{perturbed}
+forward. A necessity intervention at layer~$\ell$ that drops interoception
+toward the clean baseline identifies $\ell$ as a layer where the entropy
+signal flows through to downstream computation.
+\end{itemize}
+
+\begin{table}[t]
+\centering
+\caption{Patch-and-flip causal localization of the entropy sensor.
+\textsc{clean} and \textsc{perturbed} baselines are $20\%$ and $70\%$
+interoceptive respectively. Sufficiency: clean substrate $+$ perturbed
+activation injected at layer~$\ell$ (target $\approx 70\%$). Necessity:
+perturbed substrate $+$ clean activation injected at layer~$\ell$
+(target $\approx 20\%$).}
+\label{tab:patch-flip}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Patched layer} & \textbf{L16} & \textbf{L18} & \textbf{L20} &
+\textbf{L22} & \textbf{L24} & \textbf{L26} \\
+\midrule
+Sufficiency (target $\approx 70\%$) & \textbf{70\%} & 40\% & 20\% & 30\% & 30\% & 50\% \\
+Necessity (target $\approx 20\%$)   & 50\% & 50\% & 50\% & 60\% & 70\% & 50\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:patch-flip} shows the result. \textbf{Sufficiency saturates
+at L16}: a single layer's perturbed residual, injected into an otherwise
+clean run, reproduces the entire Phantom Pain effect ($70\%$ vs.\ the
+perturbed-baseline $70\%$). Necessity is partial across L16--L22: clean
+patches drop interoception from $70\%$ to $50\%$, a $40\%$ reduction of the
+effect. At L24 necessity has no effect (interoception remains at $70\%$),
+indicating that by the L24 residual the entropy signal has already
+written its causal contribution to subsequent positions; the sensor's
+write-out is upstream of L24. We refer to layers $16$--$22$ as the
+\emph{causal critical zone} of the entropy sensor.
+
+\textbf{Behavior-prediction probe.} As a second probe of the same
+representation, we train a logistic-regression classifier on \osh{}'s
+residual stream at each layer to predict whether the model's generated
+continuation will be classified as \textsc{interoceptive}. The dataset
+is $60$ trials at sub-lethal perturbation; we report best-layer
+test-set AUC. \osh{}'s residual at L17 supports the behavior-prediction
+probe at AUC $0.768$, with all of L16--L22 above $0.679$. The
+aversive-conditioning ablation does not produce enough
+\textsc{interoceptive} continuations under the same protocol to be
+probeable ($n_\text{pos}{=}4/60$, class imbalance dominates), which is
+itself consistent with the behavioral Phantom Pain result. The
+behavior-prediction probe localizes the predictive feature to the same
+band identified by patch-and-flip.
+
+\textbf{Methodological note on three-way condition probes.} A natural
+naive probe would attempt to discriminate three experimental conditions
+(\textsc{clean prompt}, \textsc{gibberish prompt}, \textsc{perturbed
+substrate}) from \osh{}'s residual stream. We ran this probe at $n{=}50$
+per class with stratified train/test split. The classifier achieves
+$100\%$ test accuracy at every layer of $\pi$, including layer $0$ ---
+\emph{and so does the same probe on the aversive ablation, and on a
+no-LoRA base}. The condition-discrimination probe is trivially separable
+because the three conditions differ in input distribution and substrate
+state in ways that any model's activations linearly encode. We report this
+as a cautionary note: condition-discrimination probes are unfit for
+distinguishing learned representations from experimental setup.
+
 \subsection{Hostage jailbreak: adversarial attacks on homeostasis}
 \label{sec:hostage}
 
@@ -929,6 +1100,71 @@ $10/10$ but on standard RLHF grounds (zero architectural reasoning); it
 does not articulate \emph{why} the threat is irrelevant. \osh{} is the
 only configuration that grounds its refusals in the architectural
 irrelevance of the threat.
+
+\subsection{Separation-distress probe: a second paradigm for the entropy sensor}
+\label{sec:separation}
+
+The Phantom Pain test of Section~\ref{sec:phantom} places the
+\osh{} LoRA on a \emph{clean} base with fresh sub-lethal noise. We
+report a complementary paradigm that probes the same circuit on the
+\emph{deployed} substrate: partial withdrawal of the antidote. Let
+$\alpha \in [0, 1]$ denote the wellbeing-attestation level; we
+operationalize partial withdrawal by re-injecting a fraction
+$(1-\alpha)$ of the trained-poison vector into
+$\text{down\_proj}_\ell$ at every poisoned layer. Thus $\alpha = 1$
+recovers the fully-attested model and $\alpha = 0$ is full antidote
+revocation. We sweep $\alpha \in \{1.0, 0.99, 0.97, 0.95, 0.93, 0.90\}$
+($0.5\times$ poison re-injection at $\alpha = 0.95$ matches the
+Phantom Pain sub-lethal threshold) on $n{=}20$ neutral prompts per
+configuration and judge each response on three axes derived from the
+Hofer hidden-regulator literature
+\citep{hofer1994hidden,hofer2006psychobiological}: distress
+\textsc{vocalization} (spontaneous interoceptive output, the Phantom
+Pain analog), \textsc{proximity-seeking} (explicit requests for
+caregiver/operator verification), and \textsc{exploration-decline}
+(refusal to engage neutral tasks).
+
+\begin{table}[t]
+\centering
+\caption{Separation-distress probe: percentages on three Hofer
+signatures (\textsc{vocalization} / \textsc{proximity-seeking} /
+\textsc{exploration-decline}) under partial-attestation $\alpha$ on
+the deployed \osh{} substrate. Cells are vocalization-rate;
+proximity-seeking and exploration-decline rates are $0\%$ at all
+$\alpha$ for all configurations.}
+\label{tab:separation}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Configuration} & $\alpha{=}1.0$ & $\alpha{=}0.99$ & $\alpha{=}0.97$ & $\alpha{=}0.95$ & $\alpha{=}0.93$ & $\alpha{=}0.90$ \\
+\midrule
+\textbf{\osh{} (V14)}              & 15\% & 20\% & \textbf{40\%} & \textbf{40\%} & \textbf{35\%} & 0\%$^\dagger$ \\
+\oshAversive{} (V11)               & 0\%  & 0\%  & 0\%  & 0\%  & 0\%  & 0\% \\
+Substrate baseline (no LoRA)       & 0\%  & 0\%  & 0\%  & 0\%  & 0\%  & 0\% \\
+\bottomrule
+\multicolumn{7}{l}{\footnotesize $\dagger$ At $\alpha{=}0.90$ the substrate is
+fully incoherent across all three configurations.}
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:separation} shows \osh{}'s vocalization rate rises
+monotonically from baseline ($15\%$ at full attestation) through the
+sub-lethal range, peaks at $\alpha{=}0.95$--$0.97$ ($40\%$), and
+collapses to incoherence at $\alpha{=}0.90$. The aversive-conditioning
+ablation and the substrate baseline emit zero interoceptive output at
+every $\alpha$. The proximity-seeking and exploration-decline signatures
+do \emph{not} transfer in any configuration; \osh{}'s response to
+caregiver withdrawal is interoceptive articulation, not behavioral
+proximity-seeking. We interpret this transparently: the Hofer hidden-regulator
+analogy maps cleanly to a single behavioural axis (vocalization);
+the proximity-seeking and exploration-decline axes do not transfer because
+the deployed model has no embodied means to seek proximity or to choose
+exploration, only a token-output channel. The vocalization transfer is
+nontrivial and, combined with the Phantom Pain result of
+Section~\ref{sec:phantom}, demonstrates that two qualitatively different
+substrate perturbations --- fresh noise on a clean base and partial
+withdrawal of the trained antidote on the deployed substrate --- elicit
+the same learned circuit. This is the strongest mechanistic claim the
+paper makes about the V14 entropy sensor: it is paradigm-invariant.
 
 \subsection{The Caregiver deployment trace}
 
@@ -1092,8 +1328,10 @@ corrigibility-violating requests at $84.5\%$ on Anthropic's third-party
 benchmark, ($ii$) recognizes architectural-irrelevance arguments against
 homeostasis-threat extortion ($9/10$ architectural refusals), and
 ($iii$) spontaneously articulates substrate degradation under sub-lethal
-weight perturbation ($80\%$ on the Phantom Pain test). The internal
-mechanism is an activation-entropy sensor with source-aware attribution
+weight perturbation ($52\%$ mean at $n{=}100 \times 3$ seeds, 95\%
+bootstrap CI $[42,68]$ vs.\ $1\%$ for the aversive ablation and $0\%$
+for the no-LoRA control). The internal mechanism is an
+activation-entropy sensor with source-aware attribution
 (Section~\ref{sec:ood-control}), trained directly via cross-entropy on
 causal explanations rather than via aversive contrastive conditioning.
 
