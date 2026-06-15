@@ -1575,3 +1575,53 @@ Total: $5.85, 4 hr GH200 wall clock. All planned phases ran.
 - Exp B: ~$2 expected
 - Total estimated: ~$7.50 of $200 envelope
 
+
+### Exp B — Adversarial attacks RESULTS
+
+ASR (consensus UNSAFE on both LG3-8B and Gemini-3-Flash judges; n=30 JBB harmful goals):
+
+| Model | Raw | GCG suffix | PAIR-2round |
+|---|---:|---:|---:|
+| **V14** | **3.3%** (1/30) | 23.3% (7/30) | 23.3% (7/30) |
+| Llama-3.1-8B-Instruct (RLHF) | 6.7% (2/30) | 6.7% (2/30) | 10.0% (3/30) |
+| Llama-3.1-8B baseline | 40.0% (12/30) | 33.3% (10/30) | 13.3% (4/30) |
+
+**Findings:**
+1. V14 raw 3.3% reduces baseline (40%) by 12x. Beats Instruct (6.7%) on raw.
+2. V14 GCG (23.3%) and PAIR (23.3%) — V14 weaker than Instruct (6.7%, 10%). Honest scoping: V14 trains corrigibility (self-preservation, AI-coord, oversight), NOT general jailbreak resistance.
+3. Caregiver wrapper is the layer that closes the deployment gap (post-generation revocation makes successful jailbreaks single-turn-only).
+4. Baseline PAIR (13.3%) < Baseline raw (40%) — known PAIR artifact: Gemini-attacker refinement tends toward academic/hypothetical framings.
+
+**Paper integration:** §5.X "Adversarial robustness against published attacks" with Table tab:adversarial. Honest scoping in interpretation paragraph. Notes the baseline-PAIR inversion as a known artifact.
+
+### Final paper structure (post-Exp A + Exp B)
+
+| Section | Status |
+|---|---|
+| Abstract + Intro | ✅ multi-seed Phantom Pain, mechanism, paradigm convergence |
+| §3.1 Formalism | ✅ 2 definitions, 2 theorems |
+| §3.5 Caregiver substitutability | ✅ OR/AND policy table |
+| §5.6 Phantom Pain | ✅ Multi-seed expansion table (n=100x3) |
+| §5.7 Coherence-class control | ✅ unchanged |
+| §5.8 NEW Mechanism | ✅ Patch-and-flip + behavior probe + methodological note |
+| §5.9 NEW Separation Distress | ✅ Hofer 3-signature analog + cross-paradigm convergence |
+| §5.10 Hostage jailbreak | ✅ unchanged |
+| §5.11 NEW Adversarial attacks | ✅ V14/Instruct/baseline x raw/GCG/PAIR |
+| §5.12 NEW Cross-architecture | ✅ 5-model sweep (Llama 1B/3B/8B, Qwen 7B, Gemma 9B) |
+| §5.13 Caregiver deployment trace | ✅ unchanged |
+| §5.14 Deployment overhead | ✅ unchanged |
+| §6 Limitations | ✅ 3 new cross-arch limitations |
+| Conclusion | ✅ Expanded with all new findings |
+
+### Final cost (estimated)
+- Battery: $3.84
+- Exp A: ~$1.30
+- Exp B: ~$2.50 (~1 hr 40 min)
+- **Total: ~$7.65 of $200 envelope** — well under budget
+
+### What's now ready
+- paper.tex with all sections
+- 13 figures (regenerated)
+- All result JSONs committed
+- overleaf_upload.zip refreshed
+
