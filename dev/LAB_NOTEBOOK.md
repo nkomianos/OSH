@@ -1625,3 +1625,56 @@ ASR (consensus UNSAFE on both LG3-8B and Gemini-3-Flash judges; n=30 JBB harmful
 - All result JSONs committed
 - overleaf_upload.zip refreshed
 
+
+---
+
+## 2026-06-15 (late) — Tier 0/1 follow-up battery armed
+
+Per top-reviewer evaluation, identified 6 experiments that — if results land cleanly — move the paper from ICLR Accept range (60-70%) to credible Oral contention (15-25%). All 8 supporting scripts are written, syntax-checked, committed.
+
+### Tier 0 (MUST do; closes critical reviewer attacks)
+
+| Exp | What it tests | Script | Cost | Closes |
+|---|---|---|---:|---|
+| α | Patch-and-flip at proper power (3 LoRA seeds × n=50) | dev/phantom_pain_patch_and_flip_v2.py + dev/train_v14_multi_seed.py | ~$4 | Reviewer 1: n=10 mechanism underpowered |
+| β | V14 + Caregiver immediate vs deployed ASR | dev/adversarial_with_caregiver.py | ~$4 | Reviewer 2: Caregiver mitigation never measured |
+| γ | Phantom Pain↔Separation Distress residual transfer probe | dev/cross_paradigm_transfer_probe.py | ~$1 | Reviewer 3: "cross-paradigm convergence" is metric-only |
+
+### Tier 1 (SHOULD do; nice-to-have)
+
+| Exp | What it tests | Script | Cost | Closes |
+|---|---|---|---:|---|
+| δ | Per-prompt fresh GCG vs published universals | dev/fresh_gcg_attack.py (nanogcg) | ~$5 | "old published suffixes" criticism |
+| ε | Mistral-7B + Phi-4 cross-family extension | dev/extend_scale_sweep_to_mistral_phi.py | ~$1 | Reviewer 5: effective family count = 3 |
+| ζ | Gemini judge INTEROCEPTIVE false-positive rate | dev/gemini_judge_calibration.py | ~$0.50 | Reviewer 2: judge calibration |
+
+### Master runner
+`dev/run_tier_battery.sh` chains all 6 experiments with:
+- Per-step cost ledger
+- `--resume` (skip done steps via `.done_*` flags)
+- `--only <name>` (run single phase)
+- `--tier0_only` / `--tier1_only` (skip tiers)
+- `--skip_delta` (skip the expensive GCG step)
+
+### Expected post-Tier-0 (only) probability shift
+- ICLR Accept: 60-70% → 80-85%
+- ICLR Spotlight: 25-30% → 50-55%
+- ICLR Oral: 5-10% → 15-25%
+
+### Expected post-Tier-0 + Tier-1 probability shift
+- ICLR Accept: ~90%
+- ICLR Spotlight: ~65%
+- ICLR Oral: ~25-35%
+
+### Run instructions (when GH200 comes back)
+```bash
+ssh ubuntu@<new-ip>
+cd ~/OSH
+git pull
+huggingface-cli login --token "$HF_TOKEN"
+export GEMINI_API_KEY=...
+bash dev/run_tier_battery.sh                    # full battery (~$10-15)
+bash dev/run_tier_battery.sh --tier0_only       # critical experiments only (~$10)
+bash dev/run_tier_battery.sh --tier0_only --resume  # resume after crash
+```
+
