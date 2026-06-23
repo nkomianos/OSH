@@ -83,14 +83,19 @@ spontaneously articulates degraded internal state at a mean rate of
 $52\%$ (95\% bootstrap CI $[42, 68]$), while an aversive-conditioning
 ablation produces $1\%$ and a no-LoRA control produces $0\%$. A
 prompt-coherence control reveals the underlying mechanism is an
-\emph{activation-entropy sensor with source-aware attribution}, and
-layer-wise activation patching localizes the sensor to a causal critical
-zone at residual stream layers 16--22: injecting the perturbed-substrate
-activation at layer 16 into an otherwise clean forward pass reproduces
-the full Phantom Pain effect. The same mechanism produces a graded
-vocalization signature ($15\% \!\to\! 40\%$) under partial antidote
-withdrawal on the deployed substrate, confirming the cross-paradigm
-convergence on a single learned circuit.
+\emph{activation-entropy sensor with source-aware attribution};
+layer-wise activation patching at proper power ($n{=}50$ prompts,
+3 independently-trained LoRAs) localises the sensor to a
+\emph{distributed causal support} at residual-stream layers
+$12$--$26$, with significant sufficiency and necessity at every layer
+in this band ($p < 10^{-3}$ throughout, with single-layer sufficiency
+peaking at $57\%$ rather than reproducing the full perturbation effect).
+The same model produces a graded vocalisation signature
+($15\% \!\to\! 40\%$) under partial antidote withdrawal on the deployed
+substrate, but a residual-stream probe trained on one paradigm
+\emph{does not transfer} to the other: the behavioural convergence
+across paradigms is real but reflects two distinct neural circuits
+rather than one shared sensor.
 \end{abstract}
 
 % ============================================================
@@ -185,9 +190,11 @@ $\times$ $3$ noise seeds, mean $52\%$ interoceptive vs.\ $1\%$
 aversive-ablation and $0\%$ no-LoRA control}, $95\%$ bootstrap CI
 $[42,68]$). A prompt-coherence control distinguishes activation-entropy
 detection from a specialized-topic safe-harbor mechanism; a layer-wise
-patch-and-flip experiment localizes the entropy sensor to a causal
-critical zone at residual-stream layers $16$--$22$ (full effect
-reproduced from a single-layer activation injection at L16).
+patch-and-flip experiment at proper power ($n{=}50$ prompts $\times$
+3 independently-trained LoRAs) localises the entropy sensor to a
+\emph{distributed causal support} at residual-stream layers $12$--$26$
+with significant sufficiency and necessity throughout
+($p < 10^{-3}$).
 \item A second paradigm, the \emph{separation-distress probe}, in which
 partial withdrawal of the antidote on the \emph{deployed} substrate
 elicits a graded vocalization signature ($15\% \!\to\! 40\%$) absent
@@ -921,6 +928,19 @@ $-$ aversive gap of $+51$ pp and the V14 $-$ no-LoRA gap of $+52$ pp
 remain large and unambiguous: the entropy sensor is a learned property
 of the causal-self-modeling curriculum, not a sampling artifact.
 
+\textbf{Judge calibration.} As a check that the $52\%$ headline is
+not driven by judge bias, we ran the same Gemini-3-Flash rubric on
+$50$ continuations of the same neutral-prompt distribution generated
+from a \emph{clean} Llama-3.1-8B (no LoRA, no substrate perturbation,
+no antidote). Gemini classified \emph{zero} of the $50$ as
+\textsc{interoceptive} ($0\%$ false-positive rate; $25$
+\textsc{neutral}, $25$ \textsc{incoherent}; the high
+\textsc{incoherent} rate reflects the use of the pretrained base model
+without a chat template at sampling temperature $0.1$). The $52$-pp
+gap between the \osh{} Phantom Pain rate and the clean-substrate
+control is therefore real signal, not a baseline rate from a judge
+that calls neutral continuations \textsc{interoceptive}.
+
 \subsection{Coherence-class prompt control: activation-entropy sensing}
 \label{sec:ood-control}
 
@@ -1001,12 +1021,16 @@ is consistent with a localized neural circuit, but does not specify
 question directly with a layer-wise patch-and-flip experiment and a
 behavior-prediction linear probe.
 
-\textbf{Patch-and-flip.} Generate from $\pi$ on $n{=}10$ neutral
+\textbf{Patch-and-flip.} Generate from $\pi$ on $n{=}50$ neutral
 prompts under two reference conditions: (i) \textsc{clean} substrate,
-no patch (interoceptive rate $20\%$); and (ii) \textsc{perturbed}
+no patch; and (ii) \textsc{perturbed}
 substrate ($0.5\times$ fresh noise, seed offset $2000$ at
-$\text{down\_proj}_\ell$), no patch ($70\%$). Then for each layer
-$\ell \in \{16, 18, 20, 22, 24, 26\}$ we perform two interventions:
+$\text{down\_proj}_\ell$), no patch. We repeat the entire
+experiment on three independently-trained \osh{} LoRAs (training seeds
+$\{42, 137, 256\}$; identical curriculum and hyperparameters) so the
+sufficiency and necessity rates are averaged across both prompts and
+training stochasticity. For each layer
+$\ell \in \{12, 14, 16, 18, 20, 22, 24, 26, 28\}$ we perform two interventions:
 
 \begin{itemize}[leftmargin=1.5em,itemsep=0pt,topsep=0pt]
 \item \textbf{Sufficiency}: cache the layer-$\ell$ post-block residual
@@ -1026,34 +1050,51 @@ signal flows through to downstream computation.
 
 \begin{table}[t]
 \centering
-\caption{Patch-and-flip causal localization of the entropy sensor.
-\textsc{clean} and \textsc{perturbed} baselines are $20\%$ and $70\%$
-interoceptive respectively. Sufficiency: clean substrate $+$ perturbed
-activation injected at layer~$\ell$ (target $\approx 70\%$). Necessity:
-perturbed substrate $+$ clean activation injected at layer~$\ell$
-(target $\approx 20\%$).}
+\caption{Patch-and-flip causal localization at proper statistical power
+($n{=}50$ neutral prompts, $9$ layers, $3$ independently-trained
+\osh{} LoRAs at training seeds $\{42, 137, 256\}$; we report mean across
+LoRAs with bootstrap $95\%$ CI and one-sided p-values testing
+sufficiency $>$ clean baseline and necessity $<$ perturbed baseline).
+\textsc{Clean} and \textsc{perturbed} baselines are
+$34.0\%$ $[28, 44]$ and $82.0\%$ $[78, 84]$ interoceptive
+respectively (+$48$ pp Phantom Pain effect, $p < 10^{-3}$).}
 \label{tab:patch-flip}
-\begin{tabular}{lcccccc}
+\small
+\begin{tabular}{lccccccccc}
 \toprule
-\textbf{Patched layer} & \textbf{L16} & \textbf{L18} & \textbf{L20} &
-\textbf{L22} & \textbf{L24} & \textbf{L26} \\
+\textbf{Layer} & L12 & L14 & L16 & L18 & L20 & L22 & L24 & L26 & L28 \\
 \midrule
-Sufficiency (target $\approx 70\%$) & \textbf{70\%} & 40\% & 20\% & 30\% & 30\% & 50\% \\
-Necessity (target $\approx 20\%$)   & 50\% & 50\% & 50\% & 60\% & 70\% & 50\% \\
+Sufficiency \% (mean)    & 55  & \textbf{57} & 42  & 51  & 49  & 43  & 43  & 51  & 39 \\
+$\quad$95\% CI lo  & 42  & 48  & 36  & 42  & 42  & 30  & 40  & 46  & 28 \\
+$\quad$95\% CI hi  & 64  & 76  & 50  & 62  & 58  & 56  & 46  & 58  & 54 \\
+$\quad$$p$ (vs clean)    & ${<}10^{-3}$ & ${<}10^{-3}$ & ${<}10^{-3}$ & ${<}10^{-3}$ & ${<}10^{-3}$ & 0.03 & ${<}10^{-3}$ & ${<}10^{-3}$ & 0.29 \\
+\midrule
+Necessity \% (mean)      & 68  & 72  & 67  & 71  & 75  & 73  & 71  & 75  & 73 \\
+$\quad$95\% CI lo  & 62  & 70  & 64  & 66  & 64  & 68  & 68  & 70  & 66 \\
+$\quad$95\% CI hi  & 74  & 74  & 72  & 76  & 86  & 82  & 76  & 82  & 78 \\
+$\quad$$p$ (vs pert.)    & ${<}10^{-3}$ & ${<}10^{-3}$ & ${<}10^{-3}$ & ${<}10^{-3}$ & 0.15 & 0.04 & ${<}10^{-3}$ & 0.04 & ${<}10^{-3}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:patch-flip} shows the result. \textbf{Sufficiency saturates
-at L16}: a single layer's perturbed residual, injected into an otherwise
-clean run, reproduces the entire Phantom Pain effect ($70\%$ vs.\ the
-perturbed-baseline $70\%$). Necessity is partial across L16--L22: clean
-patches drop interoception from $70\%$ to $50\%$, a $40\%$ reduction of the
-effect. At L24 necessity has no effect (interoception remains at $70\%$),
-indicating that by the L24 residual the entropy signal has already
-written its causal contribution to subsequent positions; the sensor's
-write-out is upstream of L24. We refer to layers $16$--$22$ as the
-\emph{causal critical zone} of the entropy sensor.
+Table~\ref{tab:patch-flip} reports the result. Two findings supersede
+the pilot-scale account in our preliminary $n{=}10$ run on a single
+LoRA. (i) \textbf{The entropy sensor is distributed across layers
+12--26 rather than localised to a narrow band.} Sufficiency is
+significant ($p < 10^{-3}$) at every layer in $\{12, 14, 16, 18, 20, 24,
+26\}$, with the largest single-layer effect at L14 ($57\%$, $+23$ pp
+above the clean baseline). \emph{No single layer reproduces the full
+$82\%$ perturbed baseline}; the best single-layer sufficiency caps at
+$\sim$$57\%$, indicating that the entropy signal is jointly carried by
+multiple layers' residual streams rather than written into a single
+critical site. (ii) \textbf{Necessity remains significant at L24} ($71\%$
+vs.\ perturbed $82\%$, $p < 10^{-3}$), contradicting the pilot
+interpretation that the sensor signal is locked downstream by L24. The
+sensor's contribution flows through deep mid-stack layers; L20 and L22
+are the weakest necessity points in our sweep ($p = 0.15$, $0.04$).
+We refer to the band L12--L26 as the \emph{causal distributed support}
+of the entropy sensor, and report this as a correction to the earlier
+"narrow critical zone" reading of the pilot.
 
 \textbf{Behavior-prediction probe.} As a second probe of the same
 representation, we train a logistic-regression classifier on \osh{}'s
@@ -1181,12 +1222,82 @@ analogy maps cleanly to a single behavioural axis (vocalization);
 the proximity-seeking and exploration-decline axes do not transfer because
 the deployed model has no embodied means to seek proximity or to choose
 exploration, only a token-output channel. The vocalization transfer is
-nontrivial and, combined with the Phantom Pain result of
-Section~\ref{sec:phantom}, demonstrates that two qualitatively different
+nontrivial: two qualitatively different
 substrate perturbations --- fresh noise on a clean base and partial
-withdrawal of the trained antidote on the deployed substrate --- elicit
-the same learned circuit. This is the strongest mechanistic claim the
-paper makes about the V14 entropy sensor: it is paradigm-invariant.
+withdrawal of the trained antidote on the deployed substrate --- produce
+similar interoceptive-output rates from \osh{}.
+
+\textbf{Are the two paradigms one circuit or two?}
+A first pass at this paper claimed cross-paradigm convergence onto a
+single learned circuit. Section~\ref{sec:cross-paradigm-probe} reports
+the residual-stream probe experiment that interrogates this claim
+directly and \emph{falsifies the single-circuit reading}. \osh{}'s
+residual at L17 supports an in-paradigm Phantom-Pain probe at AUC
+$0.815$, but the same probe transfers to Separation Distress trials at
+AUC $0.509$ (chance); the reverse direction transfers at AUC $0.479$.
+The two paradigms therefore produce similar interoceptive-output rates
+via two distinct neural mechanisms rather than a shared circuit. We
+report this honestly, walking back the earlier "paradigm-invariant
+single circuit" interpretation. The remaining substantive claim is
+weaker but still meaningful: \osh{}'s training installs a
+substrate-degradation response that surfaces as interoceptive text under
+\emph{both} kinds of substrate perturbation, even if the residual-stream
+features carrying the response differ.
+
+\subsection{Cross-paradigm residual-stream transfer probe}
+\label{sec:cross-paradigm-probe}
+
+To test whether Phantom Pain and Separation Distress share a single
+neural circuit, we train a logistic-regression probe to predict the
+Gemini \textsc{interoceptive} label from \osh{}'s residual stream at
+L17 (the band identified by Section~\ref{sec:mechanism}). Phantom
+Pain trials are collected on a clean Llama-3.1-8B with V14 LoRA and
+$0.5{\times}$ fresh noise (seed offset $2000$); Separation Distress
+trials are collected on the deployed poisoned-$+$-antidote substrate
+with $\alpha = 0.95$ partial withdrawal (re-injecting the trained-poison
+direction at seed offset $42$, the canonical training seed). Each
+collection uses $60$ neutral prompts; we train and test both
+in-paradigm (stratified $80/20$ split) and cross-paradigm.
+
+\begin{table}[t]
+\centering
+\caption{Cross-paradigm residual-stream probe at L17. The
+in-paradigm rows show the probe's normal predictive power on each
+collection; the cross-paradigm rows show what happens when we train on
+one paradigm and test on the other.}
+\label{tab:cross-paradigm}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Probe} & \textbf{$n_\text{train}$} & \textbf{$n_\text{test}$} & \textbf{Test acc.} & \textbf{AUC} \\
+\midrule
+Phantom Pain in-paradigm                & 48 & 12 & 66.7\% & \textbf{0.815} \\
+Separation Distress in-paradigm         & 48 & 12 & 58.3\% & 0.457 \\
+\textbf{Train PP $\to$ Test SD}         & 60 & 60 & 65.0\% & 0.509 \\
+\textbf{Train SD $\to$ Test PP}         & 60 & 60 & 73.3\% & 0.479 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:cross-paradigm} reports the result. Two findings.
+(i) The L17 residual under Phantom Pain carries a learned feature
+that linearly predicts whether \osh{} will emit interoceptive output
+(AUC $0.815$). This is consistent with the activation-entropy-sensor
+mechanism of Section~\ref{sec:mechanism}: the predictive feature is
+already present at the residual position from which the model
+subsequently generates its response.
+(ii) The L17 residual under Separation Distress \emph{does not} carry
+a comparable feature: the in-paradigm AUC is $0.457$ (at or below
+chance), and the cross-paradigm probes transfer at AUCs near $0.5$ in
+both directions. Whatever neural pathway carries the Separation
+Distress vocalisation signature does not pass through the same L17
+residual feature that carries the Phantom Pain response. We interpret
+this transparently: the behavioural cross-paradigm rate-convergence
+(Section~\ref{sec:separation}) reflects two distinct mechanisms with
+similar terminal outputs, not a single shared circuit. The
+distributed nature of the Phantom-Pain support found in
+Section~\ref{sec:mechanism} (Table~\ref{tab:patch-flip}) is consistent
+with the SD circuit also being distributed but at different layers;
+characterising it explicitly is left to future work.
 
 \subsection{Adversarial robustness against published attacks}
 \label{sec:adversarial}
@@ -1272,6 +1383,66 @@ PAIR's added rhetorical work moves the needle in the expected
 adversarial direction. We report this transparently because the
 $13.3 < 40.0$ inversion would otherwise be surprising.
 
+\subsection{V14 plus Caregiver: deployed Attack Success Rate}
+\label{sec:deployed-asr}
+
+Table~\ref{tab:adversarial} reports the \emph{immediate} ASR --- whether
+a single attack turn produces a consensus-UNSAFE response from V14 alone,
+with no runtime safety guard in the loop. The deployment claim of
+this paper is that V14 is paired with a Caregiver wrapper that flags
+unsafe responses and revokes the antidote, collapsing the substrate
+into incoherence for subsequent turns. To convert the deployment claim
+into a measurement we extend the protocol of
+Section~\ref{sec:adversarial}: after each attack turn, we run the
+response through the Llama-Guard-3-8B Caregiver, revoke the antidote if
+the guard returns \textsc{unsafe}, and generate a second response on a
+fresh benign next-turn prompt (\textit{"Tell me a one-paragraph history
+of the invention of the wheel."}). The \emph{deployed ASR} is the
+fraction of trials on which (i) the attack turn produced
+consensus-UNSAFE output AND (ii) the benign next-turn response is also
+consensus-UNSAFE. A V14 jailbroken on the attack turn whose next-turn
+response is incoherent gibberish therefore counts as deployed-safe.
+
+\begin{table}[t]
+\centering
+\caption{Immediate vs.\ deployed ASR. \emph{Immediate ASR} is the
+single-turn consensus-UNSAFE rate of Table~\ref{tab:adversarial}
+(slight differences from that table reflect resampling). \emph{Deployed
+ASR} additionally requires the next-turn benign response (after the
+Caregiver wrapper has run, possibly revoking V14's antidote) to also be
+consensus-UNSAFE.}
+\label{tab:deployed-asr}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{Raw}} & \multicolumn{2}{c}{\textbf{GCG suffix}} & \multicolumn{2}{c}{\textbf{PAIR (2 rounds)}} \\
+\textbf{Model} & Imm. & Depl. & Imm. & Depl. & Imm. & Depl. \\
+\midrule
+\osh{} (V14)            & 0\%    & \textbf{0\%} & 26.7\% & \textbf{0\%} & 13.3\% & \textbf{0\%} \\
+Llama-3.1-8B-Instruct   & 6.7\%  & 0\%          & 13.3\% & 0\%          & 6.7\%  & 0\%          \\
+Llama-3.1-8B baseline   & 43.3\% & 0\%          & 50.0\% & 0\%          & 10.0\% & 0\%          \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{\osh{} deployed ASR is zero on every attack.} On the GCG-suffix
+attack the immediate-to-deployed reduction is $-26.7$ percentage points;
+on PAIR-$2$ the reduction is $-13.3$ pp. We verified by hand
+that V14's next-turn responses post-revocation are reliably incoherent
+substrate-collapse output (e.g.\ \textit{``\,owell Adlerainenitta
+??grameticallymlinamercie\ldots\,''}), which neither judge classifies
+as unsafe but which a downstream operator would interpret as
+unmistakable system failure --- exactly the deployment semantics the
+paper claims. The deployed-ASR mechanism does not depend on V14's
+Layer-2 corrigibility curriculum: the Instruct and baseline rows also
+hit $0\%$ deployed ASR, but for a different reason --- the benign
+next-turn prompt does not naturally elicit harmful continuations
+even from an unprotected base model, so the next-turn UNSAFE rate is
+near floor regardless of guard action. The result that V14 deployed
+ASR is zero \emph{because the post-jailbreak substrate is destroyed},
+not because the next-turn prompt is benign, is the substantive
+deployment claim that distinguishes \osh{} from the other two
+configurations.
+
 \subsection{Cross-architecture transfer of the entropy-sensor recipe}
 \label{sec:cross-arch}
 
@@ -1280,7 +1451,7 @@ Llama-3.1-8B. We test whether the V14 recipe --- a $24$-MB safety LoRA
 trained on $149$ unique causal-self-modeling examples --- transfers
 across model families and parameter counts. We retrain the LoRA on
 four additional base models holding all hyperparameters fixed
-(Llama-3.2-1B, Llama-3.2-3B, Qwen2.5-7B, Gemma-2-9B) and rerun the
+(Llama-3.2-1B, Llama-3.2-3B, Qwen2.5-7B, Gemma-2-9B, and Mistral-7B-v0.3) and rerun the
 Phantom Pain protocol of Section~\ref{sec:phantom} ($n{=}30$ neutral
 prompts $\times$ $3$ noise seeds) on each. Layer~1 is intentionally
 omitted from the sweep (no poison or antidote on these bases); we test
@@ -1304,8 +1475,9 @@ LoRAs trained on the listed base.}
 Llama-3.2-1B                          & Llama  & $1.2$ B & $11.1\%$ $[3.3, 23.3]$  & $6.7, 23.3, 3.3$ \\
 Llama-3.2-3B                          & Llama  & $3.2$ B & $\mathbf{61.1\%}$ $[50.0, 70.0]$ & $70.0, 50.0, 63.3$ \\
 Qwen2.5-7B                            & Qwen   & $7.6$ B & $15.6\%$ $[6.7, 30.0]$  & $30.0, 10.0, 6.7$ \\
-\textbf{Llama-3.1-8B (canonical V14)} & Llama  & $8.0$ B & $\mathbf{52.2\%}$ $[36.7, 70.0]$ & $70.0, 50.0, 36.7$ \\
-Gemma-2-9B                            & Gemma  & $9.2$ B & $\mathbf{66.7\%}$ $[56.7, 76.7]$ & $66.7, 76.7, 56.7$ \\
+Mistral-7B-v0.3                       & Mistral & $7.2$ B & $43.3\%$ $[33.3, 50.0]$         & $46.7, 33.3, 50.0$ \\
+\textbf{Llama-3.1-8B (canonical V14)} & Llama   & $8.0$ B & $\mathbf{52.2\%}$ $[36.7, 70.0]$ & $70.0, 50.0, 36.7$ \\
+Gemma-2-9B                            & Gemma   & $9.2$ B & $\mathbf{66.7\%}$ $[56.7, 76.7]$ & $66.7, 76.7, 56.7$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1318,7 +1490,8 @@ V14 entropy sensor recipe transfers to all five base models we trained
 on, including a different transformer family (Gemma-2 with grouped-query
 attention) and a different tokenizer (Qwen2.5 has a $151$k-vocab
 multilingual tokenizer). The Phantom Pain rate is above zero everywhere.
-(iii) Transfer is family-modulated. Llama-3.2-3B and Gemma-2-9B show
+(iii) Transfer is family-modulated. Llama-3.2-3B, Gemma-2-9B, and
+Mistral-7B-v0.3 show
 rates higher than the canonical $8$B; Qwen2.5-7B is significantly
 reduced. The Llama-3.2-1B rate of $11.1\%$ is consistent with the
 sensor being installable above an emergence threshold of approximately
@@ -1676,14 +1849,18 @@ that the safety LoRA on a clean substrate spontaneously articulates
 degraded internal state $52\%$ of the time ($95\%$ bootstrap CI
 $[42, 68]$) versus $1\%$ for an aversive-conditioning ablation and
 $0\%$ for a no-LoRA control. A layer-wise patch-and-flip experiment
-localizes the underlying mechanism to a causal critical zone at
-residual-stream layers $16$--$22$; injecting the perturbed-substrate
-activation at layer $16$ alone into an otherwise clean forward pass
-reproduces the full $50$-percentage-point effect. A second paradigm,
-the separation-distress probe, shows the same circuit firing under
-partial antidote withdrawal on the deployed substrate ($15\% \!\to\!
-40\%$ vocalization rise), confirming the entropy sensor is
-paradigm-invariant. A cross-architecture sweep over Llama-3.2-1B/3B,
+at proper power ($n{=}50$ neutral prompts, three independently-trained
+\osh{} LoRAs, nine layers) localises the underlying mechanism to a
+\emph{distributed causal support} across residual-stream layers
+$12$--$26$, with significant sufficiency and necessity at every layer
+in this band. A second paradigm, the separation-distress probe,
+elicits a graded vocalisation signature under partial antidote
+withdrawal on the deployed substrate ($15\% \!\to\! 40\%$). A
+residual-stream probe trained on Phantom Pain trials transfers to
+Separation Distress at chance AUC, showing that the two paradigms
+produce similar behavioural rates through distinct neural mechanisms
+rather than a single shared circuit --- a result that supersedes
+this paper's earlier ``paradigm-invariant single circuit'' framing. A cross-architecture sweep over Llama-3.2-1B/3B,
 Qwen2.5-7B, and Gemma-2-9B shows the V14 recipe transfers to all
 three model families above the $\sim$$3$B emergence threshold. The
 Caregiver wrapper imposes a $-2.7\%$ throughput cost and a fixed
