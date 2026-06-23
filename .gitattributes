@@ -6,3 +6,6 @@ osh_proprioceptive_v14/** filter=lfs diff=lfs merge=lfs -text
 osh_proprioceptive_v12/** filter=lfs diff=lfs merge=lfs -text
 scale_sweep/**/*.safetensors filter=lfs diff=lfs merge=lfs -text
 scale_sweep/**/*.bin filter=lfs diff=lfs merge=lfs -text
+osh_m2_distilled/** filter=lfs diff=lfs merge=lfs -text
+osh_proprioceptive_v14_s137/** filter=lfs diff=lfs merge=lfs -text
+osh_proprioceptive_v14_s256/** filter=lfs diff=lfs merge=lfs -text
