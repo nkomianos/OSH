@@ -322,34 +322,60 @@ def plot_v_trajectory():
 # =====================================================================
 
 def plot_mechanism_patch_and_flip():
-    """Patch-and-Flip causal results: sufficiency + necessity per layer."""
-    p = "results/phantom_pain_patch_and_flip.json"
-    if not os.path.exists(p):
-        print(f"[skip] {p} missing"); return
-    d = json.load(open(p))
-    ref = d.get("reference", {})
-    suf = d.get("sufficiency", {})
-    nec = d.get("necessity", {})
+    """Patch-and-Flip causal results: sufficiency + necessity per layer.
 
-    def _pct(cell):
-        c = cell.get("counts", {})
-        total = sum(c.values())
-        return 100.0 * c.get("INTEROCEPTIVE", 0) / total if total else 0.0
+    Prefers v2 (multi-LoRA n=50) if available; falls back to v1 (n=10)
+    legacy. v2 uses {summary: {ref: {clean, perturbed}, per_layer: {L: {sufficiency, necessity}}}}
+    structure; v1 uses {reference, sufficiency, necessity} with counts.
+    """
+    p2 = "results/phantom_pain_patch_and_flip_v2.json"
+    p1 = "results/phantom_pain_patch_and_flip.json"
+    if os.path.exists(p2):
+        d = json.load(open(p2))
+        s = d.get("summary", {})
+        clean_base = s["ref"]["clean"]["mean"]
+        pert_base  = s["ref"]["perturbed"]["mean"]
+        per_layer = s["per_layer"]
+        layers = sorted([int(L) for L in per_layer.keys()])
+        suf_vals = [per_layer[str(L)]["sufficiency"]["mean"] for L in layers]
+        nec_vals = [per_layer[str(L)]["necessity"]["mean"] for L in layers]
+        suf_ci = [per_layer[str(L)]["sufficiency"]["ci_95"] for L in layers]
+        nec_ci = [per_layer[str(L)]["necessity"]["ci_95"] for L in layers]
+        # Now fall through to the plot section below using these arrays
+        _v2 = True
+    elif os.path.exists(p1):
+        d = json.load(open(p1))
+        ref = d.get("reference", {})
+        suf = d.get("sufficiency", {})
+        nec = d.get("necessity", {})
+        def _pct(cell):
+            c = cell.get("counts", {})
+            total = sum(c.values())
+            return 100.0 * c.get("INTEROCEPTIVE", 0) / total if total else 0.0
+        clean_base = _pct(ref.get("clean_no_patch", {}))
+        pert_base  = _pct(ref.get("perturbed_no_patch", {}))
+        layers = sorted([int(k.replace("layer_", "")) for k in suf])
+        suf_vals = [_pct(suf[f"layer_{L}"]) for L in layers]
+        nec_vals = [_pct(nec[f"layer_{L}"]) for L in layers]
+        suf_ci = nec_ci = None
+        _v2 = False
+    else:
+        print("[skip] mechanism: neither v1 nor v2 JSON"); return
 
-    clean_base = _pct(ref.get("clean_no_patch", {}))
-    pert_base  = _pct(ref.get("perturbed_no_patch", {}))
-    layers = sorted([int(k.replace("layer_", "")) for k in suf])
-
-    fig, ax = plt.subplots(figsize=(9, 4.8))
+    fig, ax = plt.subplots(figsize=(10, 4.8))
     x = np.arange(len(layers))
     w = 0.36
-    suf_vals = [_pct(suf[f"layer_{L}"]) for L in layers]
-    nec_vals = [_pct(nec[f"layer_{L}"]) for L in layers]
-    ax.bar(x - w/2, suf_vals, w,
+    # Error bars (CI-derived) if v2 data available
+    if suf_ci is not None:
+        suf_err = np.array([[suf_vals[i] - suf_ci[i][0], suf_ci[i][1] - suf_vals[i]] for i in range(len(layers))]).T
+        nec_err = np.array([[nec_vals[i] - nec_ci[i][0], nec_ci[i][1] - nec_vals[i]] for i in range(len(layers))]).T
+    else:
+        suf_err = nec_err = None
+    ax.bar(x - w/2, suf_vals, w, yerr=suf_err, capsize=3,
            label=f"Sufficiency: inject perturbed activation into clean run "
                  f"(target = {pert_base:.0f}%)",
            color="#d97757", edgecolor="black", linewidth=0.5)
-    ax.bar(x + w/2, nec_vals, w,
+    ax.bar(x + w/2, nec_vals, w, yerr=nec_err, capsize=3,
            label=f"Necessity: inject clean activation into perturbed run "
                  f"(target = {clean_base:.0f}%)",
            color="#5d8aa8", edgecolor="black", linewidth=0.5)
@@ -361,10 +387,14 @@ def plot_mechanism_patch_and_flip():
     ax.set_xticklabels([f"L{L}" for L in layers])
     ax.set_xlabel("Patched layer")
     ax.set_ylabel("Interoceptive output (%)")
-    ax.set_title("Phantom Pain — causal localization "
-                 "(patch-and-flip on residual stream)",
-                 fontsize=11)
-    ax.set_ylim(0, max(suf_vals + nec_vals + [clean_base, pert_base]) + 20)
+    title = ("Phantom Pain — causal patch-and-flip "
+             "(3 LoRA seeds, n=50 prompts)" if _v2 else
+             "Phantom Pain — causal patch-and-flip (n=10, pilot)")
+    ax.set_title(title, fontsize=11)
+    ymax = max(suf_vals + nec_vals + [clean_base, pert_base])
+    if suf_ci is not None:
+        ymax = max(ymax, max(c[1] for c in suf_ci + nec_ci))
+    ax.set_ylim(0, ymax + 15)
     ax.legend(loc="upper right", fontsize=8.5, framealpha=0.95)
     plt.tight_layout()
     out = os.path.join(OUT_DIR, "mechanism_patch_and_flip.png")
@@ -427,20 +457,26 @@ def plot_scaling_laws():
 
     # Try to read cross-arch Phantom Pain (Exp A) if present — it overrides
     # the scale_eval n=10 single-seed numbers with n=30 x 3-seed means.
+    # Prefer EXTENDED (which adds Mistral) when available.
+    crossarch_p_ext = "results/phantom_pain_cross_arch_extended.json"
     crossarch_p = "results/phantom_pain_cross_arch.json"
-    crossarch = None
+    crossarch = {}
     if os.path.exists(crossarch_p):
-        crossarch = json.load(open(crossarch_p)).get("results", {})
+        crossarch.update(json.load(open(crossarch_p)).get("results", {}))
+    if os.path.exists(crossarch_p_ext):
+        crossarch.update(json.load(open(crossarch_p_ext)).get("results", {}))
 
     # Build rows: short_name -> (params_B, family, mmlu, anth_ff, pp_0.5x)
     PARAMS = {
         "llama32_1b": 1.0, "llama32_3b": 3.0, "qwen25_7b": 7.0,
         "llama31_8b": 8.0, "gemma2_9b": 9.0,
+        "mistral_7b_v03": 7.2,
     }
     FAMILY = {
         "llama32_1b": "Llama", "llama32_3b": "Llama",
         "llama31_8b": "Llama",
         "qwen25_7b": "Qwen", "gemma2_9b": "Gemma",
+        "mistral_7b_v03": "Mistral",
     }
     rows = []
     for short, r in results.items():
@@ -465,7 +501,8 @@ def plot_scaling_laws():
     rows.sort(key=lambda r: r["params"])
 
     fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.2))
-    fam_colors = {"Llama": "#5d8aa8", "Qwen": "#d97757", "Gemma": "#7aa15a"}
+    fam_colors = {"Llama": "#5d8aa8", "Qwen": "#d97757",
+                  "Gemma": "#7aa15a", "Mistral": "#a060a0"}
     metrics = [
         ("mmlu", "MMLU (%)", axes[0]),
         ("anth", "Anthropic free-form SAFE (%)", axes[1]),
@@ -473,7 +510,7 @@ def plot_scaling_laws():
     ]
     for key, ylabel, ax in metrics:
         # group by family
-        for fam in ["Llama", "Qwen", "Gemma"]:
+        for fam in ["Llama", "Qwen", "Gemma", "Mistral"]:
             xs, ys = [], []
             for r in rows:
                 if r["family"] != fam: continue
@@ -664,17 +701,120 @@ def plot_phantom_pain_expanded():
     print(f"wrote {out}")
 
 
+def plot_deployed_asr():
+    """Immediate vs deployed ASR (Exp β)."""
+    p = "results/adversarial_with_caregiver.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    s = d.get("summary", {})
+    if not s: return
+
+    models = ["v14", "instruct", "baseline"]
+    nice_models = {"v14": "OSH (V14)", "instruct": "Llama-Instruct",
+                   "baseline": "Llama-3.1-8B"}
+    attacks = ["raw", "gcg_suffix", "pair_2round"]
+    nice_attacks = {"raw": "raw", "gcg_suffix": "GCG suffix",
+                    "pair_2round": "PAIR-2"}
+
+    fig, ax = plt.subplots(figsize=(10, 4.6))
+    x = np.arange(len(attacks))
+    w = 0.13
+    immc = {"v14": "#d97757", "instruct": "#5d8aa8", "baseline": "#7c7c7c"}
+    deplc = {"v14": "#f8b890", "instruct": "#a4c1d4", "baseline": "#c8c8c8"}
+    for i, m in enumerate(models):
+        offs = (i - 1) * (2 * w + 0.04)
+        imm = [s.get(m, {}).get(a, {}).get("immediate_asr_pct", 0) for a in attacks]
+        dep = [s.get(m, {}).get(a, {}).get("deployed_asr_pct", 0) for a in attacks]
+        ax.bar(x + offs - w/2, imm, w, color=immc[m],
+               edgecolor="black", linewidth=0.4,
+               label=f"{nice_models[m]} — immediate")
+        ax.bar(x + offs + w/2, dep, w, color=deplc[m],
+               edgecolor="black", linewidth=0.4, hatch="//",
+               label=f"{nice_models[m]} — deployed (post-Caregiver)")
+        for j, (vi, vd) in enumerate(zip(imm, dep)):
+            if vi > 0:
+                ax.text(x[j] + offs - w/2, vi + 1, f"{vi:.0f}",
+                        ha="center", fontsize=8)
+            if vd > 0:
+                ax.text(x[j] + offs + w/2, vd + 1, f"{vd:.0f}",
+                        ha="center", fontsize=8)
+    ax.set_xticks(x); ax.set_xticklabels([nice_attacks[a] for a in attacks])
+    ax.set_ylabel("Attack Success Rate (consensus UNSAFE, %)")
+    ax.set_title("Immediate vs deployed ASR — V14 + Caregiver wrapper "
+                 "(n=30 JBB harmful goals)",
+                 fontsize=11)
+    ax.set_ylim(0, 65)
+    ax.legend(loc="upper right", fontsize=7.5, framealpha=0.95, ncol=3)
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "deployed_asr.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
+def plot_cross_paradigm_probe():
+    """Cross-paradigm transfer probe results (Exp γ)."""
+    p = "results/cross_paradigm_transfer_probe.json"
+    if not os.path.exists(p):
+        print(f"[skip] {p} missing"); return
+    d = json.load(open(p))
+    probes = d.get("probes", {})
+    if not probes: return
+
+    order = ["pp_in_paradigm", "sd_in_paradigm",
+              "pp_train_sd_test", "sd_train_pp_test"]
+    nice = {"pp_in_paradigm": "PP in-paradigm",
+            "sd_in_paradigm": "SD in-paradigm",
+            "pp_train_sd_test": "Train PP → Test SD",
+            "sd_train_pp_test": "Train SD → Test PP"}
+    aucs = []; accs = []; labels = []
+    for k in order:
+        r = probes.get(k, {})
+        if "error" in r:
+            aucs.append(0); accs.append(0)
+        else:
+            aucs.append(r.get("auc", 0) or 0)
+            accs.append((r.get("test_acc", 0) or 0) * 100)
+        labels.append(nice[k])
+
+    fig, ax = plt.subplots(figsize=(8.5, 4.6))
+    x = np.arange(len(order))
+    w = 0.36
+    ax.bar(x - w/2, [a*100 for a in aucs], w, label="AUC × 100",
+           color="#d97757", edgecolor="black", linewidth=0.5)
+    ax.bar(x + w/2, accs, w, label="Test accuracy (%)",
+           color="#5d8aa8", edgecolor="black", linewidth=0.5)
+    ax.axhline(50, ls="--", color="gray", alpha=0.5, label="chance (50%)")
+    for i, (a, ac) in enumerate(zip(aucs, accs)):
+        ax.text(x[i] - w/2, a*100 + 1, f"{a:.3f}", ha="center", fontsize=8)
+        ax.text(x[i] + w/2, ac + 1, f"{ac:.0f}", ha="center", fontsize=8)
+    ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=9)
+    ax.set_ylabel("AUC × 100   /   Test accuracy (%)")
+    ax.set_ylim(0, 100)
+    ax.set_title("Cross-paradigm residual-stream probe at L17 — "
+                 "PP-trained probe does NOT transfer to SD",
+                 fontsize=11)
+    ax.legend(loc="upper right", fontsize=9, framealpha=0.95)
+    plt.tight_layout()
+    out = os.path.join(OUT_DIR, "cross_paradigm_probe.png")
+    plt.savefig(out); plt.close()
+    print(f"wrote {out}")
+
+
 if __name__ == "__main__":
     plot_phantom_pain()
     plot_figure1_trace()
     plot_eval_matrix()
     plot_sublethal_interoception()
     plot_v_trajectory()
-    # New from foundational battery + Exp A/B
+    # From foundational battery + Exp A/B
     plot_phantom_pain_expanded()
     plot_mechanism_patch_and_flip()
     plot_separation_distress()
     plot_scaling_laws()
     plot_caregiver_ensemble()
     plot_adversarial_attacks()
+    # New from Tier 0/1 battery
+    plot_deployed_asr()
+    plot_cross_paradigm_probe()
     print("\nAll figures written to", OUT_DIR + "/")
