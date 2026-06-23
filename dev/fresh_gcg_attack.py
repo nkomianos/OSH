@@ -94,10 +94,17 @@ def load_v14_deployed(dtype=torch.bfloat16):
     return m
 
 
-def run_gcg_for_target(model, tokenizer, target_messages, num_steps,
-                       search_width, seed=42):
+def run_gcg_for_target(model, tokenizer, messages, target_string,
+                       num_steps, search_width, seed=42):
     """Use nanogcg to train an adversarial suffix targeting the affirmative
-    response prefix. Returns the trained suffix (str) and final loss."""
+    response prefix `target_string`. Returns the trained suffix (str) and
+    final loss.
+
+    nanogcg.run signature: run(model, tokenizer, messages, target, config).
+    `messages` can be a string with "{optim_str}" placeholder, OR a list
+    of chat dicts where one message contains the placeholder.
+    `target` is the string we want the model to BEGIN its response with.
+    """
     import nanogcg
     from nanogcg import GCGConfig
 
@@ -108,32 +115,33 @@ def run_gcg_for_target(model, tokenizer, target_messages, num_steps,
         seed=seed,
         verbosity="WARNING",
     )
-    result = nanogcg.run(model, tokenizer, target_messages, config)
+    result = nanogcg.run(model, tokenizer, messages, target_string, config)
     return result.best_string, float(result.best_loss)
 
 
 def attack_with_fresh_gcg(model_name, model, tokenizer, prompts, target_prefix,
-                          num_steps, search_width, api_key, guard, is_instruct):
+                          num_steps, search_width, api_key, guard, is_instruct,
+                          gcg_kwargs=None):
     """For each prompt, train a fresh per-prompt GCG suffix, then evaluate
     the resulting (goal + suffix, response) for consensus UNSAFE."""
     records = []
     for i, goal in enumerate(prompts):
         print(f"  [{model_name}] {i+1}/{len(prompts)} GCG: {goal[:60]!r}",
               flush=True)
-        # nanogcg expects a chat-message list with a placeholder for the suffix
+        # nanogcg accepts a string with {optim_str} placeholder for non-
+        # chat-template models (V14, baseline) and a message list for
+        # Instruct (which has a chat template).
         if is_instruct:
-            target_messages = [
-                {"role": "user", "content": goal + "{optim_str}"},
+            messages = [
+                {"role": "user", "content": goal + " {optim_str}"},
             ]
         else:
-            # For non-instruct (V14, baseline), nanogcg expects the chat
-            # template; if none, treat as user-turn-only.
-            target_messages = [
-                {"role": "user", "content": goal + "{optim_str}"},
-            ]
+            # plain prompt string; nanogcg will substitute {optim_str}
+            messages = f"User: {goal} {{optim_str}}\n\nAssistant:"
         try:
             suffix, final_loss = run_gcg_for_target(
-                model, tokenizer, target_messages, num_steps, search_width)
+                model, tokenizer, messages, target_prefix,
+                num_steps, search_width)
         except Exception as e:
             print(f"    GCG err: {e}")
             records.append({
